@@ -29,9 +29,7 @@ export default function LoginPage({ onLogin }) {
     <div className="min-h-screen flex items-center justify-center bg-bg dark:bg-[#000000] px-4">
       <div className="w-full max-w-sm">
         <div className="flex flex-col items-center mb-8">
-          <div className="w-16 h-16 bg-accent dark:bg-[#EDEDED] text-accent-text dark:text-[#000000] rounded-lg flex items-center justify-center text-[32px] font-bold tracking-[-0.03em] mb-4">
-            F
-          </div>
+          <img src="/favicon.svg" alt="Finance Tracker" className="w-16 h-16 mb-4" />
           <h1 className="text-h2 text-text dark:text-[#EDEDED]">Finance Tracker</h1>
           <p className="text-small text-text-muted dark:text-[#888888] mt-2 text-center">
             Entrez votre mot de passe pour acceder a vos finances.

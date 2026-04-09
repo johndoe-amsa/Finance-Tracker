@@ -15,13 +15,32 @@ export default function BudgetDetailModal({
   const limit = parseFloat(category.budget_limit || 0)
   const pct = limit > 0 ? (spent / limit) * 100 : 0
   const remaining = limit - spent
+  const catColor = category.color || '#6366f1'
 
-  let barColor = 'bg-success'
-  if (pct >= 90) barColor = 'bg-error'
-  else if (pct >= 70) barColor = 'bg-warning'
+  let barClass = null
+  let barStyle = null
+  if (pct >= 90) {
+    barClass = 'bg-error'
+  } else if (pct >= 70) {
+    barClass = 'bg-warning'
+  } else {
+    barStyle = { backgroundColor: catColor }
+  }
 
   return (
-    <Modal open={open} onClose={onClose} title={category.name}>
+    <Modal
+      open={open}
+      onClose={onClose}
+      title={
+        <span className="flex items-center gap-2">
+          <span
+            className="w-3 h-3 rounded-full flex-shrink-0"
+            style={{ backgroundColor: catColor }}
+          />
+          {category.name}
+        </span>
+      }
+    >
       <div className="space-y-4">
         <p
           className="text-small text-text-muted dark:text-[#888888]"
@@ -33,8 +52,8 @@ export default function BudgetDetailModal({
         <div className="flex items-center gap-3">
           <div className="flex-1 h-2 bg-bg-tertiary dark:bg-[#111111] rounded-full overflow-hidden">
             <div
-              className={`h-full rounded-full ${barColor}`}
-              style={{ width: `${Math.min(pct, 100)}%` }}
+              className={`h-full rounded-full ${barClass || ''}`}
+              style={{ width: `${Math.min(pct, 100)}%`, ...(!barClass ? barStyle : {}) }}
             />
           </div>
           <span

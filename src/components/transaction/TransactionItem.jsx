@@ -20,7 +20,15 @@ export default function TransactionItem({ transaction: tx, onClick, onVerify }) 
           </p>
         )}
         <div className="flex flex-wrap gap-1.5 mt-1.5">
-          {tx.categories?.name && <Badge>{tx.categories.name}</Badge>}
+          {tx.categories?.name && (
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[11px] font-medium tracking-[0.02em] bg-bg-secondary dark:bg-[#111111] text-text-muted dark:text-[#888888]">
+              <span
+                className="w-2 h-2 rounded-full flex-shrink-0"
+                style={{ backgroundColor: tx.categories.color || '#6366f1' }}
+              />
+              {tx.categories.name}
+            </span>
+          )}
           {tx.is_auto && <Badge>Auto</Badge>}
           {!tx.is_verified && (
             <button

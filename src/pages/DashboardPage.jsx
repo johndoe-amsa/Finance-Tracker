@@ -6,6 +6,7 @@ import {
   useVerifyTransaction,
   useUpdateTransaction,
   useDeleteTransaction,
+  useMonthlyTrend,
 } from '../hooks/useTransactions'
 import { useCategories } from '../hooks/useCategories'
 import {
@@ -23,11 +24,14 @@ import TransactionList from '../components/transaction/TransactionList'
 import TransactionForm from '../components/transaction/TransactionForm'
 import BudgetBar from '../components/budget/BudgetBar'
 import BudgetDetailModal from '../components/budget/BudgetDetailModal'
+import SpendingBarChart from '../components/charts/SpendingBarChart'
+import CategoryPieChart from '../components/charts/CategoryPieChart'
 
 export default function DashboardPage() {
   const { currentYear, currentMonth, setMonth } = useAppStore()
   const { data: transactions, isLoading } = useTransactions(currentYear, currentMonth)
   const { data: categories = [] } = useCategories()
+  const { data: monthlyTrend = [] } = useMonthlyTrend(6)
   const verifyMutation = useVerifyTransaction()
   const updateMutation = useUpdateTransaction()
   const deleteMutation = useDeleteTransaction()
@@ -159,6 +163,32 @@ export default function DashboardPage() {
         )}
       </div>
 
+      {/* Analytics */}
+      <div className="px-4 mb-6">
+        <h3 className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#888888] mb-3">
+          Analytiques
+        </h3>
+        <div className="space-y-4">
+          <Card>
+            <p className="text-[13px] font-medium text-text dark:text-[#EDEDED] mb-3">
+              Tendance 6 mois
+            </p>
+            <SpendingBarChart data={monthlyTrend} />
+          </Card>
+          {Object.keys(expensesByCategory).length > 0 && (
+            <Card>
+              <p className="text-[13px] font-medium text-text dark:text-[#EDEDED] mb-3">
+                Dépenses par catégorie
+              </p>
+              <CategoryPieChart
+                expensesByCategory={expensesByCategory}
+                categories={categories}
+              />
+            </Card>
+          )}
+        </div>
+      </div>
+
       {/* Budgets */}
       {budgetCategories.length > 0 && (
         <div className="px-4 mb-6">
@@ -172,6 +202,7 @@ export default function DashboardPage() {
                 name={cat.name}
                 spent={cat.spent}
                 limit={parseFloat(cat.budget_limit)}
+                color={cat.color}
                 onClick={() => setBudgetDetail(cat)}
               />
             ))}

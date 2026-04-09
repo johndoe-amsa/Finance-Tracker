@@ -15,6 +15,12 @@
   --backdrop-bg: rgba(0, 0, 0, 0.85);
 }
 
+/* Prevent iOS auto-zoom on input focus (requires font-size >= 16px) */
+input, select, textarea {
+  font-size: 16px !important;
+  touch-action: manipulation;
+}
+
 *:focus         { outline: none; }
 *:focus-visible {
   outline:        2px solid #000000;

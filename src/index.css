@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --backdrop:    blur(12px) saturate(1.8);
+  --backdrop-bg: rgba(255, 255, 255, 0.85);
+}
+
+.dark {
+  --backdrop-bg: rgba(0, 0, 0, 0.85);
+}
+
+*:focus         { outline: none; }
+*:focus-visible {
+  outline:        2px solid #000000;
+  outline-offset: 2px;
+  border-radius:  6px;
+}
+.dark *:focus-visible { outline-color: #FFFFFF; }
+
+@keyframes pulse-skeleton {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+@keyframes enter {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes modal-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0)   scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration:  0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

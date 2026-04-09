@@ -1,0 +1,57 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ['./index.html', './src/**/*.{js,jsx}'],
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        bg:              '#FFFFFF',
+        'bg-secondary':  '#FAFAFA',
+        'bg-tertiary':   '#F2F2F2',
+        text:            '#111111',
+        'text-muted':    '#666666',
+        'text-subtle':   '#999999',
+        border:          '#EAEAEA',
+        'border-strong': '#000000',
+        'border-focus':  '#000000',
+        accent:          '#000000',
+        'accent-text':   '#FFFFFF',
+        success:         '#16A34A',
+        error:           '#EE0000',
+        warning:         '#F5A623',
+      },
+      fontFamily: {
+        sans: ['Geist', 'system-ui', '-apple-system', 'sans-serif'],
+        mono: ['Geist Mono', 'Menlo', 'monospace'],
+      },
+      fontSize: {
+        h1:    ['42px', { fontWeight: '700', lineHeight: '1.1',  letterSpacing: '-0.04em' }],
+        h2:    ['28px', { fontWeight: '600', lineHeight: '1.2',  letterSpacing: '-0.03em' }],
+        h3:    ['20px', { fontWeight: '600', lineHeight: '1.3',  letterSpacing: '-0.02em' }],
+        body:  ['16px', { lineHeight: '1.5' }],
+        small: ['14px', { lineHeight: '1.5' }],
+        label: ['12px', { fontWeight: '500', lineHeight: '1',    letterSpacing: '0.05em'  }],
+        code:  ['13px', { lineHeight: '1.6' }],
+      },
+      borderRadius: {
+        sm:   '6px',
+        md:   '8px',
+        lg:   '12px',
+        full: '9999px',
+      },
+      boxShadow: {
+        0: 'none',
+        1: '0 4px 12px rgba(0,0,0,0.05)',
+        2: '0 8px 32px rgba(0,0,0,0.08)',
+      },
+      zIndex: {
+        dropdown: '100',
+        sticky:   '150',
+        modal:    '200',
+        toast:    '300',
+        tooltip:  '400',
+      },
+    },
+  },
+  plugins: [],
+}

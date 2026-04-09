@@ -34,7 +34,7 @@ function AppShell() {
 
   return (
     <div className="min-h-screen bg-bg dark:bg-[#000000] font-sans text-text dark:text-[#EDEDED]">
-      <main className="pb-16">
+      <main style={{ paddingBottom: 'calc(4rem + env(safe-area-inset-bottom))' }}>
         <Routes>
           <Route path="/" element={<DashboardPage />} />
           <Route path="/verify" element={<VerifyPage />} />

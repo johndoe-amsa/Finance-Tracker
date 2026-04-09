@@ -14,9 +14,10 @@ export default function BottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-sticky h-16 flex items-center justify-around border-t border-border dark:border-[#333333] font-sans"
+      className="fixed bottom-0 left-0 right-0 z-sticky border-t border-border dark:border-[#333333] font-sans"
       style={{ background: 'var(--backdrop-bg)', backdropFilter: 'var(--backdrop)' }}
     >
+      <div className="h-16 flex items-center justify-around">
       {NAV_ITEMS.map((item) => (
         <NavLink
           key={item.to}
@@ -41,6 +42,8 @@ export default function BottomNav() {
           <span className="text-[11px] font-medium">{item.label}</span>
         </NavLink>
       ))}
+      </div>
+      <div style={{ height: 'env(safe-area-inset-bottom)' }} />
     </nav>
   )
 }

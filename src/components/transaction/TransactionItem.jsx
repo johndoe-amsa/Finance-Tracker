@@ -1,13 +1,23 @@
+import { memo, useCallback } from 'react'
 import Badge from '../ui/Badge'
 import { formatAmount } from '../../lib/utils'
 
-export default function TransactionItem({ transaction: tx, onClick, onVerify }) {
+function TransactionItem({ transaction: tx, onClick, onVerify }) {
   const displayTitle = tx.title || tx.description || '\u2014'
   const showDescription = tx.title && tx.description
 
+  const handleClick = useCallback(() => onClick(tx), [onClick, tx])
+  const handleVerify = useCallback(
+    (e) => {
+      e.stopPropagation()
+      onVerify(tx.id)
+    },
+    [onVerify, tx.id],
+  )
+
   return (
     <div
-      onClick={onClick}
+      onClick={handleClick}
       className="flex items-center justify-between p-3 rounded-lg hover:bg-bg-secondary dark:hover:bg-[#0A0A0A] cursor-pointer transition-colors duration-150"
     >
       <div className="flex-1 min-w-0 mr-3">
@@ -32,10 +42,7 @@ export default function TransactionItem({ transaction: tx, onClick, onVerify }) 
           {tx.is_auto && <Badge>Auto</Badge>}
           {!tx.is_verified && (
             <button
-              onClick={(e) => {
-                e.stopPropagation()
-                onVerify()
-              }}
+              onClick={handleVerify}
               className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[11px] font-medium tracking-[0.02em] bg-[rgba(245,166,35,0.1)] text-warning hover:bg-[rgba(245,166,35,0.2)] transition-colors duration-150 cursor-pointer"
             >
               A verifier
@@ -54,3 +61,5 @@ export default function TransactionItem({ transaction: tx, onClick, onVerify }) 
     </div>
   )
 }
+
+export default memo(TransactionItem)

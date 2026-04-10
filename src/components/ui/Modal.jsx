@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { X } from 'lucide-react'
 
 // Must be >= the longest close animation duration in index.css (.modal-content[data-state="closed"]).
-const CLOSE_DURATION = 260
+const CLOSE_DURATION = 170
 
 export default function Modal({ open, onClose, title, children }) {
   const [render, setRender] = useState(open)

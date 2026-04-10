@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import Modal from '../ui/Modal'
 import Badge from '../ui/Badge'
 import { formatAmount, formatDate } from '../../lib/utils'
@@ -10,12 +11,20 @@ export default function BudgetDetailModal({
   transactions,
   onTransactionClick,
 }) {
-  if (!category) return null
+  // Keep the last non-null payload so the Modal can play its exit
+  // animation after the parent clears the selection. Without this the
+  // content would flash to empty values during the close animation.
+  const cachedRef = useRef({ category, spent, transactions })
+  if (category) cachedRef.current = { category, spent, transactions }
+  const { category: cat, spent: cachedSpent, transactions: cachedTransactions } =
+    cachedRef.current
 
-  const limit = parseFloat(category.budget_limit || 0)
-  const pct = limit > 0 ? (spent / limit) * 100 : 0
-  const remaining = limit - spent
-  const catColor = category.color || '#6366f1'
+  if (!cat) return null
+
+  const limit = parseFloat(cat.budget_limit || 0)
+  const pct = limit > 0 ? (cachedSpent / limit) * 100 : 0
+  const remaining = limit - cachedSpent
+  const catColor = cat.color || '#6366f1'
 
   let barClass = null
   let barStyle = null
@@ -37,7 +46,7 @@ export default function BudgetDetailModal({
             className="w-3 h-3 rounded-full flex-shrink-0"
             style={{ backgroundColor: catColor }}
           />
-          {category.name}
+          {cat.name}
         </span>
       }
     >
@@ -46,7 +55,7 @@ export default function BudgetDetailModal({
           className="text-small text-text-muted dark:text-[#888888]"
           style={{ fontVariantNumeric: 'tabular-nums' }}
         >
-          {formatAmount(spent)} / {formatAmount(limit)}
+          {formatAmount(cachedSpent)} / {formatAmount(limit)}
         </p>
 
         <div className="flex items-center gap-3">
@@ -74,12 +83,12 @@ export default function BudgetDetailModal({
         </p>
 
         <p className="text-[13px] text-text-muted dark:text-[#888888]">
-          {transactions.length} depense{transactions.length > 1 ? 's' : ''} ce mois
+          {cachedTransactions.length} depense{cachedTransactions.length > 1 ? 's' : ''} ce mois
         </p>
 
-        {transactions.length > 0 && (
+        {cachedTransactions.length > 0 && (
           <div className="border-t border-border dark:border-[#333333] pt-3 space-y-1">
-            {transactions.map((tx) => (
+            {cachedTransactions.map((tx) => (
               <div
                 key={tx.id}
                 onClick={() => onTransactionClick(tx)}

@@ -5,8 +5,15 @@
 @tailwind utilities;
 
 :root {
-  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out:      cubic-bezier(0.16, 1, 0.3, 1);   /* smooth ease-out-expo  (enter) */
+  --ease-in:       cubic-bezier(0.7, 0, 0.84, 0);   /* smooth ease-in-expo   (exit)  */
+  --ease-in-out:   cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+
+  --dur-fast:   160ms;
+  --dur-medium: 240ms;
+  --dur-slow:   320ms;
+
   --backdrop:    blur(12px) saturate(1.8);
   --backdrop-bg: rgba(255, 255, 255, 0.85);
 }
@@ -29,10 +36,16 @@ input, select, textarea {
 }
 .dark *:focus-visible { outline-color: #FFFFFF; }
 
+/* ------------------------------------------------------------------ */
+/*  Keyframes                                                          */
+/* ------------------------------------------------------------------ */
+
 @keyframes pulse-skeleton {
   0%, 100% { opacity: 1; }
   50%       { opacity: 0.4; }
 }
+
+/* Generic small enter/exit (used by dropdowns, inline transitions) */
 @keyframes enter {
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -41,18 +54,108 @@ input, select, textarea {
   from { opacity: 1; transform: translateY(0); }
   to   { opacity: 0; transform: translateY(4px); }
 }
-@keyframes modal-in {
-  from { opacity: 0; transform: translateY(8px) scale(0.98); }
-  to   { opacity: 1; transform: translateY(0)   scale(1); }
-}
-@keyframes modal-out {
-  from { opacity: 1; transform: translateY(0)   scale(1); }
-  to   { opacity: 0; transform: translateY(8px) scale(0.98); }
-}
+
 @keyframes dropdown-in {
   from { opacity: 0; transform: translateY(-4px) scale(0.98); }
   to   { opacity: 1; transform: translateY(0)    scale(1); }
 }
+
+/* Modal backdrop */
+@keyframes modal-backdrop-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes modal-backdrop-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+/* Modal content (desktop / tablet : center scale) */
+@keyframes modal-content-in {
+  from { opacity: 0; transform: translateY(14px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+@keyframes modal-content-out {
+  from { opacity: 1; transform: translateY(0)    scale(1); }
+  to   { opacity: 0; transform: translateY(10px) scale(0.98); }
+}
+
+/* Modal content (mobile : bottom-sheet slide) */
+@keyframes sheet-content-in {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes sheet-content-out {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(24px); }
+}
+
+/* Toast */
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(16px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+@keyframes toast-out {
+  from { opacity: 1; transform: translateY(0)   scale(1); }
+  to   { opacity: 0; transform: translateY(8px) scale(0.96); }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Modal component                                                    */
+/* ------------------------------------------------------------------ */
+
+.modal-backdrop {
+  will-change: opacity;
+}
+.modal-backdrop[data-state="open"] {
+  animation: modal-backdrop-in 240ms var(--ease-out) both;
+}
+.modal-backdrop[data-state="closed"] {
+  animation: modal-backdrop-out 220ms var(--ease-in) both;
+}
+
+.modal-content {
+  will-change: opacity, transform;
+  backface-visibility: hidden;
+  transform-origin: center center;
+}
+.modal-content[data-state="open"] {
+  animation: modal-content-in 280ms var(--ease-out) both;
+}
+.modal-content[data-state="closed"] {
+  animation: modal-content-out 220ms var(--ease-in) both;
+}
+
+@media (max-width: 639px) {
+  .modal-content {
+    transform-origin: center bottom;
+  }
+  .modal-content[data-state="open"] {
+    animation: sheet-content-in 320ms var(--ease-out) both;
+  }
+  .modal-content[data-state="closed"] {
+    animation: sheet-content-out 240ms var(--ease-in) both;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Toast component                                                    */
+/* ------------------------------------------------------------------ */
+
+.toast-item {
+  will-change: opacity, transform;
+  backface-visibility: hidden;
+}
+.toast-item[data-state="open"] {
+  animation: toast-in 260ms var(--ease-out) both;
+}
+.toast-item[data-state="closed"] {
+  animation: toast-out 220ms var(--ease-in) both;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Reduced motion                                                     */
+/* ------------------------------------------------------------------ */
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

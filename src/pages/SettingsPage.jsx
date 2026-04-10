@@ -25,7 +25,11 @@ export default function SettingsPage() {
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [confirmLogout, setConfirmLogout] = useState(false)
   const [txCount, setTxCount] = useState(0)
-  const [dark, setDark] = useState(false)
+  const [dark, setDark] = useState(() => {
+    const saved = localStorage.getItem('theme')
+    if (saved) return saved === 'dark'
+    return window.matchMedia('(prefers-color-scheme: dark)').matches
+  })
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -33,6 +37,7 @@ export default function SettingsPage() {
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', dark)
+    localStorage.setItem('theme', dark ? 'dark' : 'light')
   }, [dark])
 
   useEffect(() => {

@@ -31,7 +31,7 @@ export default function Modal({ open, onClose, title, children }) {
           <button
             ref={firstFocusRef}
             onClick={onClose}
-            className="text-text-muted hover:text-text transition-colors duration-150 rounded-md p-1"
+            className="text-text-muted hover:text-text dark:text-[#888888] dark:hover:text-[#EDEDED] transition-colors duration-150 rounded-md p-1"
             aria-label="Fermer"
           >
             <X size={20} strokeWidth={1.5} />

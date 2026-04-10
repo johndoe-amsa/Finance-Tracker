@@ -6,7 +6,7 @@ export default function Badge({ variant = 'neutral', children }) {
     warning: 'bg-[rgba(245,166,35,0.1)] text-warning',
   }
   return (
-    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[11px] font-medium tracking-[0.02em] ${variants[variant]}`}>
+    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-label font-medium tracking-[0.02em] ${variants[variant]}`}>
       {children}
     </span>
   )

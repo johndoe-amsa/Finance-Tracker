@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { HashRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { db } from './lib/supabase'
 import { generateMissingSubscriptionTransactions } from './lib/subscriptionGenerator'
@@ -81,11 +81,15 @@ function AuthGate() {
     }
   }, [session, initialized])
 
-  if (loading) {
+  if (loading || (!session && !initialized)) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-bg dark:bg-[#000000]">
-        <div className="w-16 h-16 bg-accent dark:bg-[#EDEDED] text-accent-text dark:text-[#000000] rounded-lg flex items-center justify-center text-[32px] font-bold tracking-[-0.03em]">
-          F
+      <div className="min-h-screen bg-bg dark:bg-dark-bg px-4 py-12">
+        <div className="max-w-sm mx-auto space-y-4">
+          <div className="bg-bg-secondary dark:bg-dark-bg-secondary border border-border dark:border-dark-border rounded-lg p-6">
+            <div className="h-3 w-24 bg-bg-tertiary dark:bg-dark-bg-tertiary rounded-md mb-4" style={{ animation: 'pulse-skeleton 1.8s ease-in-out infinite' }} />
+            <div className="h-8 w-32 bg-bg-tertiary dark:bg-dark-bg-tertiary rounded-md mb-2" style={{ animation: 'pulse-skeleton 1.8s ease-in-out infinite' }} />
+            <div className="h-3 w-20 bg-bg-tertiary dark:bg-dark-bg-tertiary rounded-md" style={{ animation: 'pulse-skeleton 1.8s ease-in-out infinite' }} />
+          </div>
         </div>
       </div>
     )
@@ -97,20 +101,22 @@ function AuthGate() {
 
   if (!initialized) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-bg dark:bg-[#000000]">
-        <div className="w-16 h-16 bg-accent dark:bg-[#EDEDED] text-accent-text dark:text-[#000000] rounded-lg flex items-center justify-center text-[32px] font-bold tracking-[-0.03em]"
-          style={{ animation: 'pulse-skeleton 1.8s ease-in-out infinite' }}
-        >
-          F
+      <div className="min-h-screen bg-bg dark:bg-dark-bg px-4 py-12">
+        <div className="max-w-sm mx-auto space-y-4">
+          <div className="bg-bg-secondary dark:bg-dark-bg-secondary border border-border dark:border-dark-border rounded-lg p-6">
+            <div className="h-3 w-24 bg-bg-tertiary dark:bg-dark-bg-tertiary rounded-md mb-4" style={{ animation: 'pulse-skeleton 1.8s ease-in-out infinite' }} />
+            <div className="h-8 w-32 bg-bg-tertiary dark:bg-dark-bg-tertiary rounded-md mb-2" style={{ animation: 'pulse-skeleton 1.8s ease-in-out infinite' }} />
+            <div className="h-3 w-20 bg-bg-tertiary dark:bg-dark-bg-tertiary rounded-md" style={{ animation: 'pulse-skeleton 1.8s ease-in-out infinite' }} />
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <HashRouter>
+    <BrowserRouter>
       <AppShell />
-    </HashRouter>
+    </BrowserRouter>
   )
 }
 

@@ -34,12 +34,12 @@ export default function BottomNav() {
           <div className="relative">
             <item.icon size={20} strokeWidth={1.5} />
             {item.to === '/verify' && unverifiedCount > 0 && (
-              <span className="absolute -top-1.5 -right-2.5 min-w-[16px] h-4 flex items-center justify-center bg-error text-white text-[10px] font-bold rounded-full px-1">
+              <span className="absolute -top-1.5 -right-2.5 min-w-[16px] h-4 flex items-center justify-center bg-error text-white text-label font-bold rounded-full px-1">
                 {unverifiedCount}
               </span>
             )}
           </div>
-          <span className="text-[11px] font-medium">{item.label}</span>
+          <span className="text-label font-medium">{item.label}</span>
         </NavLink>
       ))}
       </div>

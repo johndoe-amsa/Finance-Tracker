@@ -1,15 +1,16 @@
 import { useEffect } from 'react'
-import { X, CheckCircle, AlertCircle, Info } from 'lucide-react'
+import { X, Info, CheckCircle, AlertCircle, AlertTriangle } from 'lucide-react'
 
 const ICONS = {
   neutral: <Info size={16} strokeWidth={1.5} className="text-text-muted" />,
   success: <CheckCircle size={16} strokeWidth={1.5} className="text-success" />,
   error:   <AlertCircle size={16} strokeWidth={1.5} className="text-error" />,
+  warning: <AlertTriangle size={16} strokeWidth={1.5} className="text-warning" />,
 }
 
 export default function Toast({ message, type = 'neutral', onDismiss }) {
   useEffect(() => {
-    const t = setTimeout(onDismiss, 3000)
+    const t = setTimeout(onDismiss, 4000)
     return () => clearTimeout(t)
   }, [onDismiss])
 

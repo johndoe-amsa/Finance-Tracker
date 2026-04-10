@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import Button from '../ui/Button'
 import Field from '../ui/Field'
+import { DATA_COLORS } from '../../data'
 
 const PALETTE = [
-  '#6366f1', '#8b5cf6', '#ec4899', '#ef4444',
-  '#f97316', '#eab308', '#22c55e', '#14b8a6',
-  '#06b6d4', '#3b82f6', '#64748b', '#a16207',
+  DATA_COLORS[1], DATA_COLORS[2], DATA_COLORS[3], DATA_COLORS[4],
+  DATA_COLORS[5], DATA_COLORS[6], DATA_COLORS[7],
 ]
 
 export default function CategoryForm({
@@ -18,7 +18,7 @@ export default function CategoryForm({
 }) {
   const [name, setName] = useState(category?.name || '')
   const [budgetLimit, setBudgetLimit] = useState(category?.budget_limit?.toString() || '')
-  const [color, setColor] = useState(category?.color || '#6366f1')
+  const [color, setColor] = useState(category?.color || DATA_COLORS[1])
 
   const isEdit = !!category
 

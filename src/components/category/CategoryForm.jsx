@@ -2,6 +2,12 @@ import { useState } from 'react'
 import Button from '../ui/Button'
 import Field from '../ui/Field'
 
+const PALETTE = [
+  '#6366f1', '#8b5cf6', '#ec4899', '#ef4444',
+  '#f97316', '#eab308', '#22c55e', '#14b8a6',
+  '#06b6d4', '#3b82f6', '#64748b', '#a16207',
+]
+
 export default function CategoryForm({
   category,
   type,
@@ -12,12 +18,13 @@ export default function CategoryForm({
 }) {
   const [name, setName] = useState(category?.name || '')
   const [budgetLimit, setBudgetLimit] = useState(category?.budget_limit?.toString() || '')
+  const [color, setColor] = useState(category?.color || '#6366f1')
 
   const isEdit = !!category
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    const data = { name, type }
+    const data = { name, type, color }
     if (type === 'expense') {
       data.budget_limit = budgetLimit ? parseFloat(budgetLimit) : null
     }
@@ -34,6 +41,26 @@ export default function CategoryForm({
         onChange={(e) => setName(e.target.value)}
         inCard
       />
+
+      <div>
+        <p className="text-[13px] font-medium text-text-muted dark:text-[#888888] mb-2">Couleur</p>
+        <div className="flex flex-wrap gap-2">
+          {PALETTE.map((c) => (
+            <button
+              key={c}
+              type="button"
+              onClick={() => setColor(c)}
+              className="w-7 h-7 rounded-full transition-transform duration-100 cursor-pointer"
+              style={{
+                backgroundColor: c,
+                transform: color === c ? 'scale(1.25)' : 'scale(1)',
+                outline: color === c ? `2px solid ${c}` : 'none',
+                outlineOffset: '2px',
+              }}
+            />
+          ))}
+        </div>
+      </div>
 
       {type === 'expense' && (
         <Field

@@ -13,7 +13,7 @@ export function useTransactions(year, month) {
     queryFn: async () => {
       const { data, error } = await db
         .from('transactions')
-        .select('*, categories(name)')
+        .select('*, categories(name, color)')
         .gte('date', startDate)
         .lte('date', endDate)
         .order('date', { ascending: false })
@@ -29,7 +29,7 @@ export function useUnverifiedTransactions() {
     queryFn: async () => {
       const { data, error } = await db
         .from('transactions')
-        .select('*, categories(name)')
+        .select('*, categories(name, color)')
         .eq('is_verified', false)
         .order('date', { ascending: false })
       if (error) throw error
@@ -122,5 +122,49 @@ export function useVerifyTransaction() {
       show('Transaction vérifiée', 'success')
     },
     onError: (err) => show(`Erreur : ${err.message}`, 'error'),
+  })
+}
+
+export function useMonthlyTrend(count = 6) {
+  return useQuery({
+    queryKey: ['monthlyTrend', count],
+    queryFn: async () => {
+      const today = new Date()
+      const months = []
+      for (let i = count - 1; i >= 0; i--) {
+        const d = new Date(today.getFullYear(), today.getMonth() - i, 1)
+        months.push({ year: d.getFullYear(), month: d.getMonth() + 1 })
+      }
+      const startDate = `${months[0].year}-${String(months[0].month).padStart(2, '0')}-01`
+      const lastM = months[months.length - 1]
+      const lastDay = new Date(lastM.year, lastM.month, 0).getDate()
+      const endDate = `${lastM.year}-${String(lastM.month).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`
+
+      const { data, error } = await db
+        .from('transactions')
+        .select('date, type, amount')
+        .gte('date', startDate)
+        .lte('date', endDate)
+      if (error) throw error
+
+      const map = {}
+      for (const { year, month } of months) {
+        const key = `${year}-${month}`
+        map[key] = { income: 0, expense: 0 }
+      }
+      for (const tx of data) {
+        const d = new Date(tx.date)
+        const key = `${d.getFullYear()}-${d.getMonth() + 1}`
+        if (map[key]) map[key][tx.type] += parseFloat(tx.amount)
+      }
+
+      return months.map(({ year, month }) => {
+        const key = `${year}-${month}`
+        const label = new Date(year, month - 1, 1)
+          .toLocaleDateString('fr-FR', { month: 'short' })
+          .replace('.', '')
+        return { label, ...map[key] }
+      })
+    },
   })
 }

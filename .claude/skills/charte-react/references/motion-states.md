@@ -7,14 +7,17 @@
 4. [États d'Erreur](#états-derreur)
 5. [États Désactivés](#états-désactivés)
 6. [Toast / Notifications](#toast--notifications)
+7. [Modal — Animation d'entrée/sortie](#modal--animation-dentréesortie)
+8. [Dropdown — Animation d'entrée](#dropdown--animation-dentrée)
+9. [Transitions de route](#transitions-de-route-react-router)
 
-Les animations `pulse-skeleton`, `enter`, et `modal-in` sont définies dans `src/index.css`.
+Les keyframes `pulse-skeleton`, `enter`, `exit`, `modal-in`, `modal-out`, `dropdown-in` sont définis dans `src/index.css`.
 
 ---
 
 ## Règles Motion
 
-- Jamais d'animation > 400ms.
+- Jamais d'animation UI > 300ms. Exception : `pulse-skeleton` (loop infinie, hors de ce seuil).
 - Jamais `ease-in` sur les entrées.
 - Animer uniquement `transform` et `opacity`. Exceptions : width du search field au focus.
 - `prefers-reduced-motion` géré globalement dans `index.css`.
@@ -23,6 +26,21 @@ Durées Tailwind :
 - Hover / micro-interaction : `duration-150`
 - Transition d'état : `duration-200`
 - Entrée de composant : `duration-300`
+
+Keyframes disponibles (définis dans `src/index.css`) :
+
+| Keyframe | Usage |
+|---|---|
+| `enter` | Entrée générique (fade-in + slide up 6px) |
+| `exit` | Sortie générique (fade-out + slide down 4px) |
+| `modal-in` | Entrée de modale (fade-in + slide up 8px + scale 0.98→1) |
+| `modal-out` | Sortie de modale (inverse de modal-in) |
+| `dropdown-in` | Entrée de dropdown (fade-in + slide down 4px + scale 0.98→1) |
+| `pulse-skeleton` | Pulsation des skeleton loaders (1.8s loop) |
+
+Easing custom (CSS vars) :
+- `var(--ease-out)` → `cubic-bezier(0.16, 1, 0.3, 1)` — spring-like, pour les entrées
+- `var(--ease-in-out)` → `cubic-bezier(0.4, 0, 0.2, 1)` — standard, pour les transitions d'état
 
 ---
 
@@ -214,7 +232,7 @@ export default function Toast({ message, type = 'neutral', onDismiss }) {
 
   return (
     <div
-      className="fixed bottom-6 right-6 z-toast flex items-center gap-3 bg-bg dark:bg-[#0A0A0A] border border-border dark:border-[#333333] rounded-lg shadow-2 px-4 py-3 text-small font-sans min-w-[280px] max-w-xs"
+      className="flex items-center gap-3 bg-bg dark:bg-[#0A0A0A] border border-border dark:border-[#333333] rounded-lg shadow-2 px-4 py-3 text-small font-sans min-w-[280px] max-w-xs"
       style={{ animation: 'enter 300ms var(--ease-out)' }}
       role="alert"
     >
@@ -234,15 +252,37 @@ export default function Toast({ message, type = 'neutral', onDismiss }) {
 
 ```jsx
 // src/hooks/useToast.jsx
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import Toast from '../components/ui/Toast'
 
+let _id = 0
+
 export function useToast() {
-  const [toast, setToast] = useState(null)
-  const show = (message, type = 'neutral') => setToast({ message, type })
-  const dismiss = () => setToast(null)
-  const ToastComponent = toast ? <Toast {...toast} onDismiss={dismiss} /> : null
-  return { show, ToastComponent }
+  const [toasts, setToasts] = useState([])
+
+  const show = useCallback((message, type = 'neutral') => {
+    const id = ++_id
+    setToasts((prev) => [...prev, { id, message, type }])
+  }, [])
+
+  const dismiss = useCallback((id) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id))
+  }, [])
+
+  const ToastContainer = (
+    <div className="fixed bottom-6 right-6 z-toast flex flex-col gap-2 items-end">
+      {toasts.map((t) => (
+        <Toast
+          key={t.id}
+          message={t.message}
+          type={t.type}
+          onDismiss={() => dismiss(t.id)}
+        />
+      ))}
+    </div>
+  )
+
+  return { show, ToastContainer }
 }
 ```
 
@@ -251,11 +291,11 @@ export function useToast() {
 import { useToast } from '../hooks/useToast.jsx'
 
 function MyPage() {
-  const { show, ToastComponent } = useToast()
+  const { show, ToastContainer } = useToast()
 
   return (
     <div>
-      {ToastComponent}
+      <ToastContainer />
       <Button onClick={() => show('Sauvegardé avec succès.', 'success')}>
         Sauvegarder
       </Button>
@@ -263,3 +303,122 @@ function MyPage() {
   )
 }
 ```
+
+---
+
+## Modal — Animation d'entrée/sortie
+
+Pattern complet avec `modal-in` / `modal-out` et gestion de l'état de fermeture animée :
+
+```jsx
+// src/components/ui/Modal.jsx
+import { useEffect, useState } from 'react'
+
+export default function Modal({ isOpen, onClose, children, title }) {
+  const [visible, setVisible]   = useState(false)
+  const [animOut, setAnimOut]   = useState(false)
+
+  useEffect(() => {
+    if (isOpen) { setAnimOut(false); setVisible(true) }
+  }, [isOpen])
+
+  function handleClose() {
+    setAnimOut(true)
+    setTimeout(() => { setVisible(false); onClose() }, 200)
+  }
+
+  // Fermeture Escape
+  useEffect(() => {
+    if (!visible) return
+    const handler = (e) => { if (e.key === 'Escape') handleClose() }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [visible])
+
+  if (!visible) return null
+
+  return (
+    <div
+      className="fixed inset-0 z-modal flex items-center justify-center p-4"
+      style={{
+        backdropFilter: 'var(--backdrop)',
+        backgroundColor: 'var(--backdrop-bg)',
+        animation: animOut
+          ? 'exit 200ms var(--ease-in-out) forwards'
+          : 'enter 200ms var(--ease-out)',
+      }}
+      onClick={handleClose}
+    >
+      <div
+        className="bg-bg dark:bg-[#0A0A0A] border border-border dark:border-[#333333] rounded-lg shadow-2 w-full max-w-md"
+        style={{
+          animation: animOut
+            ? 'modal-out 200ms var(--ease-in-out) forwards'
+            : 'modal-in 300ms var(--ease-out)',
+        }}
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+      >
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border dark:border-[#333333]">
+          <h2 id="modal-title" className="text-h3 font-sans text-text dark:text-[#EDEDED]">{title}</h2>
+          <button
+            onClick={handleClose}
+            className="text-text-muted hover:text-text dark:text-[#888888] dark:hover:text-[#EDEDED] transition-colors duration-150"
+            aria-label="Fermer"
+          >
+            <X size={16} strokeWidth={1.5} />
+          </button>
+        </div>
+        <div className="px-6 py-4">{children}</div>
+      </div>
+    </div>
+  )
+}
+```
+
+> **Règle :** Le backdrop utilise `--backdrop-bg` pour le fond semi-transparent et `--backdrop` pour le blur. Ne jamais utiliser de couleur fixe.
+> Pour `components.md` → voir le composant Modal complet avec focus-trap.
+
+---
+
+## Dropdown — Animation d'entrée
+
+```jsx
+// Wrapper à appliquer sur le panneau du dropdown
+<div
+  style={{ animation: 'dropdown-in 150ms var(--ease-out)' }}
+  className="absolute top-full mt-1 z-dropdown bg-bg dark:bg-[#0A0A0A] border border-border dark:border-[#333333] rounded-md shadow-1 py-1 min-w-[160px]"
+>
+  {/* items */}
+</div>
+```
+
+Règle : `dropdown-in` uniquement sur l'entrée. Pas d'animation de sortie sur les dropdowns (retrait immédiat via `display:none` ou unmount conditionnel).
+
+---
+
+## Transitions de route (React Router)
+
+Sans librairie externe. Basé sur `key` prop + keyframe `enter` :
+
+```jsx
+// src/App.jsx
+import { useLocation, Routes, Route } from 'react-router-dom'
+
+export default function App() {
+  const location = useLocation()
+
+  return (
+    <div key={location.pathname} style={{ animation: 'enter 200ms var(--ease-out)' }}>
+      <Routes location={location}>
+        <Route path="/"         element={<Dashboard />} />
+        <Route path="/settings" element={<Settings />} />
+      </Routes>
+    </div>
+  )
+}
+```
+
+> **Règle :** La durée est volontairement courte (200ms) pour ne pas ralentir la navigation. Ne pas animer les transitions de route vers des pages de données lourdes — le skeleton loader suffit.

@@ -8,26 +8,34 @@ const ICONS = {
   warning: <AlertTriangle size={16} strokeWidth={1.5} className="text-warning" />,
 }
 
+const SHOW_DURATION = 3000
+// Must be >= the exit animation duration in index.css (.toast-item[data-state="closed"]).
+const EXIT_DURATION = 240
+
 export default function Toast({ message, type = 'neutral', onDismiss }) {
-  const [dismissing, setDismissing] = useState(false)
-  const dismissingRef = useRef(false)
+  const [open, setOpen] = useState(true)
+  const exitTimerRef = useRef(null)
+  const showTimerRef = useRef(null)
 
   const handleDismiss = () => {
-    if (dismissingRef.current) return
-    dismissingRef.current = true
-    setDismissing(true)
-    setTimeout(onDismiss, 280)
+    if (exitTimerRef.current) return
+    setOpen(false)
+    exitTimerRef.current = setTimeout(onDismiss, EXIT_DURATION)
   }
 
   useEffect(() => {
-    const t = setTimeout(handleDismiss, 3000)
-    return () => clearTimeout(t)
+    showTimerRef.current = setTimeout(handleDismiss, SHOW_DURATION)
+    return () => {
+      clearTimeout(showTimerRef.current)
+      clearTimeout(exitTimerRef.current)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
     <div
-      className="flex items-center gap-3 bg-bg dark:bg-[#0A0A0A] border border-border dark:border-[#333333] rounded-lg shadow-2 px-4 py-3 text-small font-sans min-w-[280px] max-w-xs"
-      style={{ animation: dismissing ? 'exit 300ms var(--ease-out) forwards' : 'enter 300ms var(--ease-out)' }}
+      data-state={open ? 'open' : 'closed'}
+      className="toast-item flex items-center gap-3 bg-bg dark:bg-[#0A0A0A] border border-border dark:border-[#333333] rounded-lg shadow-2 px-4 py-3 text-small font-sans min-w-[280px] max-w-xs"
       role="alert"
     >
       <span className="shrink-0">{ICONS[type] || ICONS.neutral}</span>

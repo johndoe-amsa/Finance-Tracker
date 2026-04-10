@@ -1,21 +1,38 @@
 import { useEffect, useRef, useState } from 'react'
 import { X } from 'lucide-react'
 
+// Must be >= the longest close animation duration in index.css (.modal-content[data-state="closed"]).
+const CLOSE_DURATION = 260
+
 export default function Modal({ open, onClose, title, children }) {
-  const firstFocusRef = useRef(null)
-  const [visible, setVisible] = useState(open)
+  const [render, setRender] = useState(open)
   const [closing, setClosing] = useState(false)
+  const cachedChildren = useRef(children)
+  const cachedTitle = useRef(title)
+  const firstFocusRef = useRef(null)
+
+  // Cache children/title while the modal is open so they remain visible
+  // during the exit animation, even if the parent clears them (a common
+  // React pattern: `{editItem && <Form .../>}`).
+  if (open) {
+    cachedChildren.current = children
+    cachedTitle.current = title
+  }
 
   useEffect(() => {
     if (open) {
-      setVisible(true)
+      setRender(true)
       setClosing(false)
-    } else if (visible) {
-      setClosing(true)
-      const t = setTimeout(() => { setVisible(false); setClosing(false) }, 290)
-      return () => clearTimeout(t)
+      return
     }
-  }, [open])
+    if (!render) return
+    setClosing(true)
+    const t = setTimeout(() => {
+      setRender(false)
+      setClosing(false)
+    }, CLOSE_DURATION)
+    return () => clearTimeout(t)
+  }, [open, render])
 
   useEffect(() => {
     if (!open) return
@@ -25,23 +42,35 @@ export default function Modal({ open, onClose, title, children }) {
     return () => document.removeEventListener('keydown', handleKey)
   }, [open, onClose])
 
-  if (!visible) return null
+  // Lock body scroll while the modal is mounted.
+  useEffect(() => {
+    if (!render) return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = prev }
+  }, [render])
+
+  if (!render) return null
+
+  const state = closing ? 'closed' : 'open'
 
   return (
     <div
-      className="fixed inset-0 z-modal flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm"
-      style={{ opacity: closing ? 0 : 1, transition: 'opacity 300ms var(--ease-out)' }}
+      data-state={state}
+      className="modal-backdrop fixed inset-0 z-modal flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm"
       onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
     >
       <div
-        className="w-full max-w-lg bg-bg dark:bg-[#0A0A0A] border border-border dark:border-[#333333] rounded-t-lg sm:rounded-lg shadow-2 p-6 max-h-[85vh] overflow-y-auto"
-        style={{ animation: closing ? 'modal-out 300ms var(--ease-out) forwards' : 'modal-in 300ms var(--ease-out)' }}
+        data-state={state}
+        className="modal-content w-full max-w-lg bg-bg dark:bg-[#0A0A0A] border border-border dark:border-[#333333] rounded-t-lg sm:rounded-lg shadow-2 p-6 max-h-[85vh] overflow-y-auto"
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
       >
         <div className="flex items-center justify-between mb-6">
-          <h2 id="modal-title" className="text-h3 text-text dark:text-[#EDEDED]">{title}</h2>
+          <h2 id="modal-title" className="text-h3 text-text dark:text-[#EDEDED]">
+            {cachedTitle.current}
+          </h2>
           <button
             ref={firstFocusRef}
             onClick={onClose}
@@ -51,7 +80,7 @@ export default function Modal({ open, onClose, title, children }) {
             <X size={20} strokeWidth={1.5} />
           </button>
         </div>
-        {children}
+        {cachedChildren.current}
       </div>
     </div>
   )

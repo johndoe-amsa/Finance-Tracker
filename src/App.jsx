@@ -81,7 +81,7 @@ function AuthGate() {
     }
   }, [session, initialized])
 
-  if (loading || (!session && !initialized)) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-bg dark:bg-dark-bg px-4 py-12">
         <div className="max-w-sm mx-auto space-y-4">

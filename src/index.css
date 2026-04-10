@@ -25,6 +25,22 @@
 /* Prevent iOS auto-zoom on input focus (requires font-size >= 16px) */
 input, select, textarea {
   font-size: 16px !important;
+}
+
+/* Eliminate the ~300ms mobile tap delay on every interactive element.
+   Without this, browsers wait to detect a potential double-tap-to-zoom,
+   which makes clicks feel sluggish and "sometimes not registered".
+   The .cursor-pointer selector catches <div onClick> components
+   (TransactionItem, BudgetBar, etc.) since React onClick doesn't
+   set the [onclick] HTML attribute. */
+button,
+a,
+select,
+textarea,
+input,
+label,
+[role="button"],
+.cursor-pointer {
   touch-action: manipulation;
 }
 
@@ -108,10 +124,14 @@ input, select, textarea {
   will-change: opacity;
 }
 .modal-backdrop[data-state="open"] {
-  animation: modal-backdrop-in 240ms var(--ease-out) both;
+  animation: modal-backdrop-in 180ms var(--ease-out) both;
 }
 .modal-backdrop[data-state="closed"] {
-  animation: modal-backdrop-out 220ms var(--ease-in) both;
+  animation: modal-backdrop-out 140ms var(--ease-in) both;
+  /* While the modal is animating out, it must not intercept taps. This
+     prevents the "I clicked but nothing happened" feeling when tapping
+     immediately after closing a modal. */
+  pointer-events: none;
 }
 
 .modal-content {
@@ -120,10 +140,10 @@ input, select, textarea {
   transform-origin: center center;
 }
 .modal-content[data-state="open"] {
-  animation: modal-content-in 280ms var(--ease-out) both;
+  animation: modal-content-in 200ms var(--ease-out) both;
 }
 .modal-content[data-state="closed"] {
-  animation: modal-content-out 220ms var(--ease-in) both;
+  animation: modal-content-out 140ms var(--ease-in) both;
 }
 
 @media (max-width: 639px) {
@@ -131,10 +151,10 @@ input, select, textarea {
     transform-origin: center bottom;
   }
   .modal-content[data-state="open"] {
-    animation: sheet-content-in 320ms var(--ease-out) both;
+    animation: sheet-content-in 220ms var(--ease-out) both;
   }
   .modal-content[data-state="closed"] {
-    animation: sheet-content-out 240ms var(--ease-in) both;
+    animation: sheet-content-out 160ms var(--ease-in) both;
   }
 }
 

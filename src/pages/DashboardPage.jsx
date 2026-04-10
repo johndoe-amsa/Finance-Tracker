@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import { ChevronLeft, ChevronRight, Wallet } from 'lucide-react'
 import { useAppStore } from '../store/useAppStore'
 import {
@@ -54,22 +54,33 @@ export default function DashboardPage() {
     else setMonth(currentYear, currentMonth + 1)
   }
 
-  const totals = transactions
-    ? calculateMonthTotals(transactions)
-    : { totalIncome: 0, totalExpense: 0, balance: 0 }
+  const totals = useMemo(
+    () =>
+      transactions
+        ? calculateMonthTotals(transactions)
+        : { totalIncome: 0, totalExpense: 0, balance: 0 },
+    [transactions],
+  )
 
-  const expensesByCategory = transactions ? calculateExpensesByCategory(transactions) : {}
+  const expensesByCategory = useMemo(
+    () => (transactions ? calculateExpensesByCategory(transactions) : {}),
+    [transactions],
+  )
 
-  const budgetCategories = categories
-    .filter((c) => c.type === 'expense' && c.budget_limit > 0)
-    .map((c) => ({
-      ...c,
-      spent: expensesByCategory[c.id] || 0,
-      pct: c.budget_limit > 0
-        ? ((expensesByCategory[c.id] || 0) / parseFloat(c.budget_limit)) * 100
-        : 0,
-    }))
-    .sort((a, b) => b.pct - a.pct)
+  const budgetCategories = useMemo(
+    () =>
+      categories
+        .filter((c) => c.type === 'expense' && c.budget_limit > 0)
+        .map((c) => ({
+          ...c,
+          spent: expensesByCategory[c.id] || 0,
+          pct: c.budget_limit > 0
+            ? ((expensesByCategory[c.id] || 0) / parseFloat(c.budget_limit)) * 100
+            : 0,
+        }))
+        .sort((a, b) => b.pct - a.pct),
+    [categories, expensesByCategory],
+  )
 
   const handleEditSubmit = (data) => {
     updateMutation.mutate({ id: editTx.id, ...data }, { onSuccess: () => setEditTx(null) })
@@ -84,10 +95,23 @@ export default function DashboardPage() {
     })
   }
 
-  const budgetDetailTransactions =
-    budgetDetail && transactions
-      ? transactions.filter((t) => t.type === 'expense' && t.category_id === budgetDetail.id)
-      : []
+  const budgetDetailTransactions = useMemo(
+    () =>
+      budgetDetail && transactions
+        ? transactions.filter(
+            (t) => t.type === 'expense' && t.category_id === budgetDetail.id,
+          )
+        : [],
+    [budgetDetail, transactions],
+  )
+
+  // Stable handlers so TransactionList / TransactionItem can be memoized
+  // without breaking referential equality on every render.
+  const handleItemClick = useCallback((tx) => setEditTx(tx), [])
+  const handleVerify = useCallback(
+    (id) => verifyMutation.mutate(id),
+    [verifyMutation],
+  )
 
   return (
     <div className="pb-24">
@@ -236,8 +260,8 @@ export default function DashboardPage() {
         ) : (
           <TransactionList
             transactions={transactions}
-            onItemClick={setEditTx}
-            onVerify={(id) => verifyMutation.mutate(id)}
+            onItemClick={handleItemClick}
+            onVerify={handleVerify}
           />
         )}
       </div>
@@ -263,7 +287,7 @@ export default function DashboardPage() {
         transactions={budgetDetailTransactions}
         onTransactionClick={(tx) => {
           setBudgetDetail(null)
-          setTimeout(() => setEditTx(tx), 200)
+          setEditTx(tx)
         }}
       />
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { CheckSquare } from 'lucide-react'
 import {
   useUnverifiedTransactions,
@@ -41,6 +41,13 @@ export default function VerifyPage() {
     })
   }
 
+  // Stable handler so memoized TransactionItem children don't re-render
+  // on every parent render.
+  const handleVerify = useCallback(
+    (id) => verifyMutation.mutate(id),
+    [verifyMutation],
+  )
+
   return (
     <div className="pb-24">
       <div className="px-4 py-4">
@@ -73,7 +80,7 @@ export default function VerifyPage() {
           <TransactionList
             transactions={transactions}
             onItemClick={setEditTx}
-            onVerify={(id) => verifyMutation.mutate(id)}
+            onVerify={handleVerify}
           />
         )}
       </div>

@@ -1,18 +1,18 @@
 ---
-name: flo-design-system-react
+name: design-system-react-vercel
 description: >
-  Charte graphique personnalisée de Flo — applications React déployées sur GitHub Pages.
+  Charte graphique personnalisée de Flo — applications React déployées sur Vercel.
   DOIT être utilisé pour TOUTE création d'application React : dashboards, outils browser,
   applications multi-pages, interfaces de données, ou tout projet front-end complexe
   destiné à être utilisé en dehors de Claude. Déclencher dès qu'il est question de
-  React, application web, dashboard, GitHub Pages, projet front-end, ou interface complexe
+  React, application web, dashboard, Vercel, projet front-end, ou interface complexe
   — même sans mention explicite du design system.
 ---
 
-# Flo Design System — React + GitHub Pages
+# Flo Design System — React + Vercel
 
 Ce skill est conçu pour **Claude Code**. Il génère des applications React complètes,
-déployées automatiquement sur GitHub Pages via GitHub Actions.
+déployées automatiquement sur Vercel.
 
 L'utilisateur est débutant : générer un projet entièrement fonctionnel sans étape
 manuelle technique de sa part. Il crée le repo GitHub vide, Claude Code fait tout le reste.
@@ -49,7 +49,7 @@ Lire le fichier approprié **avant** de générer :
 |---|---|---|
 | Boutons, inputs, cartes, modales, badges, tableaux, navigation, tab bar, search | `references/components.md` | Dès qu'un composant UI est impliqué |
 | Graphiques, charts, KPI cards, data-viz (Recharts) | `references/data-viz.md` | Dès qu'il y a un graphique ou données |
-| Animations, skeleton loaders, états vides/erreur/disabled, toasts | `references/motion-states.md` | Dès qu'il y a du mouvement ou des états spéciaux |
+| Animations, skeleton loaders, états vides/erreur/disabled, toasts, modales, dropdowns, transitions de route | `references/motion-states.md` | Dès qu'il y a du mouvement ou des états spéciaux |
 
 ---
 
@@ -57,9 +57,6 @@ Lire le fichier approprié **avant** de générer :
 
 ```
 nom-du-projet/
-├── .github/
-│   └── workflows/
-│       └── deploy.yml          ← GitHub Action (déploiement automatique)
 ├── public/
 │   └── favicon.svg
 ├── src/
@@ -77,6 +74,7 @@ nom-du-projet/
 ├── tailwind.config.js
 ├── postcss.config.js
 ├── vite.config.js
+├── vercel.json                 ← Règle SPA rewrite (routes directes)
 └── README.md
 ```
 
@@ -122,7 +120,7 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/NOM_DU_REPO_GITHUB/',  // ← Remplacer par le vrai nom du repo
+  base: '/',
 })
 ```
 
@@ -136,6 +134,17 @@ export default {
   },
 }
 ```
+
+### `vercel.json`
+
+```json
+{
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+}
+```
+
+Ce fichier est **indispensable** pour React Router : sans lui, les routes comme `/dashboard`
+ou `/transactions` retourneraient un 404 sur Vercel lors d'un accès direct ou d'un refresh.
 
 ### `tailwind.config.js`
 
@@ -168,6 +177,15 @@ export default {
         'data-5':        '#FF4D4D',
         'data-6':        '#F5A623',
         'data-7':        '#10B981',
+        // Tokens dark — utiliser via dark: prefix (ex: dark:bg-dark-bg)
+        // Évite les valeurs hex dispersées dans les composants
+        'dark-bg':           '#000000',
+        'dark-bg-secondary': '#0A0A0A',
+        'dark-bg-tertiary':  '#111111',
+        'dark-text':         '#EDEDED',
+        'dark-text-muted':   '#888888',
+        'dark-text-subtle':  '#555555',
+        'dark-border':       '#333333',
       },
       fontFamily: {
         sans: ['Geist', 'system-ui', '-apple-system', 'sans-serif'],
@@ -242,9 +260,21 @@ export default {
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+@keyframes exit {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(4px); }
+}
 @keyframes modal-in {
   from { opacity: 0; transform: translateY(8px) scale(0.98); }
   to   { opacity: 1; transform: translateY(0)   scale(1); }
+}
+@keyframes modal-out {
+  from { opacity: 1; transform: translateY(0)   scale(1); }
+  to   { opacity: 0; transform: translateY(8px) scale(0.98); }
+}
+@keyframes dropdown-in {
+  from { opacity: 0; transform: translateY(-4px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -288,71 +318,22 @@ createRoot(document.getElementById('root')).render(
 )
 ```
 
-### `.github/workflows/deploy.yml`
-
-```yaml
-name: Deploy to GitHub Pages
-
-on:
-  push:
-    branches: [main]
-  workflow_dispatch:
-
-permissions:
-  contents: read
-  pages:    write
-  id-token: write
-
-concurrency:
-  group:              pages
-  cancel-in-progress: true
-
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build
-        run: npm run build
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
-```
-
 ---
 
 ## Routing (React Router)
 
-Toujours utiliser `HashRouter` (compatible GitHub Pages sans configuration serveur) :
+Toujours utiliser `BrowserRouter` (Vercel gère le routing côté serveur via `vercel.json`) :
 
 ```jsx
 // src/App.jsx
-import { HashRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Nav from './components/ui/Nav'
 import Dashboard from './pages/Dashboard'
 import Settings  from './pages/Settings'
 
 export default function App() {
   return (
-    <HashRouter>
+    <BrowserRouter>
       <div className="min-h-screen bg-bg font-sans text-text">
         <Nav />
         <Routes>
@@ -360,12 +341,13 @@ export default function App() {
           <Route path="/settings" element={<Settings />} />
         </Routes>
       </div>
-    </HashRouter>
+    </BrowserRouter>
   )
 }
 ```
 
-**Règle absolue :** `HashRouter` uniquement. Jamais `BrowserRouter` avec GitHub Pages.
+**Règle absolue :** `BrowserRouter` uniquement. Ne jamais utiliser `HashRouter` (URLs avec `#`
+ne sont pas nécessaires sur Vercel).
 
 ---
 
@@ -376,7 +358,7 @@ export default function App() {
 3. **Typographie "Engineered".** Letter-spacing négatif sur les titres. Dense, technique, précis.
 4. **États toujours visibles.** Focus, Hover, Active, Disabled — chaque état interactif est visuellement distinct.
 5. **Élévation sans ombre lourde.** `backdrop-blur` + bordures pour détacher les éléments flottants.
-6. **Perception de vitesse.** Animations ≤ 300ms, skeleton loaders, transitions instantanées.
+6. **Perception de vitesse.** Animations UI ≤ 300ms. Skeleton loaders uniquement pour le chargement (jamais de spinner plein écran). Transitions instantanées sur les états hover/focus.
 
 ---
 
@@ -456,15 +438,18 @@ useEffect(() => {
 }, [dark])
 ```
 
-| Light | Dark override |
-|---|---|
-| `bg-bg` | `dark:bg-[#000000]` |
-| `bg-bg-secondary` | `dark:bg-[#0A0A0A]` |
-| `bg-bg-tertiary` | `dark:bg-[#111111]` |
-| `text-text` | `dark:text-[#EDEDED]` |
-| `text-text-muted` | `dark:text-[#888888]` |
-| `text-text-subtle` | `dark:text-[#555555]` |
-| `border-border` | `dark:border-[#333333]` |
+Les tokens dark sont nommés dans `tailwind.config.js` — préférer les classes sémantiques
+aux valeurs hex arbitraires dans les composants :
+
+| Light | Classe dark préférée | Valeur hex (fallback) |
+|---|---|---|
+| `bg-bg` | `dark:bg-dark-bg` | `dark:bg-[#000000]` |
+| `bg-bg-secondary` | `dark:bg-dark-bg-secondary` | `dark:bg-[#0A0A0A]` |
+| `bg-bg-tertiary` | `dark:bg-dark-bg-tertiary` | `dark:bg-[#111111]` |
+| `text-text` | `dark:text-dark-text` | `dark:text-[#EDEDED]` |
+| `text-text-muted` | `dark:text-dark-text-muted` | `dark:text-[#888888]` |
+| `text-text-subtle` | `dark:text-dark-text-subtle` | `dark:text-[#555555]` |
+| `border-border` | `dark:border-dark-border` | `dark:border-[#333333]` |
 
 ---
 
@@ -504,7 +489,7 @@ useEffect(() => {
 - Texte sous 12px
 - Plus de 3 poids de fonte
 - `z-index` arbitraires
-- `BrowserRouter` → toujours `HashRouter`
+- `HashRouter` → toujours `BrowserRouter` (Vercel gère le rewrite via `vercel.json`)
 
 ---
 
@@ -530,12 +515,16 @@ Ton projet est prêt. Voici comment le mettre en ligne :
    git remote add origin https://github.com/TON_USERNAME/NOM_DU_REPO.git
    git push -u origin main
 
-3. Sur GitHub → Settings → Pages → Source :
-   Sélectionner "GitHub Actions" → Save
+3. Va sur vercel.com → "Add New Project"
+   - Importe ton repo GitHub
+   - Framework Preset : Vite (détecté automatiquement)
+   - Clique "Deploy"
 
-4. Attends 1–2 minutes. Ton app sera accessible à :
-   https://TON_USERNAME.github.io/NOM_DU_REPO/
+4. ⚠️ Variables d'environnement : si l'app utilise Supabase ou d'autres services,
+   ajoute-les dans Vercel → Settings → Environment Variables.
+
+5. Ton app sera accessible à l'URL Vercel générée (ex: nom-du-repo.vercel.app).
 
 Pour toute mise à jour : modifier le code, puis `git add . && git commit -m "..." && git push`.
-L'app se met à jour automatiquement.
+Vercel redéploie automatiquement à chaque push sur main.
 ```

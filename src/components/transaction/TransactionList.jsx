@@ -15,13 +15,13 @@ export default function TransactionList({ transactions, onItemClick, onVerify, o
   }, [transactions])
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {sortedDates.map(({ date, items }) => (
         <div key={date}>
-          <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#888888] mb-2">
+          <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#888888] pb-2.5 mb-3 border-b border-border dark:border-[#1A1A1A]">
             {formatDate(date)}
           </p>
-          <div className="space-y-0.5">
+          <div className="rounded-lg border border-border dark:border-[#1A1A1A] divide-y divide-border dark:divide-[#1A1A1A] overflow-hidden">
             {items.map((tx) => (
               <SwipeableRow
                 key={tx.id}

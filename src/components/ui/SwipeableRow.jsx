@@ -1,7 +1,8 @@
 import { useRef, useState, useCallback } from 'react'
 import { Trash2, Check } from 'lucide-react'
 
-const THRESHOLD = 0.3 // 30% of viewport width
+const SWIPE_THRESHOLD = 0.3 // 30% of viewport width to trigger action
+const DEAD_ZONE = 10 // px of movement before swipe activates (allows taps through)
 
 export default function SwipeableRow({
   children,
@@ -10,10 +11,11 @@ export default function SwipeableRow({
   leftLabel = 'Supprimer',
   rightLabel = 'Verifier',
 }) {
-  const rowRef = useRef(null)
   const startX = useRef(0)
+  const startY = useRef(0)
   const currentX = useRef(0)
-  const swiping = useRef(false)
+  const activated = useRef(false) // true once horizontal movement exceeds dead zone
+  const locked = useRef(false) // true if user is scrolling vertically
   const [dismissed, setDismissed] = useState(false)
   const [deltaX, setDeltaX] = useState(0)
 
@@ -21,13 +23,29 @@ export default function SwipeableRow({
 
   const handleTouchStart = useCallback((e) => {
     startX.current = e.touches[0].clientX
+    startY.current = e.touches[0].clientY
     currentX.current = 0
-    swiping.current = true
+    activated.current = false
+    locked.current = false
   }, [])
 
   const handleTouchMove = useCallback((e) => {
-    if (!swiping.current) return
+    if (locked.current) return
+
     const dx = e.touches[0].clientX - startX.current
+    const dy = e.touches[0].clientY - startY.current
+
+    // If not yet activated, check whether this is a swipe or a scroll
+    if (!activated.current) {
+      // If vertical movement is dominant, this is a scroll — lock out swiping
+      if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 5) {
+        locked.current = true
+        return
+      }
+      // Only activate once horizontal movement exceeds the dead zone
+      if (Math.abs(dx) < DEAD_ZONE) return
+      activated.current = true
+    }
 
     // Only allow left swipe if onSwipeLeft, right if onSwipeRight
     if (dx < 0 && !onSwipeLeft) return
@@ -38,10 +56,15 @@ export default function SwipeableRow({
   }, [onSwipeLeft, onSwipeRight])
 
   const handleTouchEnd = useCallback(() => {
-    if (!swiping.current) return
-    swiping.current = false
+    // If swipe was never activated, do nothing — let the click fire naturally
+    if (!activated.current) {
+      currentX.current = 0
+      return
+    }
+
+    activated.current = false
     const dx = currentX.current
-    const threshold = vw * THRESHOLD
+    const threshold = vw * SWIPE_THRESHOLD
 
     if (dx < -threshold && onSwipeLeft) {
       setDismissed(true)
@@ -93,13 +116,12 @@ export default function SwipeableRow({
 
       {/* Content */}
       <div
-        ref={rowRef}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
         style={{
-          transform: `translateX(${clampedDelta}px)`,
-          transition: swiping.current ? 'none' : 'transform 300ms cubic-bezier(0.16, 1, 0.3, 1)',
+          transform: clampedDelta !== 0 ? `translateX(${clampedDelta}px)` : undefined,
+          transition: activated.current ? 'none' : clampedDelta !== 0 ? 'transform 300ms cubic-bezier(0.16, 1, 0.3, 1)' : undefined,
           position: 'relative',
           zIndex: 1,
         }}

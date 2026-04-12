@@ -116,6 +116,33 @@ label,
   to   { opacity: 0; transform: translateY(8px) scale(0.96); }
 }
 
+/* Field shake (validation error) */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%      { transform: translateX(-4px); }
+  40%      { transform: translateX(4px); }
+  60%      { transform: translateX(-3px); }
+  80%      { transform: translateX(2px); }
+}
+
+/* Page transition (enter only) */
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Swipe row dismiss */
+@keyframes swipe-dismiss {
+  from { max-height: 80px; opacity: 1; }
+  to   { max-height: 0; opacity: 0; padding-top: 0; padding-bottom: 0; margin-top: 0; margin-bottom: 0; }
+}
+
+/* Undo toast progress bar */
+@keyframes shrink-bar {
+  from { width: 100%; }
+  to   { width: 0%; }
+}
+
 /* ------------------------------------------------------------------ */
 /*  Modal component                                                    */
 /* ------------------------------------------------------------------ */
@@ -171,6 +198,43 @@ label,
 }
 .toast-item[data-state="closed"] {
   animation: toast-out 220ms var(--ease-in) both;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Search modal                                                       */
+/* ------------------------------------------------------------------ */
+
+.search-modal[data-state="open"] {
+  animation: modal-backdrop-in 180ms var(--ease-out) both;
+}
+.search-modal[data-state="closed"] {
+  animation: modal-backdrop-out 140ms var(--ease-in) both;
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Field shake                                                        */
+/* ------------------------------------------------------------------ */
+
+.field-shake {
+  animation: shake 300ms var(--ease-out);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Page transition                                                    */
+/* ------------------------------------------------------------------ */
+
+.page-transition {
+  animation: page-enter 200ms var(--ease-out) backwards;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Swipe row                                                          */
+/* ------------------------------------------------------------------ */
+
+.swipe-dismiss {
+  animation: swipe-dismiss 300ms var(--ease-out) forwards;
+  overflow: hidden;
 }
 
 /* ------------------------------------------------------------------ */

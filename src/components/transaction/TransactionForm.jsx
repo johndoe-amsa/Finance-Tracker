@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Button from '../ui/Button'
 import Field from '../ui/Field'
 import SelectField from '../ui/SelectField'
 import ToggleGroup from '../ui/ToggleGroup'
 import { useCategories } from '../../hooks/useCategories'
 import { todayISO } from '../../lib/utils'
+import useFormValidation from '../../hooks/useFormValidation'
 
 export default function TransactionForm({ transaction, onSubmit, onDelete, loading }) {
   const [type, setType] = useState(transaction?.type || 'expense')
@@ -17,6 +18,13 @@ export default function TransactionForm({ transaction, onSubmit, onDelete, loadi
   const { data: categories = [] } = useCategories()
   const filteredCategories = categories.filter((c) => c.type === type)
 
+  const validationSchema = useMemo(() => ({
+    amount: (v) => !v || parseFloat(v) <= 0 ? 'Montant requis (> 0)' : null,
+    date: (v) => !v ? 'Date requise' : null,
+  }), [])
+
+  const { errors, validate, clearError } = useFormValidation(validationSchema)
+
   useEffect(() => {
     if (categoryId) {
       const cat = categories.find((c) => c.id === categoryId)
@@ -28,6 +36,7 @@ export default function TransactionForm({ transaction, onSubmit, onDelete, loadi
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    if (!validate({ amount, date })) return
     onSubmit({
       type,
       amount: parseFloat(amount),
@@ -58,7 +67,8 @@ export default function TransactionForm({ transaction, onSubmit, onDelete, loadi
         type="number"
         placeholder="0.00"
         value={amount}
-        onChange={(e) => setAmount(e.target.value)}
+        onChange={(e) => { setAmount(e.target.value); clearError('amount') }}
+        error={errors.amount}
         inCard
         step="0.01"
         min="0.01"
@@ -101,7 +111,8 @@ export default function TransactionForm({ transaction, onSubmit, onDelete, loadi
         id="tx-date"
         type="date"
         value={date}
-        onChange={(e) => setDate(e.target.value)}
+        onChange={(e) => { setDate(e.target.value); clearError('date') }}
+        error={errors.date}
         inCard
       />
 
@@ -111,11 +122,7 @@ export default function TransactionForm({ transaction, onSubmit, onDelete, loadi
             Supprimer
           </Button>
         ) : <div />}
-        <Button
-          variant="primary"
-          type="submit"
-          disabled={loading || !amount || parseFloat(amount) <= 0}
-        >
+        <Button variant="primary" type="submit" disabled={loading}>
           {loading ? 'Chargement...' : isEdit ? 'Modifier' : 'Ajouter'}
         </Button>
       </div>

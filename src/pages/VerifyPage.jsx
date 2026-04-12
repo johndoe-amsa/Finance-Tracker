@@ -4,12 +4,11 @@ import {
   useUnverifiedTransactions,
   useVerifyTransaction,
   useUpdateTransaction,
-  useDeleteTransaction,
 } from '../hooks/useTransactions'
+import useUndoableDelete from '../hooks/useUndoableDelete'
 import TransactionList from '../components/transaction/TransactionList'
 import Modal from '../components/ui/Modal'
 import TransactionForm from '../components/transaction/TransactionForm'
-import ConfirmDialog from '../components/ui/ConfirmDialog'
 import Skeleton from '../components/ui/Skeleton'
 import EmptyState from '../components/ui/EmptyState'
 
@@ -17,10 +16,9 @@ export default function VerifyPage() {
   const { data: transactions, isLoading } = useUnverifiedTransactions()
   const verifyMutation = useVerifyTransaction()
   const updateMutation = useUpdateTransaction()
-  const deleteMutation = useDeleteTransaction()
+  const undoableDelete = useUndoableDelete()
 
   const [editTx, setEditTx] = useState(null)
-  const [confirmDelete, setConfirmDelete] = useState(false)
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -33,12 +31,8 @@ export default function VerifyPage() {
   }
 
   const handleDelete = () => {
-    deleteMutation.mutate(editTx.id, {
-      onSuccess: () => {
-        setEditTx(null)
-        setConfirmDelete(false)
-      },
-    })
+    undoableDelete(editTx)
+    setEditTx(null)
   }
 
   // Stable handler so memoized TransactionItem children don't re-render
@@ -81,6 +75,7 @@ export default function VerifyPage() {
             transactions={transactions}
             onItemClick={setEditTx}
             onVerify={handleVerify}
+            onDelete={undoableDelete}
           />
         )}
       </div>
@@ -90,21 +85,12 @@ export default function VerifyPage() {
           <TransactionForm
             transaction={editTx}
             onSubmit={handleEditSubmit}
-            onDelete={() => setConfirmDelete(true)}
+            onDelete={handleDelete}
             loading={updateMutation.isPending}
           />
         )}
       </Modal>
 
-      <ConfirmDialog
-        open={confirmDelete}
-        onClose={() => setConfirmDelete(false)}
-        onConfirm={handleDelete}
-        title="Supprimer la transaction"
-        message="Etes-vous sur de vouloir supprimer cette transaction ?"
-        confirmLabel="Supprimer"
-        loading={deleteMutation.isPending}
-      />
     </div>
   )
 }

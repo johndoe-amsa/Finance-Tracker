@@ -1,8 +1,9 @@
 import { useMemo } from 'react'
 import TransactionItem from './TransactionItem'
+import SwipeableRow from '../ui/SwipeableRow'
 import { formatDate } from '../../lib/utils'
 
-export default function TransactionList({ transactions, onItemClick, onVerify }) {
+export default function TransactionList({ transactions, onItemClick, onVerify, onDelete }) {
   const sortedDates = useMemo(() => {
     const grouped = {}
     for (const tx of transactions) {
@@ -22,12 +23,17 @@ export default function TransactionList({ transactions, onItemClick, onVerify })
           </p>
           <div className="space-y-0.5">
             {items.map((tx) => (
-              <TransactionItem
+              <SwipeableRow
                 key={tx.id}
-                transaction={tx}
-                onClick={onItemClick}
-                onVerify={onVerify}
-              />
+                onSwipeLeft={onDelete ? () => onDelete(tx) : undefined}
+                onSwipeRight={!tx.is_verified && onVerify ? () => onVerify(tx.id) : undefined}
+              >
+                <TransactionItem
+                  transaction={tx}
+                  onClick={onItemClick}
+                  onVerify={onVerify}
+                />
+              </SwipeableRow>
             ))}
           </div>
         </div>

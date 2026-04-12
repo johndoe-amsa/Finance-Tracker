@@ -1,6 +1,6 @@
 import { memo, useCallback } from 'react'
 import Badge from '../ui/Badge'
-import { formatAmount } from '../../lib/utils'
+import { formatAmount, interactiveProps } from '../../lib/utils'
 
 function TransactionItem({ transaction: tx, onClick, onVerify }) {
   const displayTitle = tx.title || tx.description || '\u2014'
@@ -18,6 +18,7 @@ function TransactionItem({ transaction: tx, onClick, onVerify }) {
   return (
     <div
       onClick={handleClick}
+      {...interactiveProps(handleClick, `${displayTitle}, ${tx.type === 'income' ? '+' : '-'}${formatAmount(tx.amount)}`)}
       className="flex items-center justify-between p-3 rounded-lg hover:bg-bg-secondary dark:hover:bg-[#0A0A0A] cursor-pointer transition-colors duration-150"
     >
       <div className="flex-1 min-w-0 mr-3">

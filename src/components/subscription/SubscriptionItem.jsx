@@ -1,5 +1,5 @@
 import Badge from '../ui/Badge'
-import { formatAmount, getNextBillingDate, formatDate } from '../../lib/utils'
+import { formatAmount, getNextBillingDate, formatDate, interactiveProps } from '../../lib/utils'
 
 export default function SubscriptionItem({ subscription: sub, onClick }) {
   const nextDate = getNextBillingDate(sub)
@@ -8,6 +8,7 @@ export default function SubscriptionItem({ subscription: sub, onClick }) {
   return (
     <div
       onClick={onClick}
+      {...interactiveProps(onClick, `${sub.name}, ${formatAmount(sub.amount)}${freqLabel}`)}
       className="flex items-center justify-between p-4 hover:bg-bg-tertiary dark:hover:bg-[#111111] cursor-pointer transition-colors duration-150"
     >
       <div className="flex-1 min-w-0 mr-3">

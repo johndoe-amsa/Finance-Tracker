@@ -1,3 +1,5 @@
+import { interactiveProps } from '../../lib/utils'
+
 export default function BudgetBar({ name, spent, limit, color, onClick }) {
   const actualPct = limit > 0 ? (spent / limit) * 100 : 0
   const displayPct = Math.min(actualPct, 100)
@@ -15,6 +17,7 @@ export default function BudgetBar({ name, spent, limit, color, onClick }) {
   return (
     <div
       onClick={onClick}
+      {...interactiveProps(onClick, `${name}, ${spent.toFixed(2)} de ${limit.toFixed(2)} CHF`)}
       className="p-4 hover:bg-bg-tertiary dark:hover:bg-[#111111] cursor-pointer transition-colors duration-150"
     >
       <div className="flex items-center justify-between mb-2">

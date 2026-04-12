@@ -1,10 +1,11 @@
 import { ChevronRight } from 'lucide-react'
-import { formatAmount } from '../../lib/utils'
+import { formatAmount, interactiveProps } from '../../lib/utils'
 
 export default function CategoryItem({ category, onClick }) {
   return (
     <div
       onClick={onClick}
+      {...interactiveProps(onClick, category.name)}
       className="flex items-center justify-between p-4 hover:bg-bg-tertiary dark:hover:bg-[#111111] cursor-pointer transition-colors duration-150"
     >
       <div>

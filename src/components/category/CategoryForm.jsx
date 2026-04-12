@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import Button from '../ui/Button'
 import Field from '../ui/Field'
 import { DATA_COLORS } from '../../data'
+import useFormValidation from '../../hooks/useFormValidation'
 
 const PALETTE = [
   DATA_COLORS[1], DATA_COLORS[2], DATA_COLORS[3], DATA_COLORS[4],
@@ -20,10 +21,17 @@ export default function CategoryForm({
   const [budgetLimit, setBudgetLimit] = useState(category?.budget_limit?.toString() || '')
   const [color, setColor] = useState(category?.color || DATA_COLORS[1])
 
+  const validationSchema = useMemo(() => ({
+    name: (v) => !v?.trim() ? 'Nom requis' : null,
+  }), [])
+
+  const { errors, validate, clearError } = useFormValidation(validationSchema)
+
   const isEdit = !!category
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    if (!validate({ name })) return
     const data = { name, type, color }
     if (type === 'expense') {
       data.budget_limit = budgetLimit ? parseFloat(budgetLimit) : null
@@ -38,7 +46,8 @@ export default function CategoryForm({
         id="cat-name"
         placeholder="Nom de la categorie"
         value={name}
-        onChange={(e) => setName(e.target.value)}
+        onChange={(e) => { setName(e.target.value); clearError('name') }}
+        error={errors.name}
         inCard
       />
 
@@ -88,7 +97,7 @@ export default function CategoryForm({
             Supprimer
           </Button>
         ) : <div />}
-        <Button variant="primary" type="submit" disabled={loading || !name}>
+        <Button variant="primary" type="submit" disabled={loading}>
           {loading ? 'Chargement...' : isEdit ? 'Modifier' : 'Ajouter'}
         </Button>
       </div>

@@ -1,14 +1,15 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
-import { ChevronLeft, ChevronRight, Wallet } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Wallet, Search } from 'lucide-react'
 import { useAppStore } from '../store/useAppStore'
 import {
   useTransactions,
   useVerifyTransaction,
   useUpdateTransaction,
-  useDeleteTransaction,
   useMonthlyTrend,
 } from '../hooks/useTransactions'
 import { useCategories } from '../hooks/useCategories'
+import { useInsights, computeInsights } from '../hooks/useInsights'
+import useUndoableDelete from '../hooks/useUndoableDelete'
 import {
   formatMonthYear,
   formatAmount,
@@ -19,26 +20,28 @@ import { Card } from '../components/ui/Card'
 import Skeleton from '../components/ui/Skeleton'
 import EmptyState from '../components/ui/EmptyState'
 import Modal from '../components/ui/Modal'
-import ConfirmDialog from '../components/ui/ConfirmDialog'
 import TransactionList from '../components/transaction/TransactionList'
 import TransactionForm from '../components/transaction/TransactionForm'
 import BudgetBar from '../components/budget/BudgetBar'
 import BudgetDetailModal from '../components/budget/BudgetDetailModal'
 import SpendingBarChart from '../components/charts/SpendingBarChart'
 import CategoryPieChart from '../components/charts/CategoryPieChart'
+import InsightsSection from '../components/insights/InsightsSection'
+import SearchModal from '../components/search/SearchModal'
 
 export default function DashboardPage() {
   const { currentYear, currentMonth, setMonth } = useAppStore()
   const { data: transactions, isLoading } = useTransactions(currentYear, currentMonth)
   const { data: categories = [] } = useCategories()
   const { data: monthlyTrend = [] } = useMonthlyTrend(6)
+  const { data: insightData } = useInsights(currentYear, currentMonth)
   const verifyMutation = useVerifyTransaction()
   const updateMutation = useUpdateTransaction()
-  const deleteMutation = useDeleteTransaction()
+  const undoableDelete = useUndoableDelete()
 
   const [editTx, setEditTx] = useState(null)
   const [budgetDetail, setBudgetDetail] = useState(null)
-  const [confirmDelete, setConfirmDelete] = useState(false)
+  const [showSearch, setShowSearch] = useState(false)
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -82,17 +85,18 @@ export default function DashboardPage() {
     [categories, expensesByCategory],
   )
 
+  const insights = useMemo(
+    () => computeInsights(insightData, categories, currentMonth),
+    [insightData, categories, currentMonth],
+  )
+
   const handleEditSubmit = (data) => {
     updateMutation.mutate({ id: editTx.id, ...data }, { onSuccess: () => setEditTx(null) })
   }
 
   const handleDelete = () => {
-    deleteMutation.mutate(editTx.id, {
-      onSuccess: () => {
-        setEditTx(null)
-        setConfirmDelete(false)
-      },
-    })
+    undoableDelete(editTx)
+    setEditTx(null)
   }
 
   const budgetDetailTransactions = useMemo(
@@ -126,12 +130,21 @@ export default function DashboardPage() {
         <h2 className="text-h3 text-text dark:text-[#EDEDED] capitalize">
           {formatMonthYear(currentYear, currentMonth)}
         </h2>
-        <button
-          onClick={nextMonth}
-          className="p-2 text-text-muted hover:text-text dark:text-[#888888] dark:hover:text-[#EDEDED] transition-colors duration-150 rounded-md cursor-pointer"
-        >
-          <ChevronRight size={20} strokeWidth={1.5} />
-        </button>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => setShowSearch(true)}
+            className="p-2 text-text-muted hover:text-text dark:text-[#888888] dark:hover:text-[#EDEDED] transition-colors duration-150 rounded-md cursor-pointer"
+            aria-label="Rechercher"
+          >
+            <Search size={20} strokeWidth={1.5} />
+          </button>
+          <button
+            onClick={nextMonth}
+            className="p-2 text-text-muted hover:text-text dark:text-[#888888] dark:hover:text-[#EDEDED] transition-colors duration-150 rounded-md cursor-pointer"
+          >
+            <ChevronRight size={20} strokeWidth={1.5} />
+          </button>
+        </div>
       </div>
 
       {/* Summary cards */}
@@ -213,6 +226,9 @@ export default function DashboardPage() {
         </div>
       </div>
 
+      {/* Insights */}
+      <InsightsSection insights={insights} />
+
       {/* Budgets */}
       {budgetCategories.length > 0 && (
         <div className="px-4 mb-6">
@@ -262,6 +278,7 @@ export default function DashboardPage() {
             transactions={transactions}
             onItemClick={handleItemClick}
             onVerify={handleVerify}
+            onDelete={undoableDelete}
           />
         )}
       </div>
@@ -272,7 +289,7 @@ export default function DashboardPage() {
           <TransactionForm
             transaction={editTx}
             onSubmit={handleEditSubmit}
-            onDelete={() => setConfirmDelete(true)}
+            onDelete={handleDelete}
             loading={updateMutation.isPending}
           />
         )}
@@ -291,15 +308,12 @@ export default function DashboardPage() {
         }}
       />
 
-      {/* Confirm delete */}
-      <ConfirmDialog
-        open={confirmDelete}
-        onClose={() => setConfirmDelete(false)}
-        onConfirm={handleDelete}
-        title="Supprimer la transaction"
-        message="Etes-vous sur de vouloir supprimer cette transaction ?"
-        confirmLabel="Supprimer"
-        loading={deleteMutation.isPending}
+      {/* Search modal */}
+      <SearchModal
+        open={showSearch}
+        onClose={() => setShowSearch(false)}
+        onItemClick={handleItemClick}
+        onVerify={handleVerify}
       />
     </div>
   )

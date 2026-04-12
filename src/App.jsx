@@ -11,6 +11,7 @@ import VerifyPage from './pages/VerifyPage'
 import SubscriptionsPage from './pages/SubscriptionsPage'
 import SettingsPage from './pages/SettingsPage'
 import BottomNav from './components/layout/BottomNav'
+import SideNav from './components/layout/SideNav'
 import PageTransition from './components/layout/PageTransition'
 import FAB from './components/layout/FAB'
 import Modal from './components/ui/Modal'
@@ -35,13 +36,17 @@ function AppShell() {
 
   return (
     <div className="min-h-screen bg-bg dark:bg-[#000000] font-sans text-text dark:text-[#EDEDED]">
-      <main style={{ paddingBottom: 'calc(4rem + env(safe-area-inset-bottom))' }}>
-        <Routes>
-          <Route path="/" element={<PageTransition><DashboardPage /></PageTransition>} />
-          <Route path="/verify" element={<PageTransition><VerifyPage /></PageTransition>} />
-          <Route path="/subscriptions" element={<PageTransition><SubscriptionsPage /></PageTransition>} />
-          <Route path="/settings" element={<PageTransition><SettingsPage /></PageTransition>} />
-        </Routes>
+      <SideNav onAddTransaction={() => setShowAddTx(true)} />
+      <main className="md:ml-56">
+        <div className="max-w-3xl mx-auto">
+          <Routes>
+            <Route path="/" element={<PageTransition><DashboardPage /></PageTransition>} />
+            <Route path="/verify" element={<PageTransition><VerifyPage /></PageTransition>} />
+            <Route path="/subscriptions" element={<PageTransition><SubscriptionsPage /></PageTransition>} />
+            <Route path="/settings" element={<PageTransition><SettingsPage /></PageTransition>} />
+          </Routes>
+        </div>
+        <div className="md:hidden" style={{ height: 'calc(4rem + env(safe-area-inset-bottom))' }} />
       </main>
 
       <FAB onClick={() => setShowAddTx(true)} />

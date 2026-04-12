@@ -19,7 +19,7 @@ function TransactionItem({ transaction: tx, onClick, onVerify }) {
     <div
       onClick={handleClick}
       {...interactiveProps(handleClick, `${displayTitle}, ${tx.type === 'income' ? '+' : '-'}${formatAmount(tx.amount)}`)}
-      className="flex items-center justify-between p-3 rounded-lg hover:bg-bg-secondary dark:hover:bg-[#0A0A0A] cursor-pointer transition-colors duration-150"
+      className="flex items-center justify-between p-3 bg-bg dark:bg-[#000000] hover:bg-bg-secondary dark:hover:bg-[#0A0A0A] cursor-pointer transition-colors duration-150"
     >
       <div className="flex-1 min-w-0 mr-3">
         <p className="text-small font-medium text-text dark:text-[#EDEDED] truncate">

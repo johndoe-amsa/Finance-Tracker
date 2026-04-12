@@ -11,6 +11,7 @@ import VerifyPage from './pages/VerifyPage'
 import SubscriptionsPage from './pages/SubscriptionsPage'
 import SettingsPage from './pages/SettingsPage'
 import BottomNav from './components/layout/BottomNav'
+import PageTransition from './components/layout/PageTransition'
 import FAB from './components/layout/FAB'
 import Modal from './components/ui/Modal'
 import TransactionForm from './components/transaction/TransactionForm'
@@ -36,10 +37,10 @@ function AppShell() {
     <div className="min-h-screen bg-bg dark:bg-[#000000] font-sans text-text dark:text-[#EDEDED]">
       <main style={{ paddingBottom: 'calc(4rem + env(safe-area-inset-bottom))' }}>
         <Routes>
-          <Route path="/" element={<DashboardPage />} />
-          <Route path="/verify" element={<VerifyPage />} />
-          <Route path="/subscriptions" element={<SubscriptionsPage />} />
-          <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/" element={<PageTransition><DashboardPage /></PageTransition>} />
+          <Route path="/verify" element={<PageTransition><VerifyPage /></PageTransition>} />
+          <Route path="/subscriptions" element={<PageTransition><SubscriptionsPage /></PageTransition>} />
+          <Route path="/settings" element={<PageTransition><SettingsPage /></PageTransition>} />
         </Routes>
       </main>
 

@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import Modal from '../ui/Modal'
 import Badge from '../ui/Badge'
-import { formatAmount, formatDate } from '../../lib/utils'
+import { formatAmount, formatDate, interactiveProps } from '../../lib/utils'
 
 export default function BudgetDetailModal({
   open,
@@ -92,6 +92,7 @@ export default function BudgetDetailModal({
               <div
                 key={tx.id}
                 onClick={() => onTransactionClick(tx)}
+                {...interactiveProps(() => onTransactionClick(tx), `${tx.title || tx.description || '\u2014'}, -${formatAmount(tx.amount)}`)}
                 className="flex items-center justify-between p-2 rounded-md hover:bg-bg-secondary dark:hover:bg-[#0A0A0A] cursor-pointer transition-colors duration-150"
               >
                 <div className="flex items-center gap-2 flex-1 min-w-0">

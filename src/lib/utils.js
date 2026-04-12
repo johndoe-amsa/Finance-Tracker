@@ -57,6 +57,20 @@ export function calculateMonthlyTotal(subscriptions) {
   return total
 }
 
+export function interactiveProps(onClick, ariaLabel) {
+  return {
+    role: 'button',
+    tabIndex: 0,
+    'aria-label': ariaLabel,
+    onKeyDown: (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault()
+        onClick()
+      }
+    },
+  }
+}
+
 export function getNextBillingDate(sub) {
   if (!sub.is_active) return null
   if (sub.end_date && new Date(sub.end_date + 'T00:00:00') < new Date()) return null

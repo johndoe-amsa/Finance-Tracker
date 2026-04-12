@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Button from '../ui/Button'
 import Field from '../ui/Field'
 import SelectField from '../ui/SelectField'
 import ToggleGroup from '../ui/ToggleGroup'
 import { useCategories } from '../../hooks/useCategories'
 import { todayISO } from '../../lib/utils'
+import useFormValidation from '../../hooks/useFormValidation'
 
 export default function SubscriptionForm({ subscription, onSubmit, onDelete, loading }) {
   const [name, setName] = useState(subscription?.name || '')
@@ -20,6 +21,18 @@ export default function SubscriptionForm({ subscription, onSubmit, onDelete, loa
   const { data: categories = [] } = useCategories()
   const filteredCategories = categories.filter((c) => c.type === type)
 
+  const validationSchema = useMemo(() => ({
+    name: (v) => !v?.trim() ? 'Nom requis' : null,
+    amount: (v) => !v || parseFloat(v) <= 0 ? 'Montant requis (> 0)' : null,
+    billingDay: (v) => {
+      const d = parseInt(v, 10)
+      return !v || isNaN(d) || d < 1 || d > 31 ? 'Jour entre 1 et 31' : null
+    },
+    startDate: (v) => !v ? 'Date de debut requise' : null,
+  }), [])
+
+  const { errors, validate, clearError } = useFormValidation(validationSchema)
+
   useEffect(() => {
     if (categoryId) {
       const cat = categories.find((c) => c.id === categoryId)
@@ -31,6 +44,7 @@ export default function SubscriptionForm({ subscription, onSubmit, onDelete, loa
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    if (!validate({ name, amount, billingDay, startDate })) return
     onSubmit({
       name,
       type,
@@ -44,8 +58,6 @@ export default function SubscriptionForm({ subscription, onSubmit, onDelete, loa
     })
   }
 
-  const isValid = name && amount && parseFloat(amount) > 0 && billingDay && startDate
-
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <Field
@@ -53,7 +65,8 @@ export default function SubscriptionForm({ subscription, onSubmit, onDelete, loa
         id="sub-name"
         placeholder="Ex : Netflix"
         value={name}
-        onChange={(e) => setName(e.target.value)}
+        onChange={(e) => { setName(e.target.value); clearError('name') }}
+        error={errors.name}
         inCard
       />
 
@@ -75,7 +88,8 @@ export default function SubscriptionForm({ subscription, onSubmit, onDelete, loa
         type="number"
         placeholder="0.00"
         value={amount}
-        onChange={(e) => setAmount(e.target.value)}
+        onChange={(e) => { setAmount(e.target.value); clearError('amount') }}
+        error={errors.amount}
         inCard
         step="0.01"
         min="0.01"
@@ -111,7 +125,8 @@ export default function SubscriptionForm({ subscription, onSubmit, onDelete, loa
         id="sub-billing-day"
         type="number"
         value={billingDay}
-        onChange={(e) => setBillingDay(e.target.value)}
+        onChange={(e) => { setBillingDay(e.target.value); clearError('billingDay') }}
+        error={errors.billingDay}
         inCard
         min="1"
         max="31"
@@ -122,7 +137,8 @@ export default function SubscriptionForm({ subscription, onSubmit, onDelete, loa
         id="sub-start-date"
         type="date"
         value={startDate}
-        onChange={(e) => setStartDate(e.target.value)}
+        onChange={(e) => { setStartDate(e.target.value); clearError('startDate') }}
+        error={errors.startDate}
         inCard
       />
 
@@ -156,7 +172,7 @@ export default function SubscriptionForm({ subscription, onSubmit, onDelete, loa
             Supprimer
           </Button>
         ) : <div />}
-        <Button variant="primary" type="submit" disabled={loading || !isValid}>
+        <Button variant="primary" type="submit" disabled={loading}>
           {loading ? 'Chargement...' : isEdit ? 'Modifier' : 'Ajouter'}
         </Button>
       </div>

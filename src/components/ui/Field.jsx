@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react'
+
 export default function Field({
   label,
   id,
@@ -11,9 +13,19 @@ export default function Field({
   ...rest
 }) {
   const inputBg = inCard ? 'bg-bg dark:bg-[#000000]' : 'bg-bg-secondary dark:bg-[#0A0A0A]'
+  const [shake, setShake] = useState(false)
+
+  useEffect(() => {
+    if (error) {
+      setShake(true)
+    }
+  }, [error])
 
   return (
-    <div className="flex flex-col gap-1">
+    <div
+      className={`flex flex-col gap-1 ${shake ? 'field-shake' : ''}`}
+      onAnimationEnd={() => setShake(false)}
+    >
       <label htmlFor={id} className="text-[13px] font-medium text-text-muted">
         {label}
       </label>

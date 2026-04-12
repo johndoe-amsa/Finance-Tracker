@@ -14,6 +14,8 @@ export default function ToastContainer() {
           <Toast
             message={toast.message}
             type={toast.type}
+            action={toast.action}
+            actionLabel={toast.actionLabel}
             onDismiss={() => dismiss(toast.id)}
           />
         </div>

@@ -4,6 +4,13 @@ import { X } from 'lucide-react'
 // Must be >= the longest close animation duration in index.css (.modal-content[data-state="closed"]).
 const CLOSE_DURATION = 170
 
+// Counter-based scroll lock: only unlock when no modals are mounted.
+// A simple save/restore would break when modals open/close in overlapping order
+// (e.g. category modal starts closing while expense modal is already opening —
+// the closing one restores overflow:'', leaving the still-open modal unsuppressed,
+// and the expense modal later "restores" overflow:'hidden' permanently).
+let _openModalsCount = 0
+
 export default function Modal({ open, onClose, title, children }) {
   const [render, setRender] = useState(open)
   const [closing, setClosing] = useState(false)
@@ -45,9 +52,12 @@ export default function Modal({ open, onClose, title, children }) {
   // Lock body scroll while the modal is mounted.
   useEffect(() => {
     if (!render) return
-    const prev = document.body.style.overflow
+    _openModalsCount++
     document.body.style.overflow = 'hidden'
-    return () => { document.body.style.overflow = prev }
+    return () => {
+      _openModalsCount--
+      if (_openModalsCount === 0) document.body.style.overflow = ''
+    }
   }, [render])
 
   if (!render) return null

@@ -18,6 +18,7 @@ import FAB from './components/layout/FAB'
 import Modal from './components/ui/Modal'
 import TransactionForm from './components/transaction/TransactionForm'
 import ToastContainer from './components/ui/ToastContainer'
+import ErrorBoundary from './components/ui/ErrorBoundary'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -41,11 +42,11 @@ function AppShell() {
       <main className="md:ml-56">
         <div className="max-w-3xl mx-auto">
           <Routes>
-            <Route path="/" element={<PageTransition><DashboardPage /></PageTransition>} />
-            <Route path="/verify" element={<PageTransition><VerifyPage /></PageTransition>} />
-            <Route path="/analytics" element={<PageTransition><AnalyticsPage /></PageTransition>} />
-            <Route path="/subscriptions" element={<PageTransition><SubscriptionsPage /></PageTransition>} />
-            <Route path="/settings" element={<PageTransition><SettingsPage /></PageTransition>} />
+            <Route path="/" element={<ErrorBoundary label="Tableau de bord"><PageTransition><DashboardPage /></PageTransition></ErrorBoundary>} />
+            <Route path="/verify" element={<ErrorBoundary label="Transactions à vérifier"><PageTransition><VerifyPage /></PageTransition></ErrorBoundary>} />
+            <Route path="/analytics" element={<ErrorBoundary label="Analytiques"><PageTransition><AnalyticsPage /></PageTransition></ErrorBoundary>} />
+            <Route path="/subscriptions" element={<ErrorBoundary label="Abonnements"><PageTransition><SubscriptionsPage /></PageTransition></ErrorBoundary>} />
+            <Route path="/settings" element={<ErrorBoundary label="Paramètres"><PageTransition><SettingsPage /></PageTransition></ErrorBoundary>} />
           </Routes>
         </div>
         <div className="md:hidden" style={{ height: 'calc(4rem + env(safe-area-inset-bottom))' }} />
@@ -84,7 +85,9 @@ function AuthGate() {
   useEffect(() => {
     if (session && !initialized) {
       generateMissingSubscriptionTransactions()
-        .catch(() => {})
+        .catch((err) => {
+          console.error('[Abonnements] Échec de la génération des transactions automatiques :', err)
+        })
         .finally(() => setInitialized(true))
     }
   }, [session, initialized])
@@ -130,9 +133,11 @@ function AuthGate() {
 
 export default function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthGate />
-      <ToastContainer />
-    </QueryClientProvider>
+    <ErrorBoundary fullPage resetable>
+      <QueryClientProvider client={queryClient}>
+        <AuthGate />
+        <ToastContainer />
+      </QueryClientProvider>
+    </ErrorBoundary>
   )
 }

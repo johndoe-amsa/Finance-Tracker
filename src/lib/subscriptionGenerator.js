@@ -17,7 +17,8 @@ export async function generateMissingSubscriptionTransactions() {
     .eq('is_active', true)
     .lte('start_date', today.toISOString().split('T')[0])
 
-  if (subError || !subs) return
+  if (subError) throw new Error(`Impossible de charger les abonnements : ${subError.message}`)
+  if (!subs) return
 
   const { data: existingTx } = await db
     .from('transactions')
@@ -28,7 +29,8 @@ export async function generateMissingSubscriptionTransactions() {
 
   const existingSubIds = new Set((existingTx || []).map((t) => t.subscription_id))
 
-  const { data: { user } } = await db.auth.getUser()
+  const { data: { user }, error: userError } = await db.auth.getUser()
+  if (userError) throw new Error(`Impossible de récupérer l'utilisateur : ${userError.message}`)
   if (!user) return
 
   for (const sub of subs) {

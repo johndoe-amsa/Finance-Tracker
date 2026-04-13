@@ -72,7 +72,7 @@ export default function Modal({ open, onClose, title, children }) {
     >
       <div
         data-state={state}
-        className="modal-content w-full max-w-lg bg-bg dark:bg-[#0A0A0A] border border-border dark:border-[#333333] rounded-t-lg sm:rounded-lg shadow-2 p-6 max-h-[85vh] min-h-[50vh] sm:min-h-0 overflow-y-auto"
+        className="modal-content w-full max-w-lg bg-bg dark:bg-[#0A0A0A] border border-border dark:border-[#333333] rounded-t-lg sm:rounded-lg shadow-2 p-6 pb-10 sm:pb-6 max-h-[85vh] min-h-[50vh] sm:min-h-0 overflow-y-auto"
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"

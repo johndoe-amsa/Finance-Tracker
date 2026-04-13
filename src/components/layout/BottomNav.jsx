@@ -14,7 +14,7 @@ export default function BottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-sticky border-t border-border dark:border-[#333333] font-sans"
+      className="fixed bottom-0 left-0 right-0 z-sticky border-t border-border dark:border-[#333333] font-sans md:hidden"
       style={{ background: 'var(--backdrop-bg)', backdropFilter: 'var(--backdrop)' }}
     >
       <div className="h-16 flex items-center justify-around">

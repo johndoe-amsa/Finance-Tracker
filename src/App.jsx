@@ -8,6 +8,7 @@ import { useCreateTransaction } from './hooks/useTransactions'
 import LoginPage from './pages/LoginPage'
 import DashboardPage from './pages/DashboardPage'
 import VerifyPage from './pages/VerifyPage'
+import AnalyticsPage from './pages/AnalyticsPage'
 import SubscriptionsPage from './pages/SubscriptionsPage'
 import SettingsPage from './pages/SettingsPage'
 import BottomNav from './components/layout/BottomNav'
@@ -42,6 +43,7 @@ function AppShell() {
           <Routes>
             <Route path="/" element={<PageTransition><DashboardPage /></PageTransition>} />
             <Route path="/verify" element={<PageTransition><VerifyPage /></PageTransition>} />
+            <Route path="/analytics" element={<PageTransition><AnalyticsPage /></PageTransition>} />
             <Route path="/subscriptions" element={<PageTransition><SubscriptionsPage /></PageTransition>} />
             <Route path="/settings" element={<PageTransition><SettingsPage /></PageTransition>} />
           </Routes>

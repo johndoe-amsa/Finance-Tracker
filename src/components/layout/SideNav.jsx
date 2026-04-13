@@ -1,10 +1,11 @@
 import { NavLink } from 'react-router-dom'
-import { Home, CheckSquare, RefreshCw, Settings, Plus } from 'lucide-react'
+import { Home, CheckSquare, BarChart2, RefreshCw, Settings, Plus } from 'lucide-react'
 import { useAppStore } from '../../store/useAppStore'
 
 const NAV_ITEMS = [
   { to: '/', icon: Home, label: 'Accueil' },
   { to: '/verify', icon: CheckSquare, label: 'À vérifier' },
+  { to: '/analytics', icon: BarChart2, label: 'Analytiques' },
   { to: '/subscriptions', icon: RefreshCw, label: 'Abonnements' },
   { to: '/settings', icon: Settings, label: 'Paramètres' },
 ]

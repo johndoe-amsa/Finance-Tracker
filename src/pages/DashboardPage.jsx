@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from 'react'
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { ChevronLeft, ChevronRight, Wallet, Search } from 'lucide-react'
 import { useAppStore } from '../store/useAppStore'
 import {
@@ -42,6 +42,9 @@ export default function DashboardPage() {
   const [editTx, setEditTx] = useState(null)
   const [budgetDetail, setBudgetDetail] = useState(null)
   const [showSearch, setShowSearch] = useState(false)
+  // Remember which budget category opened the expense modal so we can
+  // navigate back to it when the expense modal is dismissed.
+  const budgetDetailBeforeEdit = useRef(null)
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -90,13 +93,23 @@ export default function DashboardPage() {
     [insightData, categories, currentMonth],
   )
 
+  // Close the expense modal and return to the budget-detail modal if the
+  // expense was opened from there.
+  const clearEditTx = useCallback(() => {
+    setEditTx(null)
+    if (budgetDetailBeforeEdit.current) {
+      setBudgetDetail(budgetDetailBeforeEdit.current)
+      budgetDetailBeforeEdit.current = null
+    }
+  }, [])
+
   const handleEditSubmit = (data) => {
-    updateMutation.mutate({ id: editTx.id, ...data }, { onSuccess: () => setEditTx(null) })
+    updateMutation.mutate({ id: editTx.id, ...data }, { onSuccess: clearEditTx })
   }
 
   const handleDelete = () => {
     undoableDelete(editTx)
-    setEditTx(null)
+    clearEditTx()
   }
 
   const budgetDetailTransactions = useMemo(
@@ -284,7 +297,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Edit transaction modal */}
-      <Modal open={!!editTx} onClose={() => setEditTx(null)} title="Modifier la transaction">
+      <Modal open={!!editTx} onClose={clearEditTx} title="Modifier la transaction">
         {editTx && (
           <TransactionForm
             transaction={editTx}
@@ -303,6 +316,7 @@ export default function DashboardPage() {
         spent={budgetDetail?.spent || 0}
         transactions={budgetDetailTransactions}
         onTransactionClick={(tx) => {
+          budgetDetailBeforeEdit.current = budgetDetail
           setBudgetDetail(null)
           setEditTx(tx)
         }}

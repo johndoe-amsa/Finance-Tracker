@@ -5,16 +5,17 @@ import {
   useTransactions,
   useVerifyTransaction,
   useUpdateTransaction,
-  useMonthlyTrend,
 } from '../hooks/useTransactions'
 import { useCategories } from '../hooks/useCategories'
-import { useInsights, computeInsights } from '../hooks/useInsights'
+import { useSubscriptions } from '../hooks/useSubscriptions'
 import useUndoableDelete from '../hooks/useUndoableDelete'
 import {
   formatMonthYear,
   formatAmount,
+  formatDate,
   calculateMonthTotals,
   calculateExpensesByCategory,
+  getNextBillingDate,
 } from '../lib/utils'
 import { Card } from '../components/ui/Card'
 import Skeleton from '../components/ui/Skeleton'
@@ -24,17 +25,14 @@ import TransactionList from '../components/transaction/TransactionList'
 import TransactionForm from '../components/transaction/TransactionForm'
 import BudgetBar from '../components/budget/BudgetBar'
 import BudgetDetailModal from '../components/budget/BudgetDetailModal'
-import SpendingBarChart from '../components/charts/SpendingBarChart'
-import CategoryPieChart from '../components/charts/CategoryPieChart'
-import InsightsSection from '../components/insights/InsightsSection'
 import SearchModal from '../components/search/SearchModal'
 
 export default function DashboardPage() {
   const { currentYear, currentMonth, setMonth } = useAppStore()
+  const unverifiedCount = useAppStore((s) => s.unverifiedCount)
   const { data: transactions, isLoading } = useTransactions(currentYear, currentMonth)
   const { data: categories = [] } = useCategories()
-  const { data: monthlyTrend = [] } = useMonthlyTrend(6)
-  const { data: insightData } = useInsights(currentYear, currentMonth)
+  const { data: subscriptions = [] } = useSubscriptions()
   const verifyMutation = useVerifyTransaction()
   const updateMutation = useUpdateTransaction()
   const undoableDelete = useUndoableDelete()
@@ -88,10 +86,26 @@ export default function DashboardPage() {
     [categories, expensesByCategory],
   )
 
-  const insights = useMemo(
-    () => computeInsights(insightData, categories, currentMonth),
-    [insightData, categories, currentMonth],
-  )
+  // Top budget: le plus chargé en %
+  const topBudget = budgetCategories[0] || null
+
+  // Prochain abonnement actif
+  const nextSubscription = useMemo(() => {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    return subscriptions
+      .filter((s) => s.is_active)
+      .map((s) => ({ ...s, nextDate: getNextBillingDate(s) }))
+      .filter((s) => s.nextDate)
+      .sort((a, b) => a.nextDate - b.nextDate)[0] || null
+  }, [subscriptions])
+
+  const nextSubDays = useMemo(() => {
+    if (!nextSubscription) return null
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    return Math.ceil((nextSubscription.nextDate - today) / (1000 * 60 * 60 * 24))
+  }, [nextSubscription])
 
   // Close the expense modal and return to the budget-detail modal if the
   // expense was opened from there.
@@ -160,87 +174,118 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Summary cards */}
-      <div className="px-4 mb-6">
+      {/* Hero solde */}
+      <div className="px-4 mb-5">
         {isLoading ? (
-          <div className="grid grid-cols-3 gap-3">
-            {[1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className="bg-bg-secondary dark:bg-[#0A0A0A] border border-border dark:border-[#333333] rounded-lg p-4"
-              >
-                <Skeleton className="h-3 w-16 mb-3" />
-                <Skeleton className="h-6 w-20" />
-              </div>
-            ))}
+          <div className="bg-bg-secondary dark:bg-[#0A0A0A] border border-border dark:border-[#333333] rounded-lg p-5">
+            <Skeleton className="h-3 w-12 mb-3" />
+            <Skeleton className="h-9 w-36 mb-4" />
+            <div className="flex gap-6 pt-3 border-t border-border dark:border-[#333333]">
+              <div><Skeleton className="h-3 w-14 mb-1.5" /><Skeleton className="h-4 w-20" /></div>
+              <div><Skeleton className="h-3 w-14 mb-1.5" /><Skeleton className="h-4 w-20" /></div>
+            </div>
           </div>
         ) : (
-          <div className="grid grid-cols-3 gap-3">
-            <Card className="!p-4">
-              <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#888888] mb-1">
-                Revenus
-              </p>
-              <p
-                className="text-[16px] font-semibold text-success"
-                style={{ fontVariantNumeric: 'tabular-nums' }}
-              >
-                +{formatAmount(totals.totalIncome)}
-              </p>
-            </Card>
-            <Card className="!p-4">
-              <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#888888] mb-1">
-                Depenses
-              </p>
-              <p
-                className="text-[16px] font-semibold text-text dark:text-[#EDEDED]"
-                style={{ fontVariantNumeric: 'tabular-nums' }}
-              >
-                -{formatAmount(totals.totalExpense)}
-              </p>
-            </Card>
-            <Card className={`!p-4 ${totals.balance < 0 ? '!border-error/30' : ''}`}>
-              <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#888888] mb-1">
-                Solde
-              </p>
-              <p
-                className={`text-[16px] font-semibold ${totals.balance >= 0 ? 'text-success' : 'text-error'}`}
-                style={{ fontVariantNumeric: 'tabular-nums' }}
-              >
-                {totals.balance >= 0 ? '+' : '-'}{formatAmount(Math.abs(totals.balance))}
-              </p>
-            </Card>
-          </div>
+          <Card className="!p-5">
+            <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#888888] mb-1">
+              Solde
+            </p>
+            <p
+              className={`text-[34px] font-bold leading-tight ${totals.balance >= 0 ? 'text-success' : 'text-error'}`}
+              style={{ fontVariantNumeric: 'tabular-nums' }}
+            >
+              {totals.balance >= 0 ? '+' : '-'}{formatAmount(Math.abs(totals.balance))}
+            </p>
+            <div className="flex gap-6 mt-3 pt-3 border-t border-border dark:border-[#333333]">
+              <div>
+                <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#888888] mb-0.5">
+                  Revenus
+                </p>
+                <p className="text-small font-semibold text-success" style={{ fontVariantNumeric: 'tabular-nums' }}>
+                  +{formatAmount(totals.totalIncome)}
+                </p>
+              </div>
+              <div>
+                <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#888888] mb-0.5">
+                  Dépenses
+                </p>
+                <p className="text-small font-semibold text-text dark:text-[#EDEDED]" style={{ fontVariantNumeric: 'tabular-nums' }}>
+                  -{formatAmount(totals.totalExpense)}
+                </p>
+              </div>
+            </div>
+          </Card>
         )}
       </div>
 
-      {/* Analytics */}
-      <div className="px-4 mb-6">
-        <h3 className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#888888] mb-3">
-          Analytiques
-        </h3>
-        <div className="space-y-4">
-          <Card>
-            <p className="text-[13px] font-medium text-text dark:text-[#EDEDED] mb-3">
-              Tendance 6 mois
-            </p>
-            <SpendingBarChart data={monthlyTrend} />
-          </Card>
-          {Object.keys(expensesByCategory).length > 0 && (
-            <Card>
-              <p className="text-[13px] font-medium text-text dark:text-[#EDEDED] mb-3">
-                Dépenses par catégorie
+      {/* Widgets factuels */}
+      {(topBudget || nextSubscription || unverifiedCount > 0) && (
+        <div className="px-4 mb-5 grid grid-cols-2 gap-3">
+          {/* Top budget */}
+          {topBudget && (
+            <Card
+              className="!p-4 cursor-pointer hover:opacity-80 transition-opacity"
+              onClick={() => setBudgetDetail(topBudget)}
+            >
+              <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#888888] mb-1">
+                Budget
               </p>
-              <CategoryPieChart
-                expensesByCategory={expensesByCategory}
-                categories={categories}
-              />
+              <p className="text-small font-semibold text-text dark:text-[#EDEDED] truncate">
+                {topBudget.name}
+              </p>
+              <p
+                className={`text-[20px] font-bold mt-1 leading-tight ${
+                  topBudget.pct >= 90 ? 'text-error' : topBudget.pct >= 70 ? 'text-warning' : 'text-text dark:text-[#EDEDED]'
+                }`}
+                style={{ fontVariantNumeric: 'tabular-nums' }}
+              >
+                {topBudget.pct.toFixed(0)}%
+              </p>
+              <p className="text-label text-text-muted dark:text-[#888888] mt-0.5" style={{ fontVariantNumeric: 'tabular-nums' }}>
+                Reste {formatAmount(parseFloat(topBudget.budget_limit) - topBudget.spent)}
+              </p>
+            </Card>
+          )}
+
+          {/* Prochain abonnement */}
+          {nextSubscription && (
+            <Card className="!p-4">
+              <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#888888] mb-1">
+                Abonnement
+              </p>
+              <p className="text-small font-semibold text-text dark:text-[#EDEDED] truncate">
+                {nextSubscription.name}
+              </p>
+              <p className="text-[20px] font-bold mt-1 leading-tight text-text dark:text-[#EDEDED]">
+                {nextSubDays === 0
+                  ? "Auj."
+                  : nextSubDays === 1
+                  ? 'Demain'
+                  : `J-${nextSubDays}`}
+              </p>
+              <p className="text-label text-text-muted dark:text-[#888888] mt-0.5" style={{ fontVariantNumeric: 'tabular-nums' }}>
+                {formatAmount(nextSubscription.amount)}
+                {nextSubscription.frequency === 'monthly' ? '/mois' : '/an'}
+              </p>
+            </Card>
+          )}
+
+          {/* À vérifier — affiché si pas de nextSubscription mais qu'il y a des txs en attente */}
+          {!nextSubscription && unverifiedCount > 0 && (
+            <Card className="!p-4">
+              <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#888888] mb-1">
+                À vérifier
+              </p>
+              <p className="text-[20px] font-bold mt-1 leading-tight text-warning">
+                {unverifiedCount}
+              </p>
+              <p className="text-label text-text-muted dark:text-[#888888] mt-0.5">
+                transaction{unverifiedCount > 1 ? 's' : ''} en attente
+              </p>
             </Card>
           )}
         </div>
-      </div>
-
-      {/* Insights */}
-      <InsightsSection insights={insights} />
+      )}
 
       {/* Budgets */}
       {budgetCategories.length > 0 && (

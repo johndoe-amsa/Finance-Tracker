@@ -23,8 +23,9 @@ export default function BottomNav() {
           key={item.to}
           to={item.to}
           end={item.to === '/'}
+          aria-label={item.label}
           className={({ isActive }) =>
-            `flex flex-col items-center gap-1 px-3 py-2 transition-colors duration-150 ${
+            `flex items-center justify-center px-5 py-3 transition-colors duration-150 ${
               isActive
                 ? 'text-text dark:text-[#EDEDED]'
                 : 'text-text-muted dark:text-[#888888]'
@@ -32,14 +33,13 @@ export default function BottomNav() {
           }
         >
           <div className="relative">
-            <item.icon size={20} strokeWidth={1.5} />
+            <item.icon size={26} strokeWidth={1.5} />
             {item.to === '/verify' && unverifiedCount > 0 && (
               <span className="absolute -top-1.5 -right-2.5 min-w-[16px] h-4 flex items-center justify-center bg-error text-white text-label font-bold rounded-full px-1">
                 {unverifiedCount}
               </span>
             )}
           </div>
-          <span className="text-label font-medium">{item.label}</span>
         </NavLink>
       ))}
       </div>

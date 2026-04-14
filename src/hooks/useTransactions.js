@@ -163,7 +163,7 @@ export function useMonthlyTrend(count = 6) {
         const label = new Date(year, month - 1, 1)
           .toLocaleDateString('fr-FR', { month: 'short' })
           .replace('.', '')
-        return { label, ...map[key] }
+        return { label, year, month, ...map[key] }
       })
     },
   })

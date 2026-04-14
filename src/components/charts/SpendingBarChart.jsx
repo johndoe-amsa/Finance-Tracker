@@ -11,14 +11,21 @@ import { DATA_COLORS } from '../../data'
 
 function ChartTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null
+  const income  = payload.find((p) => p.dataKey === 'income')?.value  ?? 0
+  const expense = payload.find((p) => p.dataKey === 'expense')?.value ?? 0
+  const balance = income - expense
   return (
-    <div className="bg-bg dark:bg-[#0A0A0A] border border-border-strong dark:border-[#FFFFFF] rounded-md shadow-2 px-3 py-2 text-[12px] font-sans">
-      <p className="text-text-muted dark:text-[#888888] mb-1 capitalize">{label}</p>
-      {payload.map((entry) => (
-        <p key={entry.dataKey} className="font-medium" style={{ color: entry.color }}>
-          {entry.name} : {entry.value.toFixed(2)} CHF
-        </p>
-      ))}
+    <div className="bg-bg dark:bg-[#0A0A0A] border border-border dark:border-[#333333] rounded-md shadow-lg px-3 py-2 text-[12px] font-sans">
+      <p className="text-text-muted dark:text-[#888888] mb-1.5 capitalize font-medium">{label}</p>
+      <p className="font-medium mb-0.5" style={{ color: DATA_COLORS[7] }}>
+        Revenus : {income.toFixed(2)} CHF
+      </p>
+      <p className="font-medium mb-0.5" style={{ color: DATA_COLORS[1] }}>
+        Dépenses : {expense.toFixed(2)} CHF
+      </p>
+      <p className={`font-semibold mt-1 pt-1 border-t border-border dark:border-[#333333] ${balance >= 0 ? 'text-success' : 'text-error'}`}>
+        Solde : {balance >= 0 ? '+' : '−'}{Math.abs(balance).toFixed(2)} CHF
+      </p>
     </div>
   )
 }
@@ -36,13 +43,27 @@ function ChartLegend({ items }) {
   )
 }
 
-export default function SpendingBarChart({ data = [] }) {
+export default function SpendingBarChart({ data = [], onBarClick }) {
   if (!data.length) return null
+
+  const handleClick = onBarClick
+    ? (payload) => {
+        const d = payload?.activePayload?.[0]?.payload
+        if (d?.year && d?.month) onBarClick(d.year, d.month)
+      }
+    : undefined
 
   return (
     <div>
       <ResponsiveContainer width="100%" height={200}>
-        <BarChart data={data} barCategoryGap="40%" barGap={2} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
+        <BarChart
+          data={data}
+          barCategoryGap="40%"
+          barGap={2}
+          margin={{ top: 4, right: 4, left: 0, bottom: 0 }}
+          onClick={handleClick}
+          style={{ cursor: onBarClick ? 'pointer' : 'default' }}
+        >
           <CartesianGrid vertical={false} stroke={DATA_COLORS.grid} strokeWidth={1} />
           <XAxis
             dataKey="label"
@@ -58,14 +79,19 @@ export default function SpendingBarChart({ data = [] }) {
             tickFormatter={(v) => v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v}
           />
           <Tooltip content={<ChartTooltip />} cursor={{ fill: 'rgba(0,0,0,0.04)' }} />
-          <Bar dataKey="income" name="Revenus" fill={DATA_COLORS[7]} radius={[4, 4, 0, 0]} />
-          <Bar dataKey="expense" name="Depenses" fill={DATA_COLORS[1]} radius={[4, 4, 0, 0]} />
+          <Bar dataKey="income"  name="Revenus"   fill={DATA_COLORS[7]} radius={[4, 4, 0, 0]} />
+          <Bar dataKey="expense" name="Dépenses"  fill={DATA_COLORS[1]} radius={[4, 4, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
       <ChartLegend items={[
-        { label: 'Revenus',  color: DATA_COLORS[7] },
-        { label: 'Depenses', color: DATA_COLORS[1] },
+        { label: 'Revenus',   color: DATA_COLORS[7] },
+        { label: 'Dépenses',  color: DATA_COLORS[1] },
       ]} />
+      {onBarClick && (
+        <p className="text-[11px] text-text-subtle dark:text-[#555555] mt-2 text-center">
+          Cliquer sur une barre pour afficher le mois
+        </p>
+      )}
     </div>
   )
 }

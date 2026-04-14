@@ -306,9 +306,10 @@ export default function DashboardPage() {
             Budgets
           </h3>
           <div className="bg-bg-secondary dark:bg-[#0A0A0A] border border-border dark:border-[#333333] rounded-lg divide-y divide-border dark:divide-[#333333]">
-            {budgetCategories.map((cat) => (
+            {budgetCategories.map((cat, i) => (
               <BudgetBar
                 key={cat.id}
+                index={i}
                 name={cat.name}
                 spent={cat.spent}
                 limit={parseFloat(cat.budget_limit)}

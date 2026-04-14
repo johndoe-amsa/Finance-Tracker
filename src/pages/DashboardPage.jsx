@@ -160,14 +160,8 @@ export default function DashboardPage() {
 
   return (
     <div className="pb-24">
-      {/* Month navigation — sticky */}
-      <div
-        className={`sticky top-0 z-[150] transition-[background-color,border-color,backdrop-filter] duration-200 ${
-          !heroVisible
-            ? 'bg-bg/80 dark:bg-[#000000]/80 backdrop-blur-md border-b border-border dark:border-[#1A1A1A]'
-            : ''
-        }`}
-      >
+      {/* Month navigation — sticky, toujours opaque */}
+      <div className="sticky top-0 z-[150] bg-bg dark:bg-[#000000] border-b border-border dark:border-[#1A1A1A]">
         <div className="flex items-center justify-between px-4 py-4">
           <button
             onClick={prevMonth}
@@ -176,18 +170,19 @@ export default function DashboardPage() {
             <ChevronLeft size={20} strokeWidth={1.5} />
           </button>
 
-          {/* Centre : mois + mini-solde animé */}
+          {/* Centre : mois + mini-solde — l'espace est toujours réservé pour
+              éviter tout changement de hauteur du header (qui provoquerait un
+              resize loop avec l'IntersectionObserver). Seule l'opacité change. */}
           <div className="flex flex-col items-center">
             <h2 className="text-h3 text-text dark:text-[#EDEDED] capitalize">
               {formatMonthYear(currentYear, currentMonth)}
             </h2>
             <p
-              className={`text-small font-semibold leading-none transition-all duration-200 overflow-hidden ${
-                !heroVisible && !isLoading
-                  ? 'opacity-100 max-h-5 mt-1'
-                  : 'opacity-0 max-h-0 mt-0'
+              className={`text-small font-semibold leading-none mt-1 transition-opacity duration-200 ${
+                !heroVisible && !isLoading ? 'opacity-100' : 'opacity-0'
               } ${totals.balance >= 0 ? 'text-success' : 'text-error'}`}
               style={{ fontVariantNumeric: 'tabular-nums' }}
+              aria-hidden={heroVisible || isLoading}
             >
               {totals.balance >= 0 ? '+' : '−'}{formatAmount(Math.abs(totals.balance))}
             </p>

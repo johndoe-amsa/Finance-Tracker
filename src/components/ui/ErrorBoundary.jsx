@@ -4,7 +4,7 @@ import Button from './Button'
 
 function FullPageFallback({ error, onReset }) {
   return (
-    <div className="min-h-screen bg-bg dark:bg-[#000000] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-bg dark:bg-[#18181b] flex items-center justify-center px-4">
       <div className="max-w-sm w-full text-center">
         <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-error/10 mb-4">
           <AlertTriangle size={22} className="text-error" strokeWidth={1.5} />
@@ -12,11 +12,11 @@ function FullPageFallback({ error, onReset }) {
         <h1 className="text-[18px] font-semibold text-text dark:text-[#EDEDED] mb-2">
           Une erreur est survenue
         </h1>
-        <p className="text-small text-text-muted dark:text-[#888888] mb-6">
+        <p className="text-small text-text-muted dark:text-[#a1a1aa] mb-6">
           L'application a rencontré un problème inattendu. Rechargez la page pour continuer.
         </p>
         {error?.message && (
-          <p className="text-[11px] font-mono text-text-subtle dark:text-[#555555] bg-bg-secondary dark:bg-dark-bg-secondary border border-border dark:border-dark-border rounded-lg px-3 py-2 mb-6 text-left break-all">
+          <p className="text-[11px] font-mono text-text-subtle dark:text-[#71717a] bg-bg-secondary dark:bg-dark-bg-secondary border border-border dark:border-dark-border rounded-lg px-3 py-2 mb-6 text-left break-all">
             {error.message}
           </p>
         )}
@@ -45,7 +45,7 @@ function SectionFallback({ error, onReset, label }) {
       <p className="text-small font-medium text-text dark:text-[#EDEDED] mb-1">
         {label || 'Section indisponible'}
       </p>
-      <p className="text-[12px] text-text-muted dark:text-[#888888] mb-4">
+      <p className="text-[12px] text-text-muted dark:text-[#a1a1aa] mb-4">
         Une erreur a empêché l'affichage de cette section.
       </p>
       {onReset && (

@@ -147,11 +147,11 @@ export default function DashboardPage() {
   return (
     <div className="pb-24">
       {/* Month navigation — sticky, toujours opaque */}
-      <div className="sticky top-0 z-[150] bg-bg dark:bg-[#000000] border-b border-border dark:border-[#1A1A1A]">
+      <div className="sticky top-0 z-[150] bg-bg dark:bg-[#18181b] border-b border-border dark:border-[#3f3f46]">
         <div className="flex items-center justify-between px-4 py-4">
           <button
             onClick={prevMonth}
-            className="p-2 text-text-muted hover:text-text dark:text-[#888888] dark:hover:text-[#EDEDED] transition-colors duration-150 rounded-md cursor-pointer"
+            className="p-2 text-text-muted hover:text-text dark:text-[#a1a1aa] dark:hover:text-[#EDEDED] transition-colors duration-150 rounded-md cursor-pointer"
           >
             <ChevronLeft size={20} strokeWidth={1.5} />
           </button>
@@ -163,14 +163,14 @@ export default function DashboardPage() {
           <div className="flex items-center gap-1">
             <button
               onClick={() => setShowSearch(true)}
-              className="p-2 text-text-muted hover:text-text dark:text-[#888888] dark:hover:text-[#EDEDED] transition-colors duration-150 rounded-md cursor-pointer"
+              className="p-2 text-text-muted hover:text-text dark:text-[#a1a1aa] dark:hover:text-[#EDEDED] transition-colors duration-150 rounded-md cursor-pointer"
               aria-label="Rechercher"
             >
               <Search size={20} strokeWidth={1.5} />
             </button>
             <button
               onClick={nextMonth}
-              className="p-2 text-text-muted hover:text-text dark:text-[#888888] dark:hover:text-[#EDEDED] transition-colors duration-150 rounded-md cursor-pointer"
+              className="p-2 text-text-muted hover:text-text dark:text-[#a1a1aa] dark:hover:text-[#EDEDED] transition-colors duration-150 rounded-md cursor-pointer"
             >
               <ChevronRight size={20} strokeWidth={1.5} />
             </button>
@@ -181,10 +181,10 @@ export default function DashboardPage() {
       {/* Hero solde */}
       <div className="px-4 pt-4 mb-5">
         {isLoading ? (
-          <div className="bg-bg-secondary dark:bg-[#0A0A0A] border border-border dark:border-[#333333] rounded-lg p-5">
+          <div className="bg-bg-secondary dark:bg-[#1f1f23] border border-border dark:border-[#52525b] rounded-lg p-5">
             <Skeleton className="h-3 w-12 mb-3" />
             <Skeleton className="h-9 w-36 mb-4" />
-            <div className="flex gap-6 pt-3 border-t border-border dark:border-[#333333]">
+            <div className="flex gap-6 pt-3 border-t border-border dark:border-[#52525b]">
               <div><Skeleton className="h-3 w-14 mb-1.5" /><Skeleton className="h-4 w-20" /></div>
               <div><Skeleton className="h-3 w-14 mb-1.5" /><Skeleton className="h-4 w-20" /></div>
             </div>
@@ -193,7 +193,7 @@ export default function DashboardPage() {
           <Card className="!p-5">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#888888] mb-1">
+                <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#a1a1aa] mb-1">
                   Solde
                 </p>
                 <p
@@ -208,9 +208,9 @@ export default function DashboardPage() {
                 className="w-20 h-7 mt-1 flex-shrink-0"
               />
             </div>
-            <div className="flex gap-6 mt-3 pt-3 border-t border-border dark:border-[#333333]">
+            <div className="flex gap-6 mt-3 pt-3 border-t border-border dark:border-[#52525b]">
               <div>
-                <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#888888] mb-0.5">
+                <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#a1a1aa] mb-0.5">
                   Revenus
                 </p>
                 <p className="text-small font-semibold text-success" style={{ fontVariantNumeric: 'tabular-nums' }}>
@@ -218,7 +218,7 @@ export default function DashboardPage() {
                 </p>
               </div>
               <div>
-                <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#888888] mb-0.5">
+                <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#a1a1aa] mb-0.5">
                   Dépenses
                 </p>
                 <p className="text-small font-semibold text-text dark:text-[#EDEDED]" style={{ fontVariantNumeric: 'tabular-nums' }}>
@@ -239,7 +239,7 @@ export default function DashboardPage() {
               className="!p-4 cursor-pointer hover:opacity-80 transition-opacity"
               onClick={() => setBudgetDetail(topBudget)}
             >
-              <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#888888] mb-1">
+              <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#a1a1aa] mb-1">
                 Budget
               </p>
               <p className="text-small font-semibold text-text dark:text-[#EDEDED] truncate">
@@ -253,7 +253,7 @@ export default function DashboardPage() {
               >
                 {topBudget.pct.toFixed(0)}%
               </p>
-              <p className="text-label text-text-muted dark:text-[#888888] mt-0.5" style={{ fontVariantNumeric: 'tabular-nums' }}>
+              <p className="text-label text-text-muted dark:text-[#a1a1aa] mt-0.5" style={{ fontVariantNumeric: 'tabular-nums' }}>
                 Reste {formatAmount(parseFloat(topBudget.budget_limit) - topBudget.spent)}
               </p>
             </Card>
@@ -262,7 +262,7 @@ export default function DashboardPage() {
           {/* Prochain abonnement */}
           {nextSubscription && (
             <Card className="!p-4">
-              <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#888888] mb-1">
+              <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#a1a1aa] mb-1">
                 Abonnement
               </p>
               <p className="text-small font-semibold text-text dark:text-[#EDEDED] truncate">
@@ -275,7 +275,7 @@ export default function DashboardPage() {
                   ? 'Demain'
                   : `J-${nextSubDays}`}
               </p>
-              <p className="text-label text-text-muted dark:text-[#888888] mt-0.5" style={{ fontVariantNumeric: 'tabular-nums' }}>
+              <p className="text-label text-text-muted dark:text-[#a1a1aa] mt-0.5" style={{ fontVariantNumeric: 'tabular-nums' }}>
                 {formatAmount(nextSubscription.amount)}
                 {nextSubscription.frequency === 'monthly' ? '/mois' : '/an'}
               </p>
@@ -285,13 +285,13 @@ export default function DashboardPage() {
           {/* À vérifier — affiché si pas de nextSubscription mais qu'il y a des txs en attente */}
           {!nextSubscription && unverifiedCount > 0 && (
             <Card className="!p-4">
-              <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#888888] mb-1">
+              <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#a1a1aa] mb-1">
                 À vérifier
               </p>
               <p className="text-[20px] font-bold mt-1 leading-tight text-warning">
                 {unverifiedCount}
               </p>
-              <p className="text-label text-text-muted dark:text-[#888888] mt-0.5">
+              <p className="text-label text-text-muted dark:text-[#a1a1aa] mt-0.5">
                 transaction{unverifiedCount > 1 ? 's' : ''} en attente
               </p>
             </Card>
@@ -302,10 +302,10 @@ export default function DashboardPage() {
       {/* Budgets */}
       {budgetCategories.length > 0 && (
         <div className="px-4 mb-6">
-          <h3 className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#888888] mb-3">
+          <h3 className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#a1a1aa] mb-3">
             Budgets
           </h3>
-          <div className="bg-bg-secondary dark:bg-[#0A0A0A] border border-border dark:border-[#333333] rounded-lg divide-y divide-border dark:divide-[#333333]">
+          <div className="bg-bg-secondary dark:bg-[#1f1f23] border border-border dark:border-[#52525b] rounded-lg divide-y divide-border dark:divide-[#52525b]">
             {budgetCategories.map((cat, i) => (
               <BudgetBar
                 key={cat.id}
@@ -323,7 +323,7 @@ export default function DashboardPage() {
 
       {/* Transactions */}
       <div className="px-4">
-        <h3 className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#888888] mb-3">
+        <h3 className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#a1a1aa] mb-3">
           Transactions
         </h3>
         {isLoading ? (

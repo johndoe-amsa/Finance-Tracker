@@ -93,7 +93,7 @@ export default function AnalyticsPage() {
       <div className="flex items-center justify-between px-4 py-4">
         <button
           onClick={prevMonth}
-          className="p-2 text-text-muted hover:text-text dark:text-[#888888] dark:hover:text-[#EDEDED] transition-colors duration-150 rounded-md cursor-pointer"
+          className="p-2 text-text-muted hover:text-text dark:text-[#a1a1aa] dark:hover:text-[#EDEDED] transition-colors duration-150 rounded-md cursor-pointer"
         >
           <ChevronLeft size={20} strokeWidth={1.5} />
         </button>
@@ -102,7 +102,7 @@ export default function AnalyticsPage() {
         </h2>
         <button
           onClick={nextMonth}
-          className="p-2 text-text-muted hover:text-text dark:text-[#888888] dark:hover:text-[#EDEDED] transition-colors duration-150 rounded-md cursor-pointer"
+          className="p-2 text-text-muted hover:text-text dark:text-[#a1a1aa] dark:hover:text-[#EDEDED] transition-colors duration-150 rounded-md cursor-pointer"
         >
           <ChevronRight size={20} strokeWidth={1.5} />
         </button>
@@ -118,10 +118,10 @@ export default function AnalyticsPage() {
               </p>
               {trend && (
                 <div className="flex items-center gap-3 mt-1">
-                  <span className="text-[11px] text-text-muted dark:text-[#888888] flex items-center gap-1">
+                  <span className="text-[11px] text-text-muted dark:text-[#a1a1aa] flex items-center gap-1">
                     Rev.&nbsp;<TrendBadge current={trend.curr.income}  previous={trend.prev.income} />
                   </span>
-                  <span className="text-[11px] text-text-muted dark:text-[#888888] flex items-center gap-1">
+                  <span className="text-[11px] text-text-muted dark:text-[#a1a1aa] flex items-center gap-1">
                     Dép.&nbsp;<TrendBadge current={trend.curr.expense} previous={trend.prev.expense} inverse />
                   </span>
                 </div>
@@ -159,7 +159,7 @@ export default function AnalyticsPage() {
       >
         {selectedSlice && (
           <div>
-            <p className="text-small text-text-muted dark:text-[#888888] mb-4">
+            <p className="text-small text-text-muted dark:text-[#a1a1aa] mb-4">
               {selectedSlice.transactions.length} transaction{selectedSlice.transactions.length !== 1 ? 's' : ''}
               {' · '}
               <span className="font-medium text-text dark:text-[#EDEDED]" style={{ fontVariantNumeric: 'tabular-nums' }}>
@@ -168,21 +168,21 @@ export default function AnalyticsPage() {
             </p>
 
             {selectedSlice.transactions.length === 0 ? (
-              <p className="text-small text-text-muted dark:text-[#888888] text-center py-6">
+              <p className="text-small text-text-muted dark:text-[#a1a1aa] text-center py-6">
                 Aucune transaction
               </p>
             ) : (
-              <div className="rounded-lg border border-border dark:border-[#1A1A1A] divide-y divide-border dark:divide-[#1A1A1A] overflow-hidden">
+              <div className="rounded-lg border border-border dark:border-[#3f3f46] divide-y divide-border dark:divide-[#3f3f46] overflow-hidden">
                 {selectedSlice.transactions.map((tx) => (
                   <div
                     key={tx.id}
-                    className="flex items-center justify-between px-3 py-2.5 bg-bg dark:bg-[#000000]"
+                    className="flex items-center justify-between px-3 py-2.5 bg-bg dark:bg-[#18181b]"
                   >
                     <div className="min-w-0 mr-3">
                       <p className="text-small font-medium text-text dark:text-[#EDEDED] truncate">
                         {tx.title || tx.description || '—'}
                       </p>
-                      <p className="text-[12px] text-text-muted dark:text-[#888888] mt-0.5 capitalize">
+                      <p className="text-[12px] text-text-muted dark:text-[#a1a1aa] mt-0.5 capitalize">
                         {formatDateLabel(tx.date)}
                       </p>
                     </div>

@@ -44,7 +44,7 @@ export default function Toast({ message, type = 'neutral', action, actionLabel, 
   return (
     <div
       data-state={open ? 'open' : 'closed'}
-      className="toast-item flex flex-col bg-bg dark:bg-[#0A0A0A] border border-border dark:border-[#333333] rounded-lg shadow-2 min-w-[280px] max-w-xs overflow-hidden"
+      className="toast-item flex flex-col bg-bg dark:bg-[#1f1f23] border border-border dark:border-[#52525b] rounded-lg shadow-2 min-w-[280px] max-w-xs overflow-hidden"
       role="alert"
     >
       <div className="flex items-center gap-3 px-4 py-3 text-small font-sans">
@@ -60,14 +60,14 @@ export default function Toast({ message, type = 'neutral', action, actionLabel, 
         )}
         <button
           onClick={handleDismiss}
-          className="text-text-muted hover:text-text dark:text-[#888888] dark:hover:text-[#EDEDED] transition-colors duration-150 shrink-0"
+          className="text-text-muted hover:text-text dark:text-[#a1a1aa] dark:hover:text-[#EDEDED] transition-colors duration-150 shrink-0"
           aria-label="Fermer"
         >
           <X size={14} strokeWidth={1.5} />
         </button>
       </div>
       {hasAction && open && (
-        <div className="h-0.5 bg-border dark:bg-[#333333]">
+        <div className="h-0.5 bg-border dark:bg-[#52525b]">
           <div
             className="h-full bg-accent dark:bg-[#EDEDED]"
             style={{

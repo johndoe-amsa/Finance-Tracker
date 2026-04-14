@@ -6,7 +6,7 @@ function CustomTooltip({ active, payload }) {
   if (!active || !payload?.length) return null
   const entry = payload[0]
   return (
-    <div className="bg-bg dark:bg-[#0A0A0A] border border-border dark:border-[#333333] rounded-md shadow-lg px-3 py-2 text-[12px] font-sans">
+    <div className="bg-bg dark:bg-[#1f1f23] border border-border dark:border-[#52525b] rounded-md shadow-lg px-3 py-2 text-[12px] font-sans">
       <p className="font-medium text-text dark:text-[#EDEDED]">{entry.name}</p>
       <p style={{ color: entry.payload.fill }}>{entry.value.toFixed(2)} CHF</p>
     </div>
@@ -68,7 +68,7 @@ export default function CategoryPieChart({ expensesByCategory = {}, categories =
           <div
             key={i}
             className={`flex items-center justify-between text-[12px] rounded-md px-1 py-0.5 transition-colors duration-100 ${
-              onSliceClick ? 'cursor-pointer hover:bg-bg-secondary dark:hover:bg-[#0A0A0A]' : ''
+              onSliceClick ? 'cursor-pointer hover:bg-bg-secondary dark:hover:bg-[#1f1f23]' : ''
             }`}
             onClick={onSliceClick ? () => onSliceClick(entry) : undefined}
           >
@@ -77,10 +77,10 @@ export default function CategoryPieChart({ expensesByCategory = {}, categories =
                 className="w-2 h-2 rounded-full flex-shrink-0"
                 style={{ backgroundColor: entry.fill }}
               />
-              <span className="text-text-muted dark:text-[#888888] truncate">{entry.name}</span>
+              <span className="text-text-muted dark:text-[#a1a1aa] truncate">{entry.name}</span>
             </div>
             <div className="flex items-center gap-2 ml-2 shrink-0">
-              <span className="text-text-muted dark:text-[#888888]">
+              <span className="text-text-muted dark:text-[#a1a1aa]">
                 {((entry.value / total) * 100).toFixed(0)}%
               </span>
               <span
@@ -95,7 +95,7 @@ export default function CategoryPieChart({ expensesByCategory = {}, categories =
       </div>
 
       {onSliceClick && (
-        <p className="text-[11px] text-text-subtle dark:text-[#555555] text-center">
+        <p className="text-[11px] text-text-subtle dark:text-[#71717a] text-center">
           Cliquer sur une catégorie pour voir les transactions
         </p>
       )}

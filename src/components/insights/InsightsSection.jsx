@@ -17,7 +17,7 @@ export default function InsightsSection({ insights }) {
 
   return (
     <div className="px-4 mb-6">
-      <h3 className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#888888] mb-3">
+      <h3 className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#a1a1aa] mb-3">
         Insights
       </h3>
       <div className="grid grid-cols-2 gap-2">
@@ -39,7 +39,7 @@ export default function InsightsSection({ insights }) {
                   <p className={`text-[13px] font-medium ${colors.text} leading-tight`}>
                     {insight.title}
                   </p>
-                  <p className="text-[11px] text-text-muted dark:text-[#888888] mt-0.5 leading-tight">
+                  <p className="text-[11px] text-text-muted dark:text-[#a1a1aa] mt-0.5 leading-tight">
                     {insight.detail}
                   </p>
                 </div>

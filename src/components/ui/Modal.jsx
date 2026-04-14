@@ -73,7 +73,7 @@ export default function Modal({ open, onClose, title, children }) {
     >
       <div
         data-state={state}
-        className="modal-content w-full max-w-lg bg-bg dark:bg-[#0A0A0A] border border-border dark:border-[#333333] rounded-t-2xl sm:rounded-xl shadow-2 p-6 pb-10 sm:pb-6 max-h-[85vh] min-h-[50vh] sm:min-h-0 overflow-y-auto"
+        className="modal-content w-full max-w-lg bg-bg dark:bg-[#1f1f23] border border-border dark:border-[#52525b] rounded-t-2xl sm:rounded-xl shadow-2 p-6 pb-10 sm:pb-6 max-h-[85vh] min-h-[50vh] sm:min-h-0 overflow-y-auto"
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
@@ -87,7 +87,7 @@ export default function Modal({ open, onClose, title, children }) {
           <button
             ref={firstFocusRef}
             onClick={onClose}
-            className="text-text-muted hover:text-text dark:text-[#888888] dark:hover:text-[#EDEDED] transition-colors duration-150 rounded-md p-1"
+            className="text-text-muted hover:text-text dark:text-[#a1a1aa] dark:hover:text-[#EDEDED] transition-colors duration-150 rounded-md p-1"
             aria-label="Fermer"
           >
             <X size={20} strokeWidth={1.5} />

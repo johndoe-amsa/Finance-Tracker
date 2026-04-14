@@ -46,7 +46,7 @@ export default function VerifyPage() {
     <div className="pb-24">
       <div className="px-4 py-4">
         <h2 className="text-h3 text-text dark:text-[#EDEDED]">A verifier</h2>
-        <p className="text-small text-text-muted dark:text-[#888888] mt-1">
+        <p className="text-small text-text-muted dark:text-[#a1a1aa] mt-1">
           {count} transaction{count > 1 ? 's' : ''} en attente de verification
         </p>
       </div>

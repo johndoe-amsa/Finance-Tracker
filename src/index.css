@@ -23,7 +23,7 @@
 }
 
 .dark {
-  --backdrop-bg: rgba(0, 0, 0, 0.85);
+  --backdrop-bg: rgba(24, 24, 27, 0.85);
 }
 
 /* Prevent iOS auto-zoom on input focus (requires font-size >= 16px) */

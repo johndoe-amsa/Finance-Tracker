@@ -52,14 +52,14 @@ export default function BudgetDetailModal({
     >
       <div className="space-y-4">
         <p
-          className="text-small text-text-muted dark:text-[#888888]"
+          className="text-small text-text-muted dark:text-[#a1a1aa]"
           style={{ fontVariantNumeric: 'tabular-nums' }}
         >
           {formatAmount(cachedSpent)} / {formatAmount(limit)}
         </p>
 
         <div className="flex items-center gap-3">
-          <div className="flex-1 h-2 bg-bg-tertiary dark:bg-[#111111] rounded-full overflow-hidden">
+          <div className="flex-1 h-2 bg-bg-tertiary dark:bg-[#27272a] rounded-full overflow-hidden">
             <div
               className={`h-full rounded-full ${barClass || ''}`}
               style={{ width: `${Math.min(pct, 100)}%`, ...(!barClass ? barStyle : {}) }}
@@ -82,21 +82,21 @@ export default function BudgetDetailModal({
             : `Depassement de ${formatAmount(Math.abs(remaining))}`}
         </p>
 
-        <p className="text-[13px] text-text-muted dark:text-[#888888]">
+        <p className="text-[13px] text-text-muted dark:text-[#a1a1aa]">
           {cachedTransactions.length} depense{cachedTransactions.length > 1 ? 's' : ''} ce mois
         </p>
 
         {cachedTransactions.length > 0 && (
-          <div className="border-t border-border dark:border-[#333333] pt-3 space-y-1">
+          <div className="border-t border-border dark:border-[#52525b] pt-3 space-y-1">
             {cachedTransactions.map((tx) => (
               <div
                 key={tx.id}
                 onClick={() => onTransactionClick(tx)}
                 {...interactiveProps(() => onTransactionClick(tx), `${tx.title || tx.description || '\u2014'}, -${formatAmount(tx.amount)}`)}
-                className="flex items-center justify-between p-2 rounded-md hover:bg-bg-secondary dark:hover:bg-[#0A0A0A] cursor-pointer transition-colors duration-150"
+                className="flex items-center justify-between p-2 rounded-md hover:bg-bg-secondary dark:hover:bg-[#1f1f23] cursor-pointer transition-colors duration-150"
               >
                 <div className="flex items-center gap-2 flex-1 min-w-0">
-                  <span className="text-[13px] text-text-muted dark:text-[#888888] shrink-0">
+                  <span className="text-[13px] text-text-muted dark:text-[#a1a1aa] shrink-0">
                     {formatDate(tx.date)}
                   </span>
                   <span className="text-small text-text dark:text-[#EDEDED] truncate">

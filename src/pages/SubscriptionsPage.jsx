@@ -91,14 +91,14 @@ export default function SubscriptionsPage() {
       {!isEmpty && (
         <div className="px-4 mb-6">
           <Card className="!p-4">
-            <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#888888] mb-3">
+            <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#a1a1aa] mb-3">
               Estimation mensuelle
             </p>
             <div className="space-y-1.5" style={{ fontVariantNumeric: 'tabular-nums' }}>
               <Row label="Revenus" amount={totals.income} sign="+" tone="success" />
               <Row label="Charges fixes" amount={totals.fixed_expense} sign="−" />
               <Row label="Abonnements" amount={totals.subscription} sign="−" />
-              <div className="pt-2 mt-2 border-t border-border dark:border-[#1A1A1A]">
+              <div className="pt-2 mt-2 border-t border-border dark:border-[#3f3f46]">
                 <Row
                   label="Reste théorique"
                   amount={Math.abs(net)}
@@ -144,17 +144,17 @@ export default function SubscriptionsPage() {
           return (
             <section key={kind}>
               <div className="flex items-baseline justify-between mb-2">
-                <h3 className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#888888]">
+                <h3 className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#a1a1aa]">
                   {title}
                 </h3>
                 <span
-                  className="text-[13px] text-text-muted dark:text-[#888888]"
+                  className="text-[13px] text-text-muted dark:text-[#a1a1aa]"
                   style={{ fontVariantNumeric: 'tabular-nums' }}
                 >
                   {formatAmount(totals[kind])}/mois
                 </span>
               </div>
-              <div className="bg-bg-secondary dark:bg-[#0A0A0A] border border-border dark:border-[#333333] rounded-lg divide-y divide-border dark:divide-[#333333]">
+              <div className="bg-bg-secondary dark:bg-[#1f1f23] border border-border dark:border-[#52525b] rounded-lg divide-y divide-border dark:divide-[#52525b]">
                 {items.map((sub) => (
                   <SubscriptionItem key={sub.id} subscription={sub} onClick={() => setEditSub(sub)} />
                 ))}
@@ -199,7 +199,7 @@ function Row({ label, amount, sign, tone, bold }) {
     'text-text dark:text-[#EDEDED]'
   return (
     <div className="flex items-center justify-between">
-      <span className={`text-small ${bold ? 'font-medium text-text dark:text-[#EDEDED]' : 'text-text-muted dark:text-[#888888]'}`}>
+      <span className={`text-small ${bold ? 'font-medium text-text dark:text-[#EDEDED]' : 'text-text-muted dark:text-[#a1a1aa]'}`}>
         {label}
       </span>
       <span className={`text-small ${bold ? 'font-semibold' : ''} ${toneClass}`}>

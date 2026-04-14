@@ -4,7 +4,7 @@ export function Card({ children, clickable = false, className = '' }) {
       className={[
         'bg-bg-secondary border border-border rounded-lg p-6 shadow-none',
         'transition-all duration-200',
-        'dark:bg-[#0A0A0A] dark:border-[#333333]',
+        'dark:bg-[#1f1f23] dark:border-[#52525b]',
         clickable ? 'hover:shadow-1 hover:border-border-strong cursor-pointer' : '',
         className,
       ].join(' ')}
@@ -16,7 +16,7 @@ export function Card({ children, clickable = false, className = '' }) {
 
 export function CardLabel({ children }) {
   return (
-    <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#888888] mb-2">
+    <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#a1a1aa] mb-2">
       {children}
     </p>
   )
@@ -32,7 +32,7 @@ export function CardTitle({ children }) {
 
 export function CardBody({ children }) {
   return (
-    <p className="text-small text-text-muted dark:text-[#888888] leading-[1.5]">
+    <p className="text-small text-text-muted dark:text-[#a1a1aa] leading-[1.5]">
       {children}
     </p>
   )

@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { X } from 'lucide-react'
 
 // Must be >= the longest close animation duration in index.css (.modal-content[data-state="closed"]).
-const CLOSE_DURATION = 170
+// Mobile sheet close = 300ms, desktop close = 160ms → prendre le max + marge.
+const CLOSE_DURATION = 320
 
 // Counter-based scroll lock: only unlock when no modals are mounted.
 // A simple save/restore would break when modals open/close in overlapping order
@@ -72,11 +73,13 @@ export default function Modal({ open, onClose, title, children }) {
     >
       <div
         data-state={state}
-        className="modal-content w-full max-w-lg bg-bg dark:bg-[#0A0A0A] border border-border dark:border-[#333333] rounded-t-lg sm:rounded-lg shadow-2 p-6 pb-10 sm:pb-6 max-h-[85vh] min-h-[50vh] sm:min-h-0 overflow-y-auto"
+        className="modal-content w-full max-w-lg bg-bg dark:bg-[#0A0A0A] border border-border dark:border-[#333333] rounded-t-2xl sm:rounded-xl shadow-2 p-6 pb-10 sm:pb-6 max-h-[85vh] min-h-[50vh] sm:min-h-0 overflow-y-auto"
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
       >
+        {/* Drag handle — mobile uniquement */}
+        <div className="sm:hidden w-10 h-1 rounded-full bg-border/70 dark:bg-white/20 mx-auto mb-5 -mt-1" />
         <div className="flex items-center justify-between mb-6">
           <h2 id="modal-title" className="text-h3 text-text dark:text-[#EDEDED]">
             {cachedTitle.current}

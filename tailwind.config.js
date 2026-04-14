@@ -10,7 +10,7 @@ export default {
         'bg-tertiary':   '#F2F2F2',
         text:            '#111111',
         'text-muted':    '#666666',
-        'text-subtle':   '#999999',
+        'text-subtle':   '#6b7280',
         border:          '#EAEAEA',
         'border-strong': '#000000',
         'border-focus':  '#000000',

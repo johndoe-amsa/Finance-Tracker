@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { ChevronLeft, ChevronRight, Wallet, Search } from 'lucide-react'
+import SparklineChart from '../components/charts/SparklineChart'
 import { useAppStore } from '../store/useAppStore'
 import {
   useTransactions,
@@ -12,7 +13,6 @@ import useUndoableDelete from '../hooks/useUndoableDelete'
 import {
   formatMonthYear,
   formatAmount,
-  formatDate,
   calculateMonthTotals,
   calculateExpensesByCategory,
   getNextBillingDate,
@@ -146,36 +146,40 @@ export default function DashboardPage() {
 
   return (
     <div className="pb-24">
-      {/* Month navigation */}
-      <div className="flex items-center justify-between px-4 py-4">
-        <button
-          onClick={prevMonth}
-          className="p-2 text-text-muted hover:text-text dark:text-[#888888] dark:hover:text-[#EDEDED] transition-colors duration-150 rounded-md cursor-pointer"
-        >
-          <ChevronLeft size={20} strokeWidth={1.5} />
-        </button>
-        <h2 className="text-h3 text-text dark:text-[#EDEDED] capitalize">
-          {formatMonthYear(currentYear, currentMonth)}
-        </h2>
-        <div className="flex items-center gap-1">
+      {/* Month navigation — sticky, toujours opaque */}
+      <div className="sticky top-0 z-[150] bg-bg dark:bg-[#000000] border-b border-border dark:border-[#1A1A1A]">
+        <div className="flex items-center justify-between px-4 py-4">
           <button
-            onClick={() => setShowSearch(true)}
-            className="p-2 text-text-muted hover:text-text dark:text-[#888888] dark:hover:text-[#EDEDED] transition-colors duration-150 rounded-md cursor-pointer"
-            aria-label="Rechercher"
-          >
-            <Search size={20} strokeWidth={1.5} />
-          </button>
-          <button
-            onClick={nextMonth}
+            onClick={prevMonth}
             className="p-2 text-text-muted hover:text-text dark:text-[#888888] dark:hover:text-[#EDEDED] transition-colors duration-150 rounded-md cursor-pointer"
           >
-            <ChevronRight size={20} strokeWidth={1.5} />
+            <ChevronLeft size={20} strokeWidth={1.5} />
           </button>
+
+          <h2 className="text-h3 text-text dark:text-[#EDEDED] capitalize">
+            {formatMonthYear(currentYear, currentMonth)}
+          </h2>
+
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setShowSearch(true)}
+              className="p-2 text-text-muted hover:text-text dark:text-[#888888] dark:hover:text-[#EDEDED] transition-colors duration-150 rounded-md cursor-pointer"
+              aria-label="Rechercher"
+            >
+              <Search size={20} strokeWidth={1.5} />
+            </button>
+            <button
+              onClick={nextMonth}
+              className="p-2 text-text-muted hover:text-text dark:text-[#888888] dark:hover:text-[#EDEDED] transition-colors duration-150 rounded-md cursor-pointer"
+            >
+              <ChevronRight size={20} strokeWidth={1.5} />
+            </button>
+          </div>
         </div>
       </div>
 
       {/* Hero solde */}
-      <div className="px-4 mb-5">
+      <div className="px-4 pt-4 mb-5">
         {isLoading ? (
           <div className="bg-bg-secondary dark:bg-[#0A0A0A] border border-border dark:border-[#333333] rounded-lg p-5">
             <Skeleton className="h-3 w-12 mb-3" />
@@ -187,15 +191,23 @@ export default function DashboardPage() {
           </div>
         ) : (
           <Card className="!p-5">
-            <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#888888] mb-1">
-              Solde
-            </p>
-            <p
-              className={`text-[34px] font-bold leading-tight ${totals.balance >= 0 ? 'text-success' : 'text-error'}`}
-              style={{ fontVariantNumeric: 'tabular-nums' }}
-            >
-              {totals.balance >= 0 ? '+' : '-'}{formatAmount(Math.abs(totals.balance))}
-            </p>
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#888888] mb-1">
+                  Solde
+                </p>
+                <p
+                  className={`text-[34px] font-bold leading-tight ${totals.balance >= 0 ? 'text-success' : 'text-error'}`}
+                  style={{ fontVariantNumeric: 'tabular-nums' }}
+                >
+                  {totals.balance >= 0 ? '+' : '−'}{formatAmount(Math.abs(totals.balance))}
+                </p>
+              </div>
+              <SparklineChart
+                transactions={transactions}
+                className="w-20 h-7 mt-1 flex-shrink-0"
+              />
+            </div>
             <div className="flex gap-6 mt-3 pt-3 border-t border-border dark:border-[#333333]">
               <div>
                 <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#888888] mb-0.5">
@@ -210,7 +222,7 @@ export default function DashboardPage() {
                   Dépenses
                 </p>
                 <p className="text-small font-semibold text-text dark:text-[#EDEDED]" style={{ fontVariantNumeric: 'tabular-nums' }}>
-                  -{formatAmount(totals.totalExpense)}
+                  −{formatAmount(totals.totalExpense)}
                 </p>
               </div>
             </div>

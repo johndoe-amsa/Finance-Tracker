@@ -10,6 +10,21 @@ export function formatDate(dateStr) {
   })
 }
 
+export function formatDateLabel(dateStr) {
+  const date = new Date(dateStr + 'T00:00:00')
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const yesterday = new Date(today)
+  yesterday.setDate(yesterday.getDate() - 1)
+  if (date.getTime() === today.getTime()) return "Aujourd'hui"
+  if (date.getTime() === yesterday.getTime()) return 'Hier'
+  return date.toLocaleDateString('fr-CH', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+  })
+}
+
 export function formatMonthYear(year, month) {
   return new Date(year, month - 1, 1).toLocaleDateString('fr-CH', {
     month: 'long',

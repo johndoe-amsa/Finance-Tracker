@@ -35,7 +35,7 @@ export default function BudgetBar({ name, spent, limit, color, onClick, index = 
       onClick={onClick}
       {...interactiveProps(onClick, `${name}, ${spent.toFixed(2)} de ${limit.toFixed(2)} CHF`)}
       className="p-4 hover:bg-bg-tertiary dark:hover:bg-[#111111] cursor-pointer transition-colors duration-150"
-      style={{ animation: `enter 240ms var(--ease-out) ${staggerMs}ms both` }}
+      style={{ animation: `enter 320ms var(--spring) ${staggerMs}ms both` }}
     >
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
@@ -66,7 +66,7 @@ export default function BudgetBar({ name, spent, limit, color, onClick, index = 
             width: `${displayPct}%`,
             transformOrigin: 'left',
             transform: mounted ? 'scaleX(1)' : 'scaleX(0)',
-            transition: 'transform 500ms var(--ease-out)',
+            transition: 'transform 600ms var(--spring)',
             transitionDelay: `${staggerMs + 60}ms`,
             ...(!barColor ? barStyle : {}),
           }}

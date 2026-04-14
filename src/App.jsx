@@ -37,7 +37,7 @@ function AppShell() {
   }
 
   return (
-    <div className="min-h-screen bg-bg dark:bg-[#000000] font-sans text-text dark:text-[#EDEDED]">
+    <div className="min-h-screen bg-bg dark:bg-[#18181b] font-sans text-text dark:text-[#EDEDED]">
       <SideNav onAddTransaction={() => setShowAddTx(true)} />
       <main className="md:ml-56">
         <div className="max-w-3xl mx-auto">

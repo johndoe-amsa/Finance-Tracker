@@ -52,7 +52,7 @@ export default function CategoryForm({
       />
 
       <div>
-        <p className="text-[13px] font-medium text-text-muted dark:text-[#888888] mb-2">Couleur</p>
+        <p className="text-[13px] font-medium text-text-muted dark:text-[#a1a1aa] mb-2">Couleur</p>
         <div className="flex flex-wrap gap-2">
           {PALETTE.map((c) => (
             <button
@@ -86,7 +86,7 @@ export default function CategoryForm({
       )}
 
       {isEdit && (
-        <p className="text-[13px] text-text-muted dark:text-[#888888]">
+        <p className="text-[13px] text-text-muted dark:text-[#a1a1aa]">
           {transactionCount} transaction{transactionCount > 1 ? 's' : ''} liee{transactionCount > 1 ? 's' : ''} a cette categorie.
         </p>
       )}

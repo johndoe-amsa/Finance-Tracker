@@ -26,7 +26,7 @@ export default function BudgetBar({ name, spent, limit, color, onClick, index = 
     ? 'text-error font-bold'
     : actualPct >= 70
     ? 'text-warning font-semibold'
-    : 'text-text-muted dark:text-[#888888]'
+    : 'text-text-muted dark:text-[#a1a1aa]'
 
   const staggerMs = index * 60
 
@@ -34,7 +34,7 @@ export default function BudgetBar({ name, spent, limit, color, onClick, index = 
     <div
       onClick={onClick}
       {...interactiveProps(onClick, `${name}, ${spent.toFixed(2)} de ${limit.toFixed(2)} CHF`)}
-      className="p-4 hover:bg-bg-tertiary dark:hover:bg-[#111111] cursor-pointer transition-colors duration-150"
+      className="p-4 hover:bg-bg-tertiary dark:hover:bg-[#27272a] cursor-pointer transition-colors duration-150"
       style={{ animation: `enter 280ms var(--ios-ease) ${staggerMs}ms both` }}
     >
       <div className="flex items-center justify-between mb-2">
@@ -58,7 +58,7 @@ export default function BudgetBar({ name, spent, limit, color, onClick, index = 
 
       <div className="relative h-2">
         {/* Track */}
-        <div className="absolute inset-0 bg-bg-tertiary dark:bg-[#111111] rounded-full" />
+        <div className="absolute inset-0 bg-bg-tertiary dark:bg-[#27272a] rounded-full" />
         {/* Fill — animé via scaleX pour partir de 0 */}
         <div
           className={`absolute left-0 top-0 h-full rounded-full ${barColor || ''}`}

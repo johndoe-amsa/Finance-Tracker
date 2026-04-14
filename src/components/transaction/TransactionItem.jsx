@@ -19,20 +19,20 @@ function TransactionItem({ transaction: tx, onClick, onVerify }) {
     <div
       onClick={handleClick}
       {...interactiveProps(handleClick, `${displayTitle}, ${tx.type === 'income' ? '+' : '-'}${formatAmount(tx.amount)}`)}
-      className="flex items-center justify-between p-3 bg-bg dark:bg-[#000000] hover:bg-bg-secondary dark:hover:bg-[#0A0A0A] cursor-pointer transition-colors duration-150"
+      className="flex items-center justify-between p-3 bg-bg dark:bg-[#18181b] hover:bg-bg-secondary dark:hover:bg-[#1f1f23] cursor-pointer transition-colors duration-150"
     >
       <div className="flex-1 min-w-0 mr-3">
         <p className="text-small font-medium text-text dark:text-[#EDEDED] truncate">
           {displayTitle}
         </p>
         {showDescription && (
-          <p className="text-[13px] text-text-muted dark:text-[#888888] truncate mt-0.5">
+          <p className="text-[13px] text-text-muted dark:text-[#a1a1aa] truncate mt-0.5">
             {tx.description}
           </p>
         )}
         <div className="flex flex-wrap gap-1.5 mt-1.5">
           {tx.categories?.name && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[11px] font-medium tracking-[0.02em] bg-bg-secondary dark:bg-[#111111] text-text-muted dark:text-[#888888]">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[11px] font-medium tracking-[0.02em] bg-bg-secondary dark:bg-[#27272a] text-text-muted dark:text-[#a1a1aa]">
               <span
                 className="w-2 h-2 rounded-full flex-shrink-0"
                 style={{ backgroundColor: tx.categories.color || '#6366f1' }}

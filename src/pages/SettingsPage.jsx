@@ -89,7 +89,7 @@ export default function SettingsPage() {
           <div className="flex items-center gap-1">
             <button
               onClick={() => setActiveSub(null)}
-              className="-ml-1 p-1 flex items-center text-text-muted hover:text-text dark:text-[#888888] dark:hover:text-[#EDEDED] transition-colors duration-150"
+              className="-ml-1 p-1 flex items-center text-text-muted hover:text-text dark:text-[#a1a1aa] dark:hover:text-[#EDEDED] transition-colors duration-150"
             >
               <ChevronLeft size={20} strokeWidth={1.5} />
             </button>
@@ -105,14 +105,14 @@ export default function SettingsPage() {
         {/* List */}
         <div className="px-4">
           {isLoading ? (
-            <div className="bg-bg-secondary dark:bg-[#0A0A0A] border border-border dark:border-[#333333] rounded-lg p-4 space-y-3">
+            <div className="bg-bg-secondary dark:bg-[#1f1f23] border border-border dark:border-[#52525b] rounded-lg p-4 space-y-3">
               <Skeleton className="h-4 w-1/2" />
               <Skeleton className="h-4 w-1/3" />
             </div>
           ) : (
-            <div className="bg-bg-secondary dark:bg-[#0A0A0A] border border-border dark:border-[#333333] rounded-lg divide-y divide-border dark:divide-[#333333] overflow-hidden">
+            <div className="bg-bg-secondary dark:bg-[#1f1f23] border border-border dark:border-[#52525b] rounded-lg divide-y divide-border dark:divide-[#52525b] overflow-hidden">
               {items.length === 0 ? (
-                <p className="p-4 text-small text-text-muted dark:text-[#888888] text-center">
+                <p className="p-4 text-small text-text-muted dark:text-[#a1a1aa] text-center">
                   Aucune catégorie
                 </p>
               ) : (
@@ -174,17 +174,17 @@ export default function SettingsPage() {
 
       {/* ── Apparence ── */}
       <div className="px-4 mb-6">
-        <h3 className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#888888] mb-3">
+        <h3 className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#a1a1aa] mb-3">
           Apparence
         </h3>
-        <div className="bg-bg-secondary dark:bg-[#0A0A0A] border border-border dark:border-[#333333] rounded-lg overflow-hidden">
+        <div className="bg-bg-secondary dark:bg-[#1f1f23] border border-border dark:border-[#52525b] rounded-lg overflow-hidden">
           <button
             onClick={() => setDark(!dark)}
-            className="w-full flex items-center justify-between p-4 hover:bg-bg-tertiary dark:hover:bg-[#111111] transition-colors duration-150"
+            className="w-full flex items-center justify-between p-4 hover:bg-bg-tertiary dark:hover:bg-[#27272a] transition-colors duration-150"
           >
             <div className="flex items-center gap-3">
               {dark ? (
-                <Sun size={16} strokeWidth={1.5} className="text-text-muted dark:text-[#888888]" />
+                <Sun size={16} strokeWidth={1.5} className="text-text-muted dark:text-[#a1a1aa]" />
               ) : (
                 <Moon size={16} strokeWidth={1.5} className="text-text-muted" />
               )}
@@ -195,7 +195,7 @@ export default function SettingsPage() {
             {/* Toggle switch */}
             <div
               className={`w-10 h-6 rounded-full relative transition-colors duration-200 ${
-                dark ? 'bg-accent' : 'bg-border dark:bg-[#333333]'
+                dark ? 'bg-accent' : 'bg-border dark:bg-[#52525b]'
               }`}
             >
               <div
@@ -210,43 +210,43 @@ export default function SettingsPage() {
 
       {/* ── Catégories ── */}
       <div className="px-4 mb-6">
-        <h3 className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#888888] mb-3">
+        <h3 className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#a1a1aa] mb-3">
           Catégories
         </h3>
-        <div className="bg-bg-secondary dark:bg-[#0A0A0A] border border-border dark:border-[#333333] rounded-lg divide-y divide-border dark:divide-[#333333] overflow-hidden">
+        <div className="bg-bg-secondary dark:bg-[#1f1f23] border border-border dark:border-[#52525b] rounded-lg divide-y divide-border dark:divide-[#52525b] overflow-hidden">
           <button
             onClick={() => setActiveSub('expense')}
-            className="w-full flex items-center justify-between p-4 hover:bg-bg-tertiary dark:hover:bg-[#111111] transition-colors duration-150"
+            className="w-full flex items-center justify-between p-4 hover:bg-bg-tertiary dark:hover:bg-[#27272a] transition-colors duration-150"
           >
             <div className="flex items-center gap-3">
-              <Tag size={16} strokeWidth={1.5} className="text-text-muted dark:text-[#888888]" />
+              <Tag size={16} strokeWidth={1.5} className="text-text-muted dark:text-[#a1a1aa]" />
               <span className="text-small font-medium text-text dark:text-[#EDEDED]">Dépenses</span>
             </div>
             <div className="flex items-center gap-2">
               {!isLoading && (
-                <span className="text-small text-text-muted dark:text-[#888888]">
+                <span className="text-small text-text-muted dark:text-[#a1a1aa]">
                   {expenseCategories.length}
                 </span>
               )}
-              <ChevronRight size={16} strokeWidth={1.5} className="text-text-muted dark:text-[#888888]" />
+              <ChevronRight size={16} strokeWidth={1.5} className="text-text-muted dark:text-[#a1a1aa]" />
             </div>
           </button>
 
           <button
             onClick={() => setActiveSub('income')}
-            className="w-full flex items-center justify-between p-4 hover:bg-bg-tertiary dark:hover:bg-[#111111] transition-colors duration-150"
+            className="w-full flex items-center justify-between p-4 hover:bg-bg-tertiary dark:hover:bg-[#27272a] transition-colors duration-150"
           >
             <div className="flex items-center gap-3">
-              <Tag size={16} strokeWidth={1.5} className="text-text-muted dark:text-[#888888]" />
+              <Tag size={16} strokeWidth={1.5} className="text-text-muted dark:text-[#a1a1aa]" />
               <span className="text-small font-medium text-text dark:text-[#EDEDED]">Revenus</span>
             </div>
             <div className="flex items-center gap-2">
               {!isLoading && (
-                <span className="text-small text-text-muted dark:text-[#888888]">
+                <span className="text-small text-text-muted dark:text-[#a1a1aa]">
                   {incomeCategories.length}
                 </span>
               )}
-              <ChevronRight size={16} strokeWidth={1.5} className="text-text-muted dark:text-[#888888]" />
+              <ChevronRight size={16} strokeWidth={1.5} className="text-text-muted dark:text-[#a1a1aa]" />
             </div>
           </button>
         </div>
@@ -254,13 +254,13 @@ export default function SettingsPage() {
 
       {/* ── Compte ── */}
       <div className="px-4 mb-6">
-        <h3 className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#888888] mb-3">
+        <h3 className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#a1a1aa] mb-3">
           Compte
         </h3>
-        <div className="bg-bg-secondary dark:bg-[#0A0A0A] border border-border dark:border-[#333333] rounded-lg overflow-hidden">
+        <div className="bg-bg-secondary dark:bg-[#1f1f23] border border-border dark:border-[#52525b] rounded-lg overflow-hidden">
           <button
             onClick={() => setConfirmLogout(true)}
-            className="w-full flex items-center gap-3 p-4 hover:bg-bg-tertiary dark:hover:bg-[#111111] transition-colors duration-150"
+            className="w-full flex items-center gap-3 p-4 hover:bg-bg-tertiary dark:hover:bg-[#27272a] transition-colors duration-150"
           >
             <LogOut size={16} strokeWidth={1.5} className="text-error" />
             <span className="text-small font-medium text-error">Se déconnecter</span>

@@ -10,11 +10,11 @@ export default function SelectField({
   inCard = false,
   disabled = false,
 }) {
-  const inputBg = inCard ? 'bg-bg dark:bg-[#000000]' : 'bg-bg-secondary dark:bg-[#0A0A0A]'
+  const inputBg = inCard ? 'bg-bg dark:bg-[#18181b]' : 'bg-bg-secondary dark:bg-[#1f1f23]'
 
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={id} className="text-[13px] font-medium text-text-muted dark:text-[#888888]">
+      <label htmlFor={id} className="text-[13px] font-medium text-text-muted dark:text-[#a1a1aa]">
         {label}
       </label>
       <div className="relative">
@@ -28,7 +28,7 @@ export default function SelectField({
             inputBg,
             error
               ? 'border-error ring-[3px] ring-error/10'
-              : 'border-border dark:border-[#333333] focus:border-border-focus focus:ring-[3px] focus:ring-black/[0.08]',
+              : 'border-border dark:border-[#52525b] focus:border-border-focus focus:ring-[3px] focus:ring-black/[0.08]',
             'focus:outline-none',
             'disabled:opacity-50 disabled:cursor-not-allowed',
             'dark:text-[#EDEDED]',
@@ -40,7 +40,7 @@ export default function SelectField({
         <ChevronDown
           size={14}
           strokeWidth={1.5}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted dark:text-[#888888] pointer-events-none"
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted dark:text-[#a1a1aa] pointer-events-none"
           aria-hidden="true"
         />
       </div>

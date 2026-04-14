@@ -119,26 +119,26 @@ export default function SearchModal({ open, onClose, onItemClick, onVerify }) {
   return (
     <div
       data-state={state}
-      className="modal-backdrop fixed inset-0 z-modal bg-bg dark:bg-[#000000]"
+      className="modal-backdrop fixed inset-0 z-modal bg-bg dark:bg-[#18181b]"
     >
       <div
         data-state={state}
         className="search-modal h-full flex flex-col"
       >
         {/* Search header */}
-        <div className="flex items-center gap-3 px-4 py-3 border-b border-border dark:border-[#333333]">
-          <Search size={18} strokeWidth={1.5} className="text-text-muted dark:text-[#888888] shrink-0" />
+        <div className="flex items-center gap-3 px-4 py-3 border-b border-border dark:border-[#52525b]">
+          <Search size={18} strokeWidth={1.5} className="text-text-muted dark:text-[#a1a1aa] shrink-0" />
           <input
             ref={inputRef}
             type="text"
             placeholder="Rechercher une transaction..."
             value={filters.term}
             onChange={(e) => dispatch({ type: 'SET_TERM', value: e.target.value })}
-            className="flex-1 bg-transparent text-text dark:text-[#EDEDED] text-small font-sans placeholder:text-text-subtle dark:placeholder:text-[#555555] outline-none"
+            className="flex-1 bg-transparent text-text dark:text-[#EDEDED] text-small font-sans placeholder:text-text-subtle dark:placeholder:text-[#71717a] outline-none"
           />
           <button
             onClick={() => setShowFilters((v) => !v)}
-            className={`relative p-1.5 rounded-md transition-colors duration-150 ${showFilters ? 'bg-bg-secondary dark:bg-[#111111]' : ''} text-text-muted dark:text-[#888888] hover:text-text dark:hover:text-[#EDEDED]`}
+            className={`relative p-1.5 rounded-md transition-colors duration-150 ${showFilters ? 'bg-bg-secondary dark:bg-[#27272a]' : ''} text-text-muted dark:text-[#a1a1aa] hover:text-text dark:hover:text-[#EDEDED]`}
             aria-label="Filtres"
           >
             <SlidersHorizontal size={18} strokeWidth={1.5} />
@@ -150,7 +150,7 @@ export default function SearchModal({ open, onClose, onItemClick, onVerify }) {
           </button>
           <button
             onClick={onClose}
-            className="text-text-muted hover:text-text dark:text-[#888888] dark:hover:text-[#EDEDED] transition-colors duration-150 p-1"
+            className="text-text-muted hover:text-text dark:text-[#a1a1aa] dark:hover:text-[#EDEDED] transition-colors duration-150 p-1"
             aria-label="Fermer"
           >
             <X size={20} strokeWidth={1.5} />
@@ -159,10 +159,10 @@ export default function SearchModal({ open, onClose, onItemClick, onVerify }) {
 
         {/* Filters panel */}
         {showFilters && (
-          <div className="px-4 py-3 border-b border-border dark:border-[#333333] space-y-3" style={{ animation: 'enter 200ms var(--ease-out) both' }}>
+          <div className="px-4 py-3 border-b border-border dark:border-[#52525b] space-y-3" style={{ animation: 'enter 200ms var(--ease-out) both' }}>
             {/* Type filter */}
             <div className="flex items-center gap-2">
-              <span className="text-[12px] font-medium text-text-muted dark:text-[#888888] w-16 shrink-0">Type</span>
+              <span className="text-[12px] font-medium text-text-muted dark:text-[#a1a1aa] w-16 shrink-0">Type</span>
               <div className="flex gap-1.5">
                 {[
                   { value: '', label: 'Tous' },
@@ -175,7 +175,7 @@ export default function SearchModal({ open, onClose, onItemClick, onVerify }) {
                     className={`px-3 py-1 text-[12px] font-medium rounded-full transition-colors duration-150 ${
                       filters.txType === opt.value
                         ? 'bg-accent dark:bg-[#EDEDED] text-bg dark:text-[#000000]'
-                        : 'bg-bg-secondary dark:bg-[#111111] text-text-muted dark:text-[#888888] hover:text-text dark:hover:text-[#EDEDED]'
+                        : 'bg-bg-secondary dark:bg-[#27272a] text-text-muted dark:text-[#a1a1aa] hover:text-text dark:hover:text-[#EDEDED]'
                     }`}
                   >
                     {opt.label}
@@ -186,11 +186,11 @@ export default function SearchModal({ open, onClose, onItemClick, onVerify }) {
 
             {/* Category filter */}
             <div className="flex items-center gap-2">
-              <span className="text-[12px] font-medium text-text-muted dark:text-[#888888] w-16 shrink-0">Categorie</span>
+              <span className="text-[12px] font-medium text-text-muted dark:text-[#a1a1aa] w-16 shrink-0">Categorie</span>
               <select
                 value={filters.categoryId}
                 onChange={(e) => dispatch({ type: 'SET_CATEGORY', value: e.target.value })}
-                className="flex-1 h-8 pl-2 pr-6 rounded-md text-[12px] text-text dark:text-[#EDEDED] bg-bg-secondary dark:bg-[#111111] border border-border dark:border-[#333333] appearance-none"
+                className="flex-1 h-8 pl-2 pr-6 rounded-md text-[12px] text-text dark:text-[#EDEDED] bg-bg-secondary dark:bg-[#27272a] border border-border dark:border-[#52525b] appearance-none"
               >
                 <option value="">Toutes</option>
                 {filteredCategories.map((c) => (
@@ -201,13 +201,13 @@ export default function SearchModal({ open, onClose, onItemClick, onVerify }) {
 
             {/* Amount range */}
             <div className="flex items-center gap-2">
-              <span className="text-[12px] font-medium text-text-muted dark:text-[#888888] w-16 shrink-0">Montant</span>
+              <span className="text-[12px] font-medium text-text-muted dark:text-[#a1a1aa] w-16 shrink-0">Montant</span>
               <input
                 type="number"
                 placeholder="Min"
                 value={filters.amountMin}
                 onChange={(e) => dispatch({ type: 'SET_AMOUNT_MIN', value: e.target.value })}
-                className="w-24 h-8 px-2 rounded-md text-[12px] text-text dark:text-[#EDEDED] bg-bg-secondary dark:bg-[#111111] border border-border dark:border-[#333333] placeholder:text-text-subtle dark:placeholder:text-[#555555]"
+                className="w-24 h-8 px-2 rounded-md text-[12px] text-text dark:text-[#EDEDED] bg-bg-secondary dark:bg-[#27272a] border border-border dark:border-[#52525b] placeholder:text-text-subtle dark:placeholder:text-[#71717a]"
                 inputMode="decimal"
               />
               <span className="text-[12px] text-text-muted">—</span>
@@ -216,26 +216,26 @@ export default function SearchModal({ open, onClose, onItemClick, onVerify }) {
                 placeholder="Max"
                 value={filters.amountMax}
                 onChange={(e) => dispatch({ type: 'SET_AMOUNT_MAX', value: e.target.value })}
-                className="w-24 h-8 px-2 rounded-md text-[12px] text-text dark:text-[#EDEDED] bg-bg-secondary dark:bg-[#111111] border border-border dark:border-[#333333] placeholder:text-text-subtle dark:placeholder:text-[#555555]"
+                className="w-24 h-8 px-2 rounded-md text-[12px] text-text dark:text-[#EDEDED] bg-bg-secondary dark:bg-[#27272a] border border-border dark:border-[#52525b] placeholder:text-text-subtle dark:placeholder:text-[#71717a]"
                 inputMode="decimal"
               />
             </div>
 
             {/* Date range */}
             <div className="flex items-center gap-2">
-              <span className="text-[12px] font-medium text-text-muted dark:text-[#888888] w-16 shrink-0">Periode</span>
+              <span className="text-[12px] font-medium text-text-muted dark:text-[#a1a1aa] w-16 shrink-0">Periode</span>
               <input
                 type="date"
                 value={filters.dateFrom}
                 onChange={(e) => dispatch({ type: 'SET_DATE_FROM', value: e.target.value })}
-                className="flex-1 h-8 px-2 rounded-md text-[12px] text-text dark:text-[#EDEDED] bg-bg-secondary dark:bg-[#111111] border border-border dark:border-[#333333]"
+                className="flex-1 h-8 px-2 rounded-md text-[12px] text-text dark:text-[#EDEDED] bg-bg-secondary dark:bg-[#27272a] border border-border dark:border-[#52525b]"
               />
               <span className="text-[12px] text-text-muted">—</span>
               <input
                 type="date"
                 value={filters.dateTo}
                 onChange={(e) => dispatch({ type: 'SET_DATE_TO', value: e.target.value })}
-                className="flex-1 h-8 px-2 rounded-md text-[12px] text-text dark:text-[#EDEDED] bg-bg-secondary dark:bg-[#111111] border border-border dark:border-[#333333]"
+                className="flex-1 h-8 px-2 rounded-md text-[12px] text-text dark:text-[#EDEDED] bg-bg-secondary dark:bg-[#27272a] border border-border dark:border-[#52525b]"
               />
             </div>
 
@@ -255,8 +255,8 @@ export default function SearchModal({ open, onClose, onItemClick, onVerify }) {
         <div className="flex-1 overflow-y-auto px-4 py-4">
           {!shouldSearch ? (
             <div className="flex flex-col items-center justify-center h-full text-center">
-              <Search size={40} strokeWidth={1} className="text-text-subtle dark:text-[#333333] mb-3" />
-              <p className="text-small text-text-muted dark:text-[#888888]">
+              <Search size={40} strokeWidth={1} className="text-text-subtle dark:text-[#71717a] mb-3" />
+              <p className="text-small text-text-muted dark:text-[#a1a1aa]">
                 Tapez au moins 2 caracteres ou appliquez un filtre
               </p>
             </div>
@@ -280,7 +280,7 @@ export default function SearchModal({ open, onClose, onItemClick, onVerify }) {
             />
           ) : (
             <div>
-              <p className="text-label text-text-muted dark:text-[#888888] mb-3">
+              <p className="text-label text-text-muted dark:text-[#a1a1aa] mb-3">
                 {results.length} resultat{results.length > 1 ? 's' : ''}
               </p>
               <TransactionList

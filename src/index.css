@@ -10,14 +10,9 @@
   --ease-in-out:   cubic-bezier(0.4, 0, 0.2, 1);
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
 
-  /* Spring physics — légère surcompensation puis stabilisation naturelle (feeling iOS natif).
-     Overshoot ~4 % au milieu de la durée, retour fluide. */
-  --spring: linear(
-    0, 0.006, 0.025 2.8%, 0.101 6.1%, 0.539 18.9%,
-    0.721 25%, 0.849 31.1%, 0.937 38.1%, 1.001 45.7%,
-    1.025 50%, 1.036, 1.041 56.3%, 1.039, 1.030,
-    1.017, 1.006, 1.001 72.1%, 0.998, 1
-  );
+  /* Easing iOS natif — décélération ultra-rapide sans rebond.
+     L'élément part vite et se pose doucement, exactement comme UIKit. */
+  --ios-ease: cubic-bezier(0.32, 0.72, 0, 1);
 
   --dur-fast:   160ms;
   --dur-medium: 240ms;
@@ -95,29 +90,30 @@ label,
   to   { opacity: 0; }
 }
 
-/* Modal content (desktop / tablet : center scale) — plus de course, spring */
+/* Modal content (desktop / tablet : center scale) */
 @keyframes modal-content-in {
-  from { opacity: 0; transform: translateY(28px) scale(0.93); }
+  from { opacity: 0; transform: translateY(16px) scale(0.96); }
   to   { opacity: 1; transform: translateY(0)    scale(1); }
 }
 @keyframes modal-content-out {
   from { opacity: 1; transform: translateY(0)    scale(1); }
-  to   { opacity: 0; transform: translateY(14px) scale(0.97); }
+  to   { opacity: 0; transform: translateY(10px) scale(0.97); }
 }
 
-/* Modal content (mobile : bottom-sheet) — entre depuis plus bas, spring */
+/* Sheet mobile — glissement complet depuis le bas, sans aucun fade (= iOS natif).
+   L'élément est opaque et visible dès le début, il ne fait que se déplacer. */
 @keyframes sheet-content-in {
-  from { opacity: 0; transform: translateY(72px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { transform: translateY(105%); }
+  to   { transform: translateY(0); }
 }
 @keyframes sheet-content-out {
-  from { opacity: 1; transform: translateY(0); }
-  to   { opacity: 0; transform: translateY(40px); }
+  from { transform: translateY(0); }
+  to   { transform: translateY(105%); }
 }
 
-/* Toast — plus d'amplitude, spring */
+/* Toast */
 @keyframes toast-in {
-  from { opacity: 0; transform: translateY(24px) scale(0.92); }
+  from { opacity: 0; transform: translateY(20px) scale(0.94); }
   to   { opacity: 1; transform: translateY(0)    scale(1); }
 }
 @keyframes toast-out {
@@ -171,16 +167,15 @@ label,
 }
 
 .modal-content {
-  will-change: opacity, transform;
+  will-change: transform;
   backface-visibility: hidden;
   transform-origin: center center;
 }
 .modal-content[data-state="open"] {
-  /* Spring physics : descente plus prononcée, légère surcompensation puis stabilisation */
-  animation: modal-content-in 360ms var(--spring) both;
+  animation: modal-content-in 280ms var(--ios-ease) both;
 }
 .modal-content[data-state="closed"] {
-  animation: modal-content-out 180ms var(--ease-in) both;
+  animation: modal-content-out 160ms var(--ease-in) both;
 }
 
 @media (max-width: 639px) {
@@ -188,11 +183,11 @@ label,
     transform-origin: center bottom;
   }
   .modal-content[data-state="open"] {
-    /* Sheet mobile : entre de plus loin, spring plus expressive */
-    animation: sheet-content-in 400ms var(--spring) both;
+    /* Sheet iOS : glissement depuis hors-écran, éasing rapide, sans fade */
+    animation: sheet-content-in 460ms var(--ios-ease) both;
   }
   .modal-content[data-state="closed"] {
-    animation: sheet-content-out 200ms var(--ease-in) both;
+    animation: sheet-content-out 300ms cubic-bezier(0.4, 0, 1, 1) both;
   }
 }
 
@@ -205,7 +200,7 @@ label,
   backface-visibility: hidden;
 }
 .toast-item[data-state="open"] {
-  animation: toast-in 340ms var(--spring) both;
+  animation: toast-in 300ms var(--ios-ease) both;
 }
 .toast-item[data-state="closed"] {
   animation: toast-out 200ms var(--ease-in) both;
@@ -231,7 +226,7 @@ label,
 
 .press-feedback {
   transition:
-    transform 380ms var(--spring),
+    transform 300ms var(--ios-ease),
     opacity   150ms ease,
     color     150ms ease,
     background-color 150ms ease,
@@ -240,7 +235,7 @@ label,
 .press-feedback:active:not(:disabled) {
   transform: scale(0.95);
   transition:
-    transform 80ms cubic-bezier(0.36, 0.66, 0.04, 1),
+    transform 80ms cubic-bezier(0.4, 0, 1, 1),
     opacity   150ms ease,
     color     150ms ease,
     background-color 150ms ease,

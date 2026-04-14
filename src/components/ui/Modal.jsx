@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { X } from 'lucide-react'
 
 // Must be >= the longest close animation duration in index.css (.modal-content[data-state="closed"]).
-// Mobile sheet close = 200ms, desktop close = 180ms → prendre le max + marge.
-const CLOSE_DURATION = 220
+// Mobile sheet close = 300ms, desktop close = 160ms → prendre le max + marge.
+const CLOSE_DURATION = 320
 
 // Counter-based scroll lock: only unlock when no modals are mounted.
 // A simple save/restore would break when modals open/close in overlapping order

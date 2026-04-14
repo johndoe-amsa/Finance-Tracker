@@ -40,27 +40,13 @@ export default function DashboardPage() {
   const [editTx, setEditTx] = useState(null)
   const [budgetDetail, setBudgetDetail] = useState(null)
   const [showSearch, setShowSearch] = useState(false)
-  const [heroVisible, setHeroVisible] = useState(true)
-  const heroRef = useRef(null)
   // Remember which budget category opened the expense modal so we can
   // navigate back to it when the expense modal is dismissed.
   const budgetDetailBeforeEdit = useRef(null)
 
   useEffect(() => {
     window.scrollTo(0, 0)
-    setHeroVisible(true)
   }, [currentYear, currentMonth])
-
-  useEffect(() => {
-    const el = heroRef.current
-    if (!el) return
-    const obs = new IntersectionObserver(
-      ([entry]) => setHeroVisible(entry.isIntersecting),
-      { threshold: 0 },
-    )
-    obs.observe(el)
-    return () => obs.disconnect()
-  }, [])
 
   const prevMonth = () => {
     if (currentMonth === 1) setMonth(currentYear - 1, 12)
@@ -170,23 +156,9 @@ export default function DashboardPage() {
             <ChevronLeft size={20} strokeWidth={1.5} />
           </button>
 
-          {/* Centre : mois + mini-solde — l'espace est toujours réservé pour
-              éviter tout changement de hauteur du header (qui provoquerait un
-              resize loop avec l'IntersectionObserver). Seule l'opacité change. */}
-          <div className="flex flex-col items-center">
-            <h2 className="text-h3 text-text dark:text-[#EDEDED] capitalize">
-              {formatMonthYear(currentYear, currentMonth)}
-            </h2>
-            <p
-              className={`text-small font-semibold leading-none mt-1 transition-opacity duration-200 ${
-                !heroVisible && !isLoading ? 'opacity-100' : 'opacity-0'
-              } ${totals.balance >= 0 ? 'text-success' : 'text-error'}`}
-              style={{ fontVariantNumeric: 'tabular-nums' }}
-              aria-hidden={heroVisible || isLoading}
-            >
-              {totals.balance >= 0 ? '+' : '−'}{formatAmount(Math.abs(totals.balance))}
-            </p>
-          </div>
+          <h2 className="text-h3 text-text dark:text-[#EDEDED] capitalize">
+            {formatMonthYear(currentYear, currentMonth)}
+          </h2>
 
           <div className="flex items-center gap-1">
             <button
@@ -207,7 +179,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Hero solde */}
-      <div className="px-4 mb-5" ref={heroRef}>
+      <div className="px-4 pt-4 mb-5">
         {isLoading ? (
           <div className="bg-bg-secondary dark:bg-[#0A0A0A] border border-border dark:border-[#333333] rounded-lg p-5">
             <Skeleton className="h-3 w-12 mb-3" />

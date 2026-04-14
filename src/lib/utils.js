@@ -57,6 +57,37 @@ export function calculateMonthlyTotal(subscriptions) {
   return total
 }
 
+// Déduit le kind effectif d'un enregistrement (rétro-compat avec les données
+// créées avant l'ajout de la colonne `kind`).
+export function subscriptionKind(sub) {
+  if (sub?.kind) return sub.kind
+  return sub?.type === 'income' ? 'income' : 'subscription'
+}
+
+// Convertit un kind en type income/expense pour les calculs et la DB.
+export function kindToType(kind) {
+  return kind === 'income' ? 'income' : 'expense'
+}
+
+export const KIND_LABELS = {
+  subscription: 'Abonnement',
+  fixed_expense: 'Charge fixe',
+  income: 'Revenu',
+}
+
+// Renvoie le coût mensuel lissé pour un seul kind (valeur absolue).
+// Utile pour afficher "Abonnements : 45 CHF/mois" indépendamment du signe.
+export function monthlyAmountByKind(subscriptions, targetKind) {
+  let total = 0
+  for (const sub of subscriptions) {
+    if (!sub.is_active) continue
+    if (subscriptionKind(sub) !== targetKind) continue
+    const amount = parseFloat(sub.amount)
+    total += sub.frequency === 'monthly' ? amount : amount / 12
+  }
+  return total
+}
+
 export function interactiveProps(onClick, ariaLabel) {
   return {
     role: 'button',

@@ -1,6 +1,6 @@
 import { memo, useCallback } from 'react'
 import Badge from '../ui/Badge'
-import { formatAmount, interactiveProps } from '../../lib/utils'
+import { formatAmount, interactiveProps, KIND_LABELS } from '../../lib/utils'
 
 function TransactionItem({ transaction: tx, onClick, onVerify }) {
   const displayTitle = tx.title || tx.description || '\u2014'
@@ -40,7 +40,9 @@ function TransactionItem({ transaction: tx, onClick, onVerify }) {
               {tx.categories.name}
             </span>
           )}
-          {tx.is_auto && <Badge>Auto</Badge>}
+          {tx.is_auto && (
+            <Badge>{KIND_LABELS[tx.subscriptions?.kind] || 'Auto'}</Badge>
+          )}
           {!tx.is_verified && (
             <button
               onClick={handleVerify}

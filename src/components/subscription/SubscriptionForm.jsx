@@ -4,12 +4,17 @@ import Field from '../ui/Field'
 import SelectField from '../ui/SelectField'
 import ToggleGroup from '../ui/ToggleGroup'
 import { useCategories } from '../../hooks/useCategories'
-import { todayISO } from '../../lib/utils'
+import { todayISO, kindToType } from '../../lib/utils'
 import useFormValidation from '../../hooks/useFormValidation'
 
 export default function SubscriptionForm({ subscription, onSubmit, onDelete, loading }) {
+  // Déduit le kind initial pour les enregistrements existants (avant migration appliquée).
+  const initialKind =
+    subscription?.kind ||
+    (subscription?.type === 'income' ? 'income' : 'subscription')
+
+  const [kind, setKind] = useState(initialKind)
   const [name, setName] = useState(subscription?.name || '')
-  const [type, setType] = useState(subscription?.type || 'expense')
   const [amount, setAmount] = useState(subscription?.amount?.toString() || '')
   const [frequency, setFrequency] = useState(subscription?.frequency || 'monthly')
   const [categoryId, setCategoryId] = useState(subscription?.category_id || '')
@@ -17,6 +22,8 @@ export default function SubscriptionForm({ subscription, onSubmit, onDelete, loa
   const [startDate, setStartDate] = useState(subscription?.start_date || todayISO())
   const [endDate, setEndDate] = useState(subscription?.end_date || '')
   const [isActive, setIsActive] = useState(subscription?.is_active ?? true)
+
+  const type = kindToType(kind)
 
   const { data: categories = [] } = useCategories()
   const filteredCategories = categories.filter((c) => c.type === type)
@@ -33,6 +40,7 @@ export default function SubscriptionForm({ subscription, onSubmit, onDelete, loa
 
   const { errors, validate, clearError } = useFormValidation(validationSchema)
 
+  // Si on change le kind et que la catégorie sélectionnée n'est plus compatible, on la réinitialise.
   useEffect(() => {
     if (categoryId) {
       const cat = categories.find((c) => c.id === categoryId)
@@ -47,6 +55,7 @@ export default function SubscriptionForm({ subscription, onSubmit, onDelete, loa
     if (!validate({ name, amount, billingDay, startDate })) return
     onSubmit({
       name,
+      kind,
       type,
       amount: parseFloat(amount),
       frequency,
@@ -58,29 +67,35 @@ export default function SubscriptionForm({ subscription, onSubmit, onDelete, loa
     })
   }
 
+  const namePlaceholder =
+    kind === 'income' ? 'Ex : Salaire' :
+    kind === 'fixed_expense' ? 'Ex : Loyer' :
+    'Ex : Netflix'
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <label className="text-[13px] font-medium text-text-muted block mb-1">Type de récurrence</label>
+        <ToggleGroup
+          options={[
+            { value: 'subscription', label: 'Abonnement' },
+            { value: 'fixed_expense', label: 'Charge fixe' },
+            { value: 'income', label: 'Revenu' },
+          ]}
+          value={kind}
+          onChange={setKind}
+        />
+      </div>
+
       <Field
         label="Nom"
         id="sub-name"
-        placeholder="Ex : Netflix"
+        placeholder={namePlaceholder}
         value={name}
         onChange={(e) => { setName(e.target.value); clearError('name') }}
         error={errors.name}
         inCard
       />
-
-      <div>
-        <label className="text-[13px] font-medium text-text-muted block mb-1">Type</label>
-        <ToggleGroup
-          options={[
-            { value: 'expense', label: 'Depense' },
-            { value: 'income', label: 'Revenu' },
-          ]}
-          value={type}
-          onChange={setType}
-        />
-      </div>
 
       <Field
         label="Montant"
@@ -161,7 +176,7 @@ export default function SubscriptionForm({ subscription, onSubmit, onDelete, loa
             className="w-4 h-4 accent-accent"
           />
           <label htmlFor="sub-active" className="text-small text-text dark:text-[#EDEDED]">
-            Abonnement actif
+            Récurrence active
           </label>
         </div>
       )}

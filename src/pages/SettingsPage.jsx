@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Plus, LogOut, Moon, Sun } from 'lucide-react'
+import { Plus, LogOut, Moon, Sun, ChevronRight, ChevronLeft, Tag } from 'lucide-react'
 import {
   useCategories,
   useCreateCategory,
@@ -20,6 +20,7 @@ export default function SettingsPage() {
   const updateMutation = useUpdateCategory()
   const deleteMutation = useDeleteCategory()
 
+  const [activeSub, setActiveSub] = useState(null) // null | 'expense' | 'income'
   const [addType, setAddType] = useState(null)
   const [editCat, setEditCat] = useState(null)
   const [confirmDelete, setConfirmDelete] = useState(false)
@@ -33,7 +34,7 @@ export default function SettingsPage() {
 
   useEffect(() => {
     window.scrollTo(0, 0)
-  }, [])
+  }, [activeSub])
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', dark)
@@ -76,124 +77,204 @@ export default function SettingsPage() {
     window.location.reload()
   }
 
-  const renderCategorySection = (title, type, items) => (
-    <div className="px-4 mb-6">
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#888888]">
-          {title}
-        </h3>
-        <Button variant="ghost" size="sm" onClick={() => setAddType(type)}>
-          <Plus size={16} strokeWidth={1.5} /> Ajouter
-        </Button>
-      </div>
-      {isLoading ? (
-        <div className="bg-bg-secondary dark:bg-[#0A0A0A] border border-border dark:border-[#333333] rounded-lg p-4 space-y-3">
-          <Skeleton className="h-4 w-1/2" />
-          <Skeleton className="h-4 w-1/3" />
+  // ── Sub-panel : category list ──────────────────────────────────────────────
+  if (activeSub) {
+    const items = activeSub === 'expense' ? expenseCategories : incomeCategories
+    const label = activeSub === 'expense' ? 'dépenses' : 'revenus'
+
+    return (
+      <div className="pb-24 page-transition">
+        {/* Header */}
+        <div className="px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setActiveSub(null)}
+              className="-ml-1 p-1 flex items-center text-text-muted hover:text-text dark:text-[#888888] dark:hover:text-[#EDEDED] transition-colors duration-150"
+            >
+              <ChevronLeft size={20} strokeWidth={1.5} />
+            </button>
+            <h2 className="text-h3 text-text dark:text-[#EDEDED]">
+              Catégories de {label}
+            </h2>
+          </div>
+          <Button variant="ghost" size="sm" onClick={() => setAddType(activeSub)}>
+            <Plus size={16} strokeWidth={1.5} /> Ajouter
+          </Button>
         </div>
-      ) : (
-        <div className="bg-bg-secondary dark:bg-[#0A0A0A] border border-border dark:border-[#333333] rounded-lg divide-y divide-border dark:divide-[#333333]">
-          {items.length === 0 ? (
-            <p className="p-4 text-small text-text-muted dark:text-[#888888] text-center">
-              Aucune categorie
-            </p>
+
+        {/* List */}
+        <div className="px-4">
+          {isLoading ? (
+            <div className="bg-bg-secondary dark:bg-[#0A0A0A] border border-border dark:border-[#333333] rounded-lg p-4 space-y-3">
+              <Skeleton className="h-4 w-1/2" />
+              <Skeleton className="h-4 w-1/3" />
+            </div>
           ) : (
-            items.map((cat) => (
-              <CategoryItem key={cat.id} category={cat} onClick={() => setEditCat(cat)} />
-            ))
+            <div className="bg-bg-secondary dark:bg-[#0A0A0A] border border-border dark:border-[#333333] rounded-lg divide-y divide-border dark:divide-[#333333] overflow-hidden">
+              {items.length === 0 ? (
+                <p className="p-4 text-small text-text-muted dark:text-[#888888] text-center">
+                  Aucune catégorie
+                </p>
+              ) : (
+                items.map((cat) => (
+                  <CategoryItem key={cat.id} category={cat} onClick={() => setEditCat(cat)} />
+                ))
+              )}
+            </div>
           )}
         </div>
-      )}
-    </div>
-  )
 
+        {/* Modals */}
+        <Modal
+          open={!!addType}
+          onClose={() => setAddType(null)}
+          title={`Ajouter une catégorie de ${addType === 'expense' ? 'dépenses' : 'revenus'}`}
+        >
+          {addType && (
+            <CategoryForm type={addType} onSubmit={handleCreate} loading={createMutation.isPending} />
+          )}
+        </Modal>
+
+        <Modal open={!!editCat} onClose={() => setEditCat(null)} title="Modifier la catégorie">
+          {editCat && (
+            <CategoryForm
+              category={editCat}
+              type={editCat.type}
+              transactionCount={txCount}
+              onSubmit={handleUpdate}
+              onDelete={() => setConfirmDelete(true)}
+              loading={updateMutation.isPending}
+            />
+          )}
+        </Modal>
+
+        <ConfirmDialog
+          open={confirmDelete}
+          onClose={() => setConfirmDelete(false)}
+          onConfirm={handleDelete}
+          title="Supprimer la catégorie"
+          message={
+            txCount > 0
+              ? `${txCount} transaction${txCount > 1 ? 's' : ''} ${txCount > 1 ? 'sont liées' : 'est liée'} à cette catégorie. La catégorie sera retirée de ces transactions. Continuer ?`
+              : 'Êtes-vous sûr de vouloir supprimer cette catégorie ?'
+          }
+          confirmLabel="Supprimer"
+          loading={deleteMutation.isPending}
+        />
+      </div>
+    )
+  }
+
+  // ── Main settings view ─────────────────────────────────────────────────────
   return (
-    <div className="pb-24">
+    <div className="pb-24 page-transition">
       <div className="px-4 py-4">
-        <h2 className="text-h3 text-text dark:text-[#EDEDED]">Parametres</h2>
+        <h2 className="text-h3 text-text dark:text-[#EDEDED]">Paramètres</h2>
       </div>
 
-      {renderCategorySection('Categories de depenses', 'expense', expenseCategories)}
-      {renderCategorySection('Categories de revenus', 'income', incomeCategories)}
-
-      {/* Dark mode toggle */}
-      <div className="px-4 mb-4">
-        <button
-          onClick={() => setDark(!dark)}
-          className="w-full flex items-center justify-between p-4 bg-bg-secondary dark:bg-[#0A0A0A] border border-border dark:border-[#333333] rounded-lg transition-colors duration-150 cursor-pointer"
-        >
-          <div className="flex items-center gap-3">
-            {dark ? (
-              <Sun size={20} strokeWidth={1.5} className="text-text-muted dark:text-[#888888]" />
-            ) : (
-              <Moon size={20} strokeWidth={1.5} className="text-text-muted" />
-            )}
-            <span className="text-small font-medium text-text dark:text-[#EDEDED]">
-              {dark ? 'Mode clair' : 'Mode sombre'}
-            </span>
-          </div>
-        </button>
+      {/* ── Apparence ── */}
+      <div className="px-4 mb-6">
+        <h3 className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#888888] mb-3">
+          Apparence
+        </h3>
+        <div className="bg-bg-secondary dark:bg-[#0A0A0A] border border-border dark:border-[#333333] rounded-lg overflow-hidden">
+          <button
+            onClick={() => setDark(!dark)}
+            className="w-full flex items-center justify-between p-4 hover:bg-bg-tertiary dark:hover:bg-[#111111] transition-colors duration-150"
+          >
+            <div className="flex items-center gap-3">
+              {dark ? (
+                <Sun size={16} strokeWidth={1.5} className="text-text-muted dark:text-[#888888]" />
+              ) : (
+                <Moon size={16} strokeWidth={1.5} className="text-text-muted" />
+              )}
+              <span className="text-small font-medium text-text dark:text-[#EDEDED]">
+                {dark ? 'Mode clair' : 'Mode sombre'}
+              </span>
+            </div>
+            {/* Toggle switch */}
+            <div
+              className={`w-10 h-6 rounded-full relative transition-colors duration-200 ${
+                dark ? 'bg-accent' : 'bg-border dark:bg-[#333333]'
+              }`}
+            >
+              <div
+                className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-transform duration-200 ${
+                  dark ? 'translate-x-5' : 'translate-x-1'
+                }`}
+              />
+            </div>
+          </button>
+        </div>
       </div>
 
-      {/* Logout */}
-      <div className="px-4">
-        <Button
-          variant="destructive"
-          className="w-full justify-center"
-          onClick={() => setConfirmLogout(true)}
-        >
-          <LogOut size={16} strokeWidth={1.5} /> Se deconnecter
-        </Button>
+      {/* ── Catégories ── */}
+      <div className="px-4 mb-6">
+        <h3 className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#888888] mb-3">
+          Catégories
+        </h3>
+        <div className="bg-bg-secondary dark:bg-[#0A0A0A] border border-border dark:border-[#333333] rounded-lg divide-y divide-border dark:divide-[#333333] overflow-hidden">
+          <button
+            onClick={() => setActiveSub('expense')}
+            className="w-full flex items-center justify-between p-4 hover:bg-bg-tertiary dark:hover:bg-[#111111] transition-colors duration-150"
+          >
+            <div className="flex items-center gap-3">
+              <Tag size={16} strokeWidth={1.5} className="text-text-muted dark:text-[#888888]" />
+              <span className="text-small font-medium text-text dark:text-[#EDEDED]">Dépenses</span>
+            </div>
+            <div className="flex items-center gap-2">
+              {!isLoading && (
+                <span className="text-small text-text-muted dark:text-[#888888]">
+                  {expenseCategories.length}
+                </span>
+              )}
+              <ChevronRight size={16} strokeWidth={1.5} className="text-text-muted dark:text-[#888888]" />
+            </div>
+          </button>
+
+          <button
+            onClick={() => setActiveSub('income')}
+            className="w-full flex items-center justify-between p-4 hover:bg-bg-tertiary dark:hover:bg-[#111111] transition-colors duration-150"
+          >
+            <div className="flex items-center gap-3">
+              <Tag size={16} strokeWidth={1.5} className="text-text-muted dark:text-[#888888]" />
+              <span className="text-small font-medium text-text dark:text-[#EDEDED]">Revenus</span>
+            </div>
+            <div className="flex items-center gap-2">
+              {!isLoading && (
+                <span className="text-small text-text-muted dark:text-[#888888]">
+                  {incomeCategories.length}
+                </span>
+              )}
+              <ChevronRight size={16} strokeWidth={1.5} className="text-text-muted dark:text-[#888888]" />
+            </div>
+          </button>
+        </div>
       </div>
 
-      {/* Add category */}
-      <Modal
-        open={!!addType}
-        onClose={() => setAddType(null)}
-        title={`Ajouter une categorie de ${addType === 'expense' ? 'depenses' : 'revenus'}`}
-      >
-        {addType && (
-          <CategoryForm type={addType} onSubmit={handleCreate} loading={createMutation.isPending} />
-        )}
-      </Modal>
+      {/* ── Compte ── */}
+      <div className="px-4 mb-6">
+        <h3 className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#888888] mb-3">
+          Compte
+        </h3>
+        <div className="bg-bg-secondary dark:bg-[#0A0A0A] border border-border dark:border-[#333333] rounded-lg overflow-hidden">
+          <button
+            onClick={() => setConfirmLogout(true)}
+            className="w-full flex items-center gap-3 p-4 hover:bg-bg-tertiary dark:hover:bg-[#111111] transition-colors duration-150"
+          >
+            <LogOut size={16} strokeWidth={1.5} className="text-error" />
+            <span className="text-small font-medium text-error">Se déconnecter</span>
+          </button>
+        </div>
+      </div>
 
-      {/* Edit category */}
-      <Modal open={!!editCat} onClose={() => setEditCat(null)} title="Modifier la categorie">
-        {editCat && (
-          <CategoryForm
-            category={editCat}
-            type={editCat.type}
-            transactionCount={txCount}
-            onSubmit={handleUpdate}
-            onDelete={() => setConfirmDelete(true)}
-            loading={updateMutation.isPending}
-          />
-        )}
-      </Modal>
-
-      {/* Confirm delete category */}
-      <ConfirmDialog
-        open={confirmDelete}
-        onClose={() => setConfirmDelete(false)}
-        onConfirm={handleDelete}
-        title="Supprimer la categorie"
-        message={
-          txCount > 0
-            ? `${txCount} transaction${txCount > 1 ? 's' : ''} ${txCount > 1 ? 'sont liees' : 'est liee'} a cette categorie. La categorie sera retiree de ces transactions. Continuer ?`
-            : 'Etes-vous sur de vouloir supprimer cette categorie ?'
-        }
-        confirmLabel="Supprimer"
-        loading={deleteMutation.isPending}
-      />
-
-      {/* Confirm logout */}
       <ConfirmDialog
         open={confirmLogout}
         onClose={() => setConfirmLogout(false)}
         onConfirm={handleLogout}
-        title="Deconnexion"
-        message="Etes-vous sur de vouloir vous deconnecter ?"
-        confirmLabel="Se deconnecter"
+        title="Déconnexion"
+        message="Êtes-vous sûr de vouloir vous déconnecter ?"
+        confirmLabel="Se déconnecter"
       />
     </div>
   )

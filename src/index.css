@@ -179,6 +179,16 @@ label,
 }
 
 @media (max-width: 639px) {
+  /* Backdrop mobile : apparaît quasi-instantanément (pas de fade progressif),
+     puis disparaît en synchro avec la sheet qui redescend. */
+  .modal-backdrop[data-state="open"] {
+    animation: modal-backdrop-in 80ms ease both;
+  }
+  .modal-backdrop[data-state="closed"] {
+    animation: modal-backdrop-out 400ms var(--ease-in) both;
+    pointer-events: none;
+  }
+
   .modal-content {
     transform-origin: center bottom;
   }
@@ -187,7 +197,8 @@ label,
     animation: sheet-content-in 460ms var(--ios-ease) both;
   }
   .modal-content[data-state="closed"] {
-    animation: sheet-content-out 300ms cubic-bezier(0.4, 0, 1, 1) both;
+    /* Durée longue pour que l'animation aille jusqu'au bout avant le démontage */
+    animation: sheet-content-out 400ms cubic-bezier(0.36, 0, 0.66, 0) forwards;
   }
 }
 

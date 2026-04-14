@@ -13,7 +13,7 @@ export function useTransactions(year, month) {
     queryFn: async () => {
       const { data, error } = await db
         .from('transactions')
-        .select('*, categories(name, color)')
+        .select('*, categories(name, color), subscriptions(kind)')
         .gte('date', startDate)
         .lte('date', endDate)
         .order('date', { ascending: false })
@@ -29,7 +29,7 @@ export function useUnverifiedTransactions() {
     queryFn: async () => {
       const { data, error } = await db
         .from('transactions')
-        .select('*, categories(name, color)')
+        .select('*, categories(name, color), subscriptions(kind)')
         .eq('is_verified', false)
         .order('date', { ascending: false })
       if (error) throw error

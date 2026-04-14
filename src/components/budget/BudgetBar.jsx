@@ -10,8 +10,7 @@ export default function BudgetBar({ name, spent, limit, color, onClick, index = 
   }, [])
 
   const actualPct  = limit > 0 ? (spent / limit) * 100 : 0
-  // Plafond à 115 % : le dépassement est visible mais borné visuellement
-  const displayPct = Math.min(actualPct, 115)
+  const displayPct = Math.min(actualPct, 100)
   const remaining  = limit - spent
   const isOverspent = remaining < 0
 
@@ -57,7 +56,6 @@ export default function BudgetBar({ name, spent, limit, color, onClick, index = 
         </p>
       </div>
 
-      {/* overflow-visible : la barre peut dépasser visuellement les 100 % */}
       <div className="relative h-2">
         {/* Track */}
         <div className="absolute inset-0 bg-bg-tertiary dark:bg-[#111111] rounded-full" />

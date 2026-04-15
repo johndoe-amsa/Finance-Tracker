@@ -83,7 +83,7 @@ export default function SubscriptionsPage() {
     <div className="pb-24">
       <div className="flex items-center justify-between px-4 py-4">
         <h2 className="text-h3 text-text dark:text-[#EDEDED]">Récurrences</h2>
-        <Button variant="secondary" size="sm" onClick={() => setShowAdd(true)}>
+        <Button variant="ghost" size="sm" onClick={() => setShowAdd(true)}>
           <Plus size={16} strokeWidth={1.5} /> Ajouter
         </Button>
       </div>
@@ -131,7 +131,7 @@ export default function SubscriptionsPage() {
             title="Aucune récurrence"
             description="Abonnements, charges fixes et revenus récurrents apparaîtront ici."
             action={
-              <Button variant="secondary" onClick={() => setShowAdd(true)}>
+              <Button variant="ghost" onClick={() => setShowAdd(true)}>
                 Ajouter une récurrence
               </Button>
             }

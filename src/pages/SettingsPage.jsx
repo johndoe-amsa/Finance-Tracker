@@ -39,6 +39,10 @@ export default function SettingsPage() {
   useEffect(() => {
     document.documentElement.classList.toggle('dark', dark)
     localStorage.setItem('theme', dark ? 'dark' : 'light')
+    const themeColor = document.querySelector('meta[name="theme-color"]')
+    if (themeColor) themeColor.content = dark ? '#18181b' : '#FFFFFF'
+    const statusBar = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]')
+    if (statusBar) statusBar.content = dark ? 'black' : 'default'
   }, [dark])
 
   useEffect(() => {

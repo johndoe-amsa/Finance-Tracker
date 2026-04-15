@@ -24,6 +24,11 @@
 
 .dark {
   --backdrop-bg: rgba(24, 24, 27, 0.85);
+  background-color: #18181b;
+}
+
+.dark body {
+  background-color: #18181b;
 }
 
 /* Prevent iOS auto-zoom on input focus (requires font-size >= 16px) */

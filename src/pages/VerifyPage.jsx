@@ -2,10 +2,10 @@ import { useState, useEffect, useCallback } from 'react'
 import { CheckSquare } from 'lucide-react'
 import {
   useUnverifiedTransactions,
-  useVerifyTransaction,
   useUpdateTransaction,
 } from '../hooks/useTransactions'
 import useUndoableDelete from '../hooks/useUndoableDelete'
+import useUndoableVerify from '../hooks/useUndoableVerify'
 import TransactionList from '../components/transaction/TransactionList'
 import Modal from '../components/ui/Modal'
 import TransactionForm from '../components/transaction/TransactionForm'
@@ -14,7 +14,7 @@ import EmptyState from '../components/ui/EmptyState'
 
 export default function VerifyPage() {
   const { data: transactions, isLoading } = useUnverifiedTransactions()
-  const verifyMutation = useVerifyTransaction()
+  const undoableVerify = useUndoableVerify()
   const updateMutation = useUpdateTransaction()
   const undoableDelete = useUndoableDelete()
 
@@ -38,8 +38,8 @@ export default function VerifyPage() {
   // Stable handler so memoized TransactionItem children don't re-render
   // on every parent render.
   const handleVerify = useCallback(
-    (id) => verifyMutation.mutate(id),
-    [verifyMutation],
+    (tx) => undoableVerify(tx),
+    [undoableVerify],
   )
 
   return (

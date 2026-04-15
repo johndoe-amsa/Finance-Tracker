@@ -10,9 +10,9 @@ function TransactionItem({ transaction: tx, onClick, onVerify }) {
   const handleVerify = useCallback(
     (e) => {
       e.stopPropagation()
-      onVerify(tx.id)
+      onVerify(tx)
     },
-    [onVerify, tx.id],
+    [onVerify, tx],
   )
 
   return (

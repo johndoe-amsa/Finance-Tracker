@@ -14,12 +14,18 @@
     <meta name="apple-mobile-web-app-title" content="Finance" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
+    <!-- Theme color (PWA status bar) -->
+    <meta name="theme-color" content="#FFFFFF" />
+
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <script>
       (function () {
-        if (localStorage.getItem('theme') === 'dark')
+        if (localStorage.getItem('theme') === 'dark') {
           document.documentElement.classList.add('dark')
+          document.querySelector('meta[name="theme-color"]').content = '#18181b'
+          document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]').content = 'black'
+        }
       })()
     </script>
   </head>

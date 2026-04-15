@@ -26,7 +26,7 @@ export default function TransactionList({ transactions, onItemClick, onVerify, o
               <SwipeableRow
                 key={tx.id}
                 onSwipeLeft={onDelete ? () => onDelete(tx) : undefined}
-                onSwipeRight={!tx.is_verified && onVerify ? () => onVerify(tx.id) : undefined}
+                onSwipeRight={!tx.is_verified && onVerify ? () => onVerify(tx) : undefined}
               >
                 <TransactionItem
                   transaction={tx}

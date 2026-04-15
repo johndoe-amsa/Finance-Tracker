@@ -4,12 +4,12 @@ import SparklineChart from '../components/charts/SparklineChart'
 import { useAppStore } from '../store/useAppStore'
 import {
   useTransactions,
-  useVerifyTransaction,
   useUpdateTransaction,
 } from '../hooks/useTransactions'
 import { useCategories } from '../hooks/useCategories'
 import { useSubscriptions } from '../hooks/useSubscriptions'
 import useUndoableDelete from '../hooks/useUndoableDelete'
+import useUndoableVerify from '../hooks/useUndoableVerify'
 import {
   formatMonthYear,
   formatAmount,
@@ -33,7 +33,7 @@ export default function DashboardPage() {
   const { data: transactions, isLoading } = useTransactions(currentYear, currentMonth)
   const { data: categories = [] } = useCategories()
   const { data: subscriptions = [] } = useSubscriptions()
-  const verifyMutation = useVerifyTransaction()
+  const undoableVerify = useUndoableVerify()
   const updateMutation = useUpdateTransaction()
   const undoableDelete = useUndoableDelete()
 
@@ -140,8 +140,8 @@ export default function DashboardPage() {
   // without breaking referential equality on every render.
   const handleItemClick = useCallback((tx) => setEditTx(tx), [])
   const handleVerify = useCallback(
-    (id) => verifyMutation.mutate(id),
-    [verifyMutation],
+    (tx) => undoableVerify(tx),
+    [undoableVerify],
   )
 
   return (

@@ -29,7 +29,7 @@ export default function SettingsPage() {
   const [dark, setDark] = useState(() => {
     const saved = localStorage.getItem('theme')
     if (saved) return saved === 'dark'
-    return window.matchMedia('(prefers-color-scheme: dark)').matches
+    return false
   })
 
   useEffect(() => {
@@ -195,7 +195,7 @@ export default function SettingsPage() {
             {/* Toggle switch */}
             <div
               className={`w-10 h-6 rounded-full relative transition-colors duration-200 ${
-                dark ? 'bg-accent' : 'bg-border dark:bg-[#52525b]'
+                dark ? 'bg-success' : 'bg-border dark:bg-[#52525b]'
               }`}
             >
               <div

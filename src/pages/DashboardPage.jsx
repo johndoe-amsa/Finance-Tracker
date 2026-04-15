@@ -302,7 +302,7 @@ export default function DashboardPage() {
       {/* Budgets */}
       {budgetCategories.length > 0 && (
         <div className="px-4 mb-6">
-          <h3 className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#a1a1aa] mb-3">
+          <h3 className="text-small font-semibold text-text dark:text-dark-text uppercase tracking-[0.05em] mb-3">
             Budgets
           </h3>
           <div className="bg-bg-secondary dark:bg-[#1f1f23] border border-border dark:border-[#52525b] rounded-lg divide-y divide-border dark:divide-[#52525b]">
@@ -323,7 +323,7 @@ export default function DashboardPage() {
 
       {/* Transactions */}
       <div className="px-4">
-        <h3 className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#a1a1aa] mb-3">
+        <h3 className="text-small font-semibold text-text dark:text-dark-text uppercase tracking-[0.05em] mb-3">
           Transactions
         </h3>
         {isLoading ? (

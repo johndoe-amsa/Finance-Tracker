@@ -91,7 +91,7 @@ export default function SubscriptionsPage() {
       {!isEmpty && (
         <div className="px-4 mb-6">
           <Card className="!p-4">
-            <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#a1a1aa] mb-3">
+            <p className="text-small font-semibold text-text dark:text-dark-text uppercase tracking-[0.05em] mb-3">
               Estimation mensuelle
             </p>
             <div className="space-y-1.5" style={{ fontVariantNumeric: 'tabular-nums' }}>
@@ -144,7 +144,7 @@ export default function SubscriptionsPage() {
           return (
             <section key={kind}>
               <div className="flex items-baseline justify-between mb-2">
-                <h3 className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#a1a1aa]">
+                <h3 className="text-small font-semibold text-text dark:text-dark-text uppercase tracking-[0.05em]">
                   {title}
                 </h3>
                 <span

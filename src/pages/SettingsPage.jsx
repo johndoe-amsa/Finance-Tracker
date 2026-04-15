@@ -101,7 +101,7 @@ export default function SettingsPage() {
               Catégories de {label}
             </h2>
           </div>
-          <Button variant="ghost" size="sm" onClick={() => setAddType(activeSub)}>
+          <Button variant="secondary" size="sm" onClick={() => setAddType(activeSub)}>
             <Plus size={16} strokeWidth={1.5} /> Ajouter
           </Button>
         </div>

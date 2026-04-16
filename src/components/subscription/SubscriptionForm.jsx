@@ -4,11 +4,22 @@ import Field from '../ui/Field'
 import SelectField from '../ui/SelectField'
 import ToggleGroup from '../ui/ToggleGroup'
 import { useCategories } from '../../hooks/useCategories'
-import { todayISO, kindToType } from '../../lib/utils'
+import { kindToType } from '../../lib/utils'
 import useFormValidation from '../../hooks/useFormValidation'
+import { useToastStore } from '../../store/useToastStore'
+
+// Returns the current "YYYY-MM" in local time, suitable for <input type="month">.
+function currentMonthISO() {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+}
+
+// Extract "YYYY-MM" from a "YYYY-MM-DD" stored value (or empty).
+function toMonthInput(dateStr) {
+  return dateStr ? dateStr.slice(0, 7) : ''
+}
 
 export default function SubscriptionForm({ subscription, onSubmit, onDelete, loading }) {
-  // Déduit le kind initial pour les enregistrements existants (avant migration appliquée).
   const initialKind =
     subscription?.kind ||
     (subscription?.type === 'income' ? 'income' : 'subscription')
@@ -19,8 +30,10 @@ export default function SubscriptionForm({ subscription, onSubmit, onDelete, loa
   const [frequency, setFrequency] = useState(subscription?.frequency || 'monthly')
   const [categoryId, setCategoryId] = useState(subscription?.category_id || '')
   const [billingDay, setBillingDay] = useState(subscription?.billing_day?.toString() || '1')
-  const [startDate, setStartDate] = useState(subscription?.start_date || todayISO())
-  const [endDate, setEndDate] = useState(subscription?.end_date || '')
+  const [startMonth, setStartMonth] = useState(
+    toMonthInput(subscription?.start_date) || currentMonthISO(),
+  )
+  const [endMonth, setEndMonth] = useState(toMonthInput(subscription?.end_date))
   const [isActive, setIsActive] = useState(subscription?.is_active ?? true)
 
   const type = kindToType(kind)
@@ -35,12 +48,11 @@ export default function SubscriptionForm({ subscription, onSubmit, onDelete, loa
       const d = parseInt(v, 10)
       return !v || isNaN(d) || d < 1 || d > 31 ? 'Jour entre 1 et 31' : null
     },
-    startDate: (v) => !v ? 'Date de debut requise' : null,
+    startMonth: (v) => !v ? 'Mois de début requis' : null,
   }), [])
 
   const { errors, validate, clearError } = useFormValidation(validationSchema)
 
-  // Si on change le kind et que la catégorie sélectionnée n'est plus compatible, on la réinitialise.
   useEffect(() => {
     if (categoryId) {
       const cat = categories.find((c) => c.id === categoryId)
@@ -49,10 +61,15 @@ export default function SubscriptionForm({ subscription, onSubmit, onDelete, loa
   }, [type, categoryId, categories])
 
   const isEdit = !!subscription
+  const showToast = useToastStore((s) => s.show)
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    if (!validate({ name, amount, billingDay, startDate })) return
+    if (!validate({ name, amount, billingDay, startMonth })) return
+    if (endMonth && endMonth < startMonth) {
+      showToast('Le mois de fin doit être après le mois de début', 'error')
+      return
+    }
     onSubmit({
       name,
       kind,
@@ -61,8 +78,10 @@ export default function SubscriptionForm({ subscription, onSubmit, onDelete, loa
       frequency,
       category_id: categoryId || null,
       billing_day: parseInt(billingDay, 10),
-      start_date: startDate,
-      end_date: endDate || null,
+      // Month + year define the retroactive window; the day within each
+      // month comes from billing_day.
+      start_date: `${startMonth}-01`,
+      end_date: endMonth ? `${endMonth}-01` : null,
       ...(isEdit ? { is_active: isActive } : {}),
     })
   }
@@ -135,34 +154,42 @@ export default function SubscriptionForm({ subscription, onSubmit, onDelete, loa
         ))}
       </SelectField>
 
+      <div>
+        <Field
+          label="Jour de facturation"
+          id="sub-billing-day"
+          type="number"
+          value={billingDay}
+          onChange={(e) => { setBillingDay(e.target.value); clearError('billingDay') }}
+          error={errors.billingDay}
+          inCard
+          min="1"
+          max="31"
+        />
+        {!errors.billingDay && (
+          <p className="text-[12px] text-text-muted dark:text-[#a1a1aa] mt-1">
+            Les mois qui n'ont pas ce jour (ex : 31 en février) utilisent leur dernier jour.
+          </p>
+        )}
+      </div>
+
       <Field
-        label="Jour de facturation"
-        id="sub-billing-day"
-        type="number"
-        value={billingDay}
-        onChange={(e) => { setBillingDay(e.target.value); clearError('billingDay') }}
-        error={errors.billingDay}
+        label="Mois de début"
+        id="sub-start-month"
+        type="month"
+        value={startMonth}
+        onChange={(e) => { setStartMonth(e.target.value); clearError('startMonth') }}
+        error={errors.startMonth}
         inCard
-        min="1"
-        max="31"
       />
 
       <Field
-        label="Date de debut"
-        id="sub-start-date"
-        type="date"
-        value={startDate}
-        onChange={(e) => { setStartDate(e.target.value); clearError('startDate') }}
-        error={errors.startDate}
-        inCard
-      />
-
-      <Field
-        label="Date de fin (optionnel)"
-        id="sub-end-date"
-        type="date"
-        value={endDate}
-        onChange={(e) => setEndDate(e.target.value)}
+        label="Mois de fin (optionnel)"
+        id="sub-end-month"
+        type="month"
+        value={endMonth}
+        onChange={(e) => { setEndMonth(e.target.value); clearError('endMonth') }}
+        error={errors.endMonth}
         inCard
       />
 

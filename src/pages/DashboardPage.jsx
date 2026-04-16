@@ -5,6 +5,7 @@ import { useAppStore } from '../store/useAppStore'
 import {
   useTransactions,
   useUpdateTransaction,
+  useUnverifyTransaction,
 } from '../hooks/useTransactions'
 import { useCategories } from '../hooks/useCategories'
 import { useSubscriptions } from '../hooks/useSubscriptions'
@@ -35,6 +36,7 @@ export default function DashboardPage() {
   const { data: subscriptions = [] } = useSubscriptions()
   const undoableVerify = useUndoableVerify()
   const updateMutation = useUpdateTransaction()
+  const unverifyMutation = useUnverifyTransaction()
   const undoableDelete = useUndoableDelete()
 
   const [editTx, setEditTx] = useState(null)
@@ -124,6 +126,10 @@ export default function DashboardPage() {
   const handleDelete = () => {
     undoableDelete(editTx)
     clearEditTx()
+  }
+
+  const handleUnverify = () => {
+    unverifyMutation.mutate(editTx.id, { onSuccess: clearEditTx })
   }
 
   const budgetDetailTransactions = useMemo(
@@ -361,6 +367,7 @@ export default function DashboardPage() {
             transaction={editTx}
             onSubmit={handleEditSubmit}
             onDelete={handleDelete}
+            onUnverify={handleUnverify}
             loading={updateMutation.isPending}
           />
         )}

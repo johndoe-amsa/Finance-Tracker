@@ -104,6 +104,27 @@ export function useDeleteTransaction() {
   })
 }
 
+export function useUnverifyTransaction() {
+  const qc = useQueryClient()
+  const show = useToastStore((s) => s.show)
+
+  return useMutation({
+    mutationFn: async (id) => {
+      const { error } = await db
+        .from('transactions')
+        .update({ is_verified: false })
+        .eq('id', id)
+      if (error) throw error
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['transactions'] })
+      qc.invalidateQueries({ queryKey: ['unverifiedCount'] })
+      show('Transaction renvoyée à la vérification', 'success')
+    },
+    onError: (err) => show(`Erreur : ${err.message}`, 'error'),
+  })
+}
+
 export function useMonthlyTrend(count = 6) {
   return useQuery({
     queryKey: ['monthlyTrend', count],

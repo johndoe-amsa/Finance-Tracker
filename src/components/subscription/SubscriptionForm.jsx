@@ -29,6 +29,7 @@ export default function SubscriptionForm({ subscription, onSubmit, onDelete, loa
   const [amount, setAmount] = useState(subscription?.amount?.toString() || '')
   const [frequency, setFrequency] = useState(subscription?.frequency || 'monthly')
   const [categoryId, setCategoryId] = useState(subscription?.category_id || '')
+  const [billingDay, setBillingDay] = useState(subscription?.billing_day?.toString() || '1')
   const [startMonth, setStartMonth] = useState(
     toMonthInput(subscription?.start_date) || currentMonthISO(),
   )
@@ -43,6 +44,10 @@ export default function SubscriptionForm({ subscription, onSubmit, onDelete, loa
   const validationSchema = useMemo(() => ({
     name: (v) => !v?.trim() ? 'Nom requis' : null,
     amount: (v) => !v || parseFloat(v) <= 0 ? 'Montant requis (> 0)' : null,
+    billingDay: (v) => {
+      const d = parseInt(v, 10)
+      return !v || isNaN(d) || d < 1 || d > 31 ? 'Jour entre 1 et 31' : null
+    },
     startMonth: (v) => !v ? 'Mois de début requis' : null,
   }), [])
 
@@ -60,7 +65,7 @@ export default function SubscriptionForm({ subscription, onSubmit, onDelete, loa
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    if (!validate({ name, amount, startMonth })) return
+    if (!validate({ name, amount, billingDay, startMonth })) return
     if (endMonth && endMonth < startMonth) {
       showToast('Le mois de fin doit être après le mois de début', 'error')
       return
@@ -72,10 +77,9 @@ export default function SubscriptionForm({ subscription, onSubmit, onDelete, loa
       amount: parseFloat(amount),
       frequency,
       category_id: categoryId || null,
-      // `billing_day` is no longer user-configurable. We keep it pinned to 1
-      // so legacy NOT-NULL constraints on the column are respected — the
-      // generator ignores it and always dates transactions on the 1st.
-      billing_day: 1,
+      billing_day: parseInt(billingDay, 10),
+      // Month + year define the retroactive window; the day within each
+      // month comes from billing_day.
       start_date: `${startMonth}-01`,
       end_date: endMonth ? `${endMonth}-01` : null,
       ...(isEdit ? { is_active: isActive } : {}),
@@ -149,6 +153,25 @@ export default function SubscriptionForm({ subscription, onSubmit, onDelete, loa
           <option key={c.id} value={c.id}>{c.name}</option>
         ))}
       </SelectField>
+
+      <div>
+        <Field
+          label="Jour de facturation"
+          id="sub-billing-day"
+          type="number"
+          value={billingDay}
+          onChange={(e) => { setBillingDay(e.target.value); clearError('billingDay') }}
+          error={errors.billingDay}
+          inCard
+          min="1"
+          max="31"
+        />
+        {!errors.billingDay && (
+          <p className="text-[12px] text-text-muted dark:text-[#a1a1aa] mt-1">
+            Les mois qui n'ont pas ce jour (ex : 31 en février) utilisent leur dernier jour.
+          </p>
+        )}
+      </div>
 
       <Field
         label="Mois de début"

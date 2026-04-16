@@ -118,10 +118,9 @@ export function interactiveProps(onClick, ariaLabel) {
 }
 
 // Returns the Date of the next expected auto-transaction for a subscription,
-// or null if the sub is inactive / has ended. Transactions are always dated
-// on the 1st of the month, so the "next" one is the first of the next month
-// (for monthly) or the first of the anniversary month next year (for yearly)
-// once the current month has already produced its transaction.
+// or null if the sub is inactive / has ended. The day of the month comes
+// from billing_day, clamped to the last day of the month when the month
+// is shorter than billing_day (e.g. 31 -> 28 in February).
 export function getNextBillingDate(sub) {
   if (!sub.is_active) return null
   if (!sub.start_date) return null
@@ -129,32 +128,46 @@ export function getNextBillingDate(sub) {
   const today = new Date()
   today.setHours(0, 0, 0, 0)
 
-  const firstOfThisMonth = new Date(today.getFullYear(), today.getMonth(), 1)
   const startDate = new Date(sub.start_date + 'T00:00:00')
   const endDate = sub.end_date ? new Date(sub.end_date + 'T00:00:00') : null
+  const billingDay = Number.isFinite(sub.billing_day) ? sub.billing_day : 1
 
-  // end_date is inclusive at the month level — normalize to the 1st of
-  // the end month for the comparison below.
-  if (endDate && endDate < firstOfThisMonth) return null
+  const clampDay = (y, m) => Math.min(billingDay, new Date(y, m + 1, 0).getDate())
 
   let candidate
   if (sub.frequency === 'monthly') {
-    // Current month is already covered by the generator, so next is the
-    // 1st of next month.
-    candidate = new Date(today.getFullYear(), today.getMonth() + 1, 1)
+    let y = today.getFullYear()
+    let m = today.getMonth()
+    candidate = new Date(y, m, clampDay(y, m))
+    if (candidate < today) {
+      m++
+      if (m > 11) { m = 0; y++ }
+      candidate = new Date(y, m, clampDay(y, m))
+    }
   } else if (sub.frequency === 'yearly') {
     const startMonth = startDate.getMonth()
-    let year = today.getFullYear()
-    candidate = new Date(year, startMonth, 1)
-    if (candidate <= firstOfThisMonth) {
-      candidate = new Date(year + 1, startMonth, 1)
+    let y = today.getFullYear()
+    candidate = new Date(y, startMonth, clampDay(y, startMonth))
+    if (candidate < today) {
+      y++
+      candidate = new Date(y, startMonth, clampDay(y, startMonth))
     }
   } else {
     return null
   }
 
+  // Never earlier than the start date — snap forward into the subscription
+  // window if necessary.
   if (candidate < startDate) {
-    candidate = new Date(startDate.getFullYear(), startDate.getMonth(), 1)
+    const sy = startDate.getFullYear()
+    const sm = startDate.getMonth()
+    candidate = new Date(sy, sm, clampDay(sy, sm))
+    if (candidate < startDate) {
+      const nm = sm + 1
+      const ny = nm > 11 ? sy + 1 : sy
+      const nm0 = nm > 11 ? 0 : nm
+      candidate = new Date(ny, nm0, clampDay(ny, nm0))
+    }
   }
   if (endDate && candidate > endDate) return null
   return candidate

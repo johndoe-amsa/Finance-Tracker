@@ -117,54 +117,45 @@ export function interactiveProps(onClick, ariaLabel) {
   }
 }
 
+// Returns the Date of the next expected auto-transaction for a subscription,
+// or null if the sub is inactive / has ended. Transactions are always dated
+// on the 1st of the month, so the "next" one is the first of the next month
+// (for monthly) or the first of the anniversary month next year (for yearly)
+// once the current month has already produced its transaction.
 export function getNextBillingDate(sub) {
   if (!sub.is_active) return null
-  if (sub.end_date && new Date(sub.end_date + 'T00:00:00') < new Date()) return null
+  if (!sub.start_date) return null
 
   const today = new Date()
   today.setHours(0, 0, 0, 0)
+
+  const firstOfThisMonth = new Date(today.getFullYear(), today.getMonth(), 1)
   const startDate = new Date(sub.start_date + 'T00:00:00')
+  const endDate = sub.end_date ? new Date(sub.end_date + 'T00:00:00') : null
 
+  // end_date is inclusive at the month level — normalize to the 1st of
+  // the end month for the comparison below.
+  if (endDate && endDate < firstOfThisMonth) return null
+
+  let candidate
   if (sub.frequency === 'monthly') {
-    let year = today.getFullYear()
-    let month = today.getMonth()
-
-    const clampDay = (y, m) => Math.min(sub.billing_day, new Date(y, m + 1, 0).getDate())
-
-    let candidate = new Date(year, month, clampDay(year, month))
-    if (candidate < today) {
-      month++
-      if (month > 11) { month = 0; year++ }
-      candidate = new Date(year, month, clampDay(year, month))
-    }
-    if (candidate < startDate) {
-      let sY = startDate.getFullYear()
-      let sM = startDate.getMonth()
-      candidate = new Date(sY, sM, clampDay(sY, sM))
-      if (candidate < startDate) {
-        sM++
-        if (sM > 11) { sM = 0; sY++ }
-        candidate = new Date(sY, sM, clampDay(sY, sM))
-      }
-    }
-    if (sub.end_date && candidate > new Date(sub.end_date + 'T00:00:00')) return null
-    return candidate
-  }
-
-  if (sub.frequency === 'yearly') {
+    // Current month is already covered by the generator, so next is the
+    // 1st of next month.
+    candidate = new Date(today.getFullYear(), today.getMonth() + 1, 1)
+  } else if (sub.frequency === 'yearly') {
     const startMonth = startDate.getMonth()
     let year = today.getFullYear()
-    const clampDay = (y) => Math.min(sub.billing_day, new Date(y, startMonth + 1, 0).getDate())
-
-    let candidate = new Date(year, startMonth, clampDay(year))
-    if (candidate < today) {
-      year++
-      candidate = new Date(year, startMonth, clampDay(year))
+    candidate = new Date(year, startMonth, 1)
+    if (candidate <= firstOfThisMonth) {
+      candidate = new Date(year + 1, startMonth, 1)
     }
-    if (candidate < startDate) candidate = startDate
-    if (sub.end_date && candidate > new Date(sub.end_date + 'T00:00:00')) return null
-    return candidate
+  } else {
+    return null
   }
 
-  return null
+  if (candidate < startDate) {
+    candidate = new Date(startDate.getFullYear(), startDate.getMonth(), 1)
+  }
+  if (endDate && candidate > endDate) return null
+  return candidate
 }

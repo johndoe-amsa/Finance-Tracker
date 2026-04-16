@@ -5,23 +5,32 @@ import { db } from './supabase'
 // the same JS context) from racing and inserting duplicate transactions.
 let isGenerating = false
 
+const pad = (n) => String(n).padStart(2, '0')
+
+// Returns the "YYYY-MM" prefix for a YYYY-MM-DD date string.
+const monthKey = (dateStr) => dateStr.slice(0, 7)
+
+/**
+ * Backfills missing auto-transactions for every active subscription, one
+ * per month from the subscription's start month up to and including the
+ * current month.
+ *
+ * - Transactions are always dated on the 1st of the month.
+ * - Yearly subscriptions only fire in their anniversary month.
+ * - `end_date` is inclusive at month granularity: an end_date in April 2026
+ *   still produces the April 2026 transaction.
+ * - Deduplication is done at month granularity (one auto-tx per sub per
+ *   month), so legacy transactions dated on arbitrary days are preserved.
+ */
 export async function generateMissingSubscriptionTransactions() {
   if (isGenerating) return
   isGenerating = true
   try {
     const today = new Date()
-    const year = today.getFullYear()
-    const month = today.getMonth() // 0-based
-    const dayOfMonth = today.getDate()
-    const lastDay = new Date(year, month + 1, 0).getDate()
+    today.setHours(0, 0, 0, 0)
+    const currentYear = today.getFullYear()
+    const currentMonth = today.getMonth() // 0-11
 
-    const pad = (n) => String(n).padStart(2, '0')
-    const todayStr = `${year}-${pad(month + 1)}-${pad(dayOfMonth)}`
-    const firstOfMonth = `${year}-${pad(month + 1)}-01`
-    const endOfMonth = `${year}-${pad(month + 1)}-${pad(lastDay)}`
-
-    // Fetch the user first so every subsequent query can be scoped
-    // explicitly — we do not want to rely solely on RLS for correctness.
     const { data: { user }, error: userError } = await db.auth.getUser()
     if (userError) throw new Error(`Impossible de récupérer l'utilisateur : ${userError.message}`)
     if (!user) return
@@ -31,75 +40,99 @@ export async function generateMissingSubscriptionTransactions() {
       .select('*')
       .eq('user_id', user.id)
       .eq('is_active', true)
-      .lte('start_date', todayStr)
 
     if (subError) throw new Error(`Impossible de charger les abonnements : ${subError.message}`)
     if (!subs || subs.length === 0) return
+
+    // Find the earliest start month across all active subscriptions so we
+    // can fetch existing auto-transactions in a single query.
+    let earliestStart = null
+    for (const sub of subs) {
+      if (!sub.start_date) continue
+      if (!earliestStart || sub.start_date < earliestStart) {
+        earliestStart = sub.start_date
+      }
+    }
+    if (!earliestStart) return
+
+    const earliestFirstOfMonth = monthKey(earliestStart) + '-01'
+    const lastDay = new Date(currentYear, currentMonth + 1, 0).getDate()
+    const endOfCurrentMonth = `${currentYear}-${pad(currentMonth + 1)}-${pad(lastDay)}`
 
     const { data: existingTx, error: txError } = await db
       .from('transactions')
       .select('subscription_id, date')
       .eq('user_id', user.id)
       .eq('is_auto', true)
-      .gte('date', firstOfMonth)
-      .lte('date', endOfMonth)
+      .gte('date', earliestFirstOfMonth)
+      .lte('date', endOfCurrentMonth)
 
     if (txError) throw new Error(`Impossible de charger les transactions : ${txError.message}`)
 
-    // Dedup by the composite key (subscription_id, date) rather than the
-    // subscription id alone. Belt-and-suspenders: today the scope is one
-    // month, so the collision set is tiny, but this keeps the check
-    // correct if the scope ever widens.
+    // Key = "sub_id::YYYY-MM" so we dedup at the month level. This lets us
+    // coexist with legacy transactions that were generated on arbitrary
+    // days (e.g. the old billing_day logic).
     const existingKeys = new Set(
-      (existingTx || []).map((t) => `${t.subscription_id}::${t.date}`),
+      (existingTx || []).map((t) => `${t.subscription_id}::${monthKey(t.date)}`),
     )
 
+    const toInsert = []
+
     for (const sub of subs) {
-      if (sub.end_date && new Date(sub.end_date + 'T00:00:00') < today) continue
+      if (!sub.start_date) continue
 
-      let shouldInsert = false
-      let txDate = null
+      const [startY, startM1] = sub.start_date.split('-').map(Number)
+      const startMonth0 = startM1 - 1 // 0-11
 
-      if (sub.frequency === 'monthly') {
-        if (sub.billing_day > dayOfMonth) continue
-        const txDay = Math.min(sub.billing_day, lastDay)
-        txDate = `${year}-${pad(month + 1)}-${pad(txDay)}`
-        shouldInsert = true
-      } else if (sub.frequency === 'yearly') {
-        const startDate = new Date(sub.start_date + 'T00:00:00')
-        if (month !== startDate.getMonth()) continue
-        if (sub.billing_day > dayOfMonth) continue
-        const txDay = Math.min(sub.billing_day, lastDay)
-        txDate = `${year}-${pad(month + 1)}-${pad(txDay)}`
-        shouldInsert = true
+      const endCapMonth = sub.end_date ? monthKey(sub.end_date) : null
+
+      let y = startY
+      let m = startMonth0 // 0-11
+
+      while (y < currentYear || (y === currentYear && m <= currentMonth)) {
+        const yearMonth = `${y}-${pad(m + 1)}`
+
+        if (endCapMonth && yearMonth > endCapMonth) break
+
+        const fires =
+          sub.frequency === 'monthly' ||
+          (sub.frequency === 'yearly' && m === startMonth0)
+
+        if (fires) {
+          const key = `${sub.id}::${yearMonth}`
+          if (!existingKeys.has(key)) {
+            toInsert.push({
+              type: sub.type,
+              amount: sub.amount,
+              title: sub.name,
+              category_id: sub.category_id,
+              subscription_id: sub.id,
+              date: `${yearMonth}-01`,
+              is_auto: true,
+              is_verified: false,
+              user_id: user.id,
+            })
+            existingKeys.add(key)
+          }
+        }
+
+        // advance one month
+        m++
+        if (m > 11) { m = 0; y++ }
       }
+    }
 
-      if (!shouldInsert || !txDate) continue
-      if (existingKeys.has(`${sub.id}::${txDate}`)) continue
+    if (toInsert.length === 0) return
 
-      const { error: insertError } = await db.from('transactions').insert({
-        type: sub.type,
-        amount: sub.amount,
-        title: sub.name,
-        category_id: sub.category_id,
-        subscription_id: sub.id,
-        date: txDate,
-        is_auto: true,
-        is_verified: false,
-        user_id: user.id,
-      })
-
-      if (insertError) {
-        // Don't abort the whole loop on one failure — log and keep going.
-        console.error(
-          `[Abonnements] Échec de l'insertion pour "${sub.name}" :`,
-          insertError.message,
-        )
-        continue
-      }
-
-      // Track what we just inserted so a same-run re-evaluation would skip it.
-      existingKeys.add(`${sub.id}::${txDate}`)
+    // One bulk insert is both faster and atomic. If it fails (e.g. a
+    // unique constraint is hit because another tab raced us), we log and
+    // leave it alone — the next run will re-evaluate.
+    const { error: insertError } = await db.from('transactions').insert(toInsert)
+    if (insertError) {
+      console.error(
+        '[Abonnements] Échec de la génération en lot :',
+        insertError.message,
+      )
     }
   } finally {
     isGenerating = false

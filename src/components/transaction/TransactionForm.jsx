@@ -7,7 +7,7 @@ import { useCategories } from '../../hooks/useCategories'
 import { todayISO } from '../../lib/utils'
 import useFormValidation from '../../hooks/useFormValidation'
 
-export default function TransactionForm({ transaction, onSubmit, onDelete, loading }) {
+export default function TransactionForm({ transaction, onSubmit, onDelete, onUnverify, loading }) {
   const [type, setType] = useState(transaction?.type || 'expense')
   const [amount, setAmount] = useState(transaction?.amount?.toString() || '')
   const [title, setTitle] = useState(transaction?.title || '')
@@ -115,6 +115,18 @@ export default function TransactionForm({ transaction, onSubmit, onDelete, loadi
         error={errors.date}
         inCard
       />
+
+      {isEdit && transaction.is_verified && onUnverify && (
+        <Button
+          variant="ghost"
+          type="button"
+          onClick={onUnverify}
+          disabled={loading}
+          className="w-full"
+        >
+          Dé-vérifier
+        </Button>
+      )}
 
       <div className="flex items-center justify-between pt-2">
         {isEdit && onDelete ? (

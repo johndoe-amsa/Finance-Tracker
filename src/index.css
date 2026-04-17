@@ -285,6 +285,44 @@ label,
 }
 
 /* ------------------------------------------------------------------ */
+/*  Settings navigation stack (style iOS)                              */
+/*  Même courbes que la modal pour la cohérence : S-curve à l'entrée, */
+/*  ease-in à la sortie.                                               */
+/* ------------------------------------------------------------------ */
+
+.settings-main-level {
+  transition:
+    transform 420ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity   420ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity;
+}
+.settings-main-level[data-behind="true"] {
+  transform: translateX(-25%);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.settings-sub-level {
+  will-change: transform;
+  z-index: 1;
+}
+.settings-sub-level[data-state="open"] {
+  animation: settings-slide-in 420ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+.settings-sub-level[data-state="closed"] {
+  animation: settings-slide-out 280ms cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+@keyframes settings-slide-in {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+@keyframes settings-slide-out {
+  from { transform: translateX(0); }
+  to   { transform: translateX(100%); }
+}
+
+/* ------------------------------------------------------------------ */
 /*  Swipe row                                                          */
 /* ------------------------------------------------------------------ */
 

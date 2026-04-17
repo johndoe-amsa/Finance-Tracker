@@ -117,7 +117,6 @@ export default function VerifyPage() {
             transactions={transactions}
             onItemClick={setEditTx}
             onVerify={handleVerify}
-            onDelete={undoableDelete}
           />
         )}
       </div>

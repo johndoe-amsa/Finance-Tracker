@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
-import { ChevronLeft, ChevronRight, Wallet, Search } from 'lucide-react'
+import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Wallet, Search } from 'lucide-react'
 import SparklineChart from '../components/charts/SparklineChart'
 import { useAppStore } from '../store/useAppStore'
 import {
@@ -30,8 +30,7 @@ import SearchModal from '../components/search/SearchModal'
 
 export default function DashboardPage() {
   const { currentYear, currentMonth, setMonth } = useAppStore()
-  const unverifiedCount = useAppStore((s) => s.unverifiedCount)
-  const { data: transactions, isLoading } = useTransactions(currentYear, currentMonth)
+const { data: transactions, isLoading } = useTransactions(currentYear, currentMonth)
   const { data: categories = [] } = useCategories()
   const { data: subscriptions = [] } = useSubscriptions()
   const undoableVerify = useUndoableVerify()
@@ -42,6 +41,7 @@ export default function DashboardPage() {
   const [editTx, setEditTx] = useState(null)
   const [budgetDetail, setBudgetDetail] = useState(null)
   const [showSearch, setShowSearch] = useState(false)
+  const [showAllSubs, setShowAllSubs] = useState(false)
   // Remember which budget category opened the expense modal so we can
   // navigate back to it when the expense modal is dismissed.
   const budgetDetailBeforeEdit = useRef(null)
@@ -88,26 +88,14 @@ export default function DashboardPage() {
     [categories, expensesByCategory],
   )
 
-  // Top budget: le plus chargé en %
-  const topBudget = budgetCategories[0] || null
-
-  // Prochain abonnement actif
-  const nextSubscription = useMemo(() => {
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
+  const upcomingSubscriptions = useMemo(() => {
     return subscriptions
-      .filter((s) => s.is_active)
+      .filter((s) => s.is_active && s.kind !== 'income')
       .map((s) => ({ ...s, nextDate: getNextBillingDate(s) }))
       .filter((s) => s.nextDate)
-      .sort((a, b) => a.nextDate - b.nextDate)[0] || null
+      .sort((a, b) => a.nextDate - b.nextDate)
+      .slice(0, 10)
   }, [subscriptions])
-
-  const nextSubDays = useMemo(() => {
-    if (!nextSubscription) return null
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    return Math.ceil((nextSubscription.nextDate - today) / (1000 * 60 * 60 * 24))
-  }, [nextSubscription])
 
   // Close the expense modal and return to the budget-detail modal if the
   // expense was opened from there.
@@ -236,72 +224,35 @@ export default function DashboardPage() {
         )}
       </div>
 
-      {/* Widgets factuels */}
-      {(topBudget || nextSubscription || unverifiedCount > 0) && (
-        <div className="px-4 mb-5 grid grid-cols-2 gap-3">
-          {/* Top budget */}
-          {topBudget && (
-            <Card
-              className="!p-4 cursor-pointer hover:opacity-80 transition-opacity"
-              onClick={() => setBudgetDetail(topBudget)}
-            >
-              <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#a1a1aa] mb-1">
-                Budget
-              </p>
-              <p className="text-small font-semibold text-text dark:text-[#EDEDED] truncate">
-                {topBudget.name}
-              </p>
-              <p
-                className={`text-[20px] font-bold mt-1 leading-tight ${
-                  topBudget.pct >= 90 ? 'text-error' : topBudget.pct >= 70 ? 'text-warning' : 'text-text dark:text-[#EDEDED]'
-                }`}
-                style={{ fontVariantNumeric: 'tabular-nums' }}
+      {/* Prochains prélèvements */}
+      {upcomingSubscriptions.length > 0 && (
+        <div className="px-4 mb-5">
+          <h3 className="text-small font-semibold text-text dark:text-dark-text uppercase tracking-[0.05em] mb-3">
+            Prochains prélèvements
+          </h3>
+          <div className="bg-bg-secondary dark:bg-[#1f1f23] border border-border dark:border-[#52525b] rounded-lg divide-y divide-border dark:divide-[#52525b]">
+            {(showAllSubs ? upcomingSubscriptions : upcomingSubscriptions.slice(0, 3)).map((sub) => (
+              <div key={sub.id} className="flex items-center justify-between px-4 py-3">
+                <div className="min-w-0 mr-3">
+                  <p className="text-small font-medium text-text dark:text-[#EDEDED] truncate">{sub.name}</p>
+                  <p className="text-label text-text-muted dark:text-[#a1a1aa]">
+                    {sub.nextDate.toLocaleDateString('fr-CH', { day: 'numeric', month: 'short' })}
+                  </p>
+                </div>
+                <p className="text-small font-semibold text-text dark:text-[#EDEDED] flex-shrink-0" style={{ fontVariantNumeric: 'tabular-nums' }}>
+                  −{formatAmount(sub.amount)}
+                </p>
+              </div>
+            ))}
+            {upcomingSubscriptions.length > 3 && (
+              <button
+                onClick={() => setShowAllSubs((v) => !v)}
+                className="w-full flex items-center justify-center py-2.5 text-text-muted dark:text-[#a1a1aa] hover:text-text dark:hover:text-[#EDEDED] transition-colors cursor-pointer"
               >
-                {topBudget.pct.toFixed(0)}%
-              </p>
-              <p className="text-label text-text-muted dark:text-[#a1a1aa] mt-0.5" style={{ fontVariantNumeric: 'tabular-nums' }}>
-                Reste {formatAmount(parseFloat(topBudget.budget_limit) - topBudget.spent)}
-              </p>
-            </Card>
-          )}
-
-          {/* Prochain abonnement */}
-          {nextSubscription && (
-            <Card className="!p-4">
-              <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#a1a1aa] mb-1">
-                Abonnement
-              </p>
-              <p className="text-small font-semibold text-text dark:text-[#EDEDED] truncate">
-                {nextSubscription.name}
-              </p>
-              <p className="text-[20px] font-bold mt-1 leading-tight text-text dark:text-[#EDEDED]">
-                {nextSubDays === 0
-                  ? "Auj."
-                  : nextSubDays === 1
-                  ? 'Demain'
-                  : `J-${nextSubDays}`}
-              </p>
-              <p className="text-label text-text-muted dark:text-[#a1a1aa] mt-0.5" style={{ fontVariantNumeric: 'tabular-nums' }}>
-                {formatAmount(nextSubscription.amount)}
-                {nextSubscription.frequency === 'monthly' ? '/mois' : '/an'}
-              </p>
-            </Card>
-          )}
-
-          {/* À vérifier — affiché si pas de nextSubscription mais qu'il y a des txs en attente */}
-          {!nextSubscription && unverifiedCount > 0 && (
-            <Card className="!p-4">
-              <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#a1a1aa] mb-1">
-                À vérifier
-              </p>
-              <p className="text-[20px] font-bold mt-1 leading-tight text-warning">
-                {unverifiedCount}
-              </p>
-              <p className="text-label text-text-muted dark:text-[#a1a1aa] mt-0.5">
-                transaction{unverifiedCount > 1 ? 's' : ''} en attente
-              </p>
-            </Card>
-          )}
+                {showAllSubs ? <ChevronUp size={16} strokeWidth={1.5} /> : <ChevronDown size={16} strokeWidth={1.5} />}
+              </button>
+            )}
+          </div>
         </div>
       )}
 

@@ -20,10 +20,15 @@
 
   --backdrop:    blur(12px) saturate(1.8);
   --backdrop-bg: rgba(255, 255, 255, 0.85);
+
+  /* Bande lumineuse qui traverse les skeletons.
+     Clair : blanc semi-opaque pour se détacher du gris. Sombre : lueur discrète. */
+  --skeleton-shimmer: rgba(255, 255, 255, 0.55);
 }
 
 .dark {
   --backdrop-bg: rgba(24, 24, 27, 0.85);
+  --skeleton-shimmer: rgba(255, 255, 255, 0.06);
   background-color: #18181b;
 }
 
@@ -65,9 +70,9 @@ label,
 /*  Keyframes                                                          */
 /* ------------------------------------------------------------------ */
 
-@keyframes pulse-skeleton {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.4; }
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
 }
 
 /* Generic small enter/exit (used by dropdowns, inline transitions) */

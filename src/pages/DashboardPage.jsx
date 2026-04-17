@@ -232,14 +232,12 @@ const { data: transactions, isLoading } = useTransactions(currentYear, currentMo
           </h3>
           <div className="bg-bg-secondary dark:bg-[#1f1f23] border border-border dark:border-[#52525b] rounded-lg divide-y divide-border dark:divide-[#52525b]">
             {(showAllSubs ? upcomingSubscriptions : upcomingSubscriptions.slice(0, 3)).map((sub) => (
-              <div key={sub.id} className="flex items-center justify-between px-4 py-3">
-                <div className="min-w-0 mr-3">
-                  <p className="text-small font-medium text-text dark:text-[#EDEDED] truncate">{sub.name}</p>
-                  <p className="text-label text-text-muted dark:text-[#a1a1aa]">
-                    {sub.nextDate.toLocaleDateString('fr-CH', { day: 'numeric', month: 'short' })}
-                  </p>
-                </div>
-                <p className="text-small font-semibold text-text dark:text-[#EDEDED] flex-shrink-0" style={{ fontVariantNumeric: 'tabular-nums' }}>
+              <div key={sub.id} className="flex items-center gap-3 px-4 py-2">
+                <p className="text-small font-medium text-text dark:text-[#EDEDED] truncate flex-1">{sub.name}</p>
+                <p className="text-label text-text-muted dark:text-[#a1a1aa] flex-shrink-0 w-12 text-right">
+                  {sub.nextDate.toLocaleDateString('fr-CH', { day: 'numeric', month: 'short' })}
+                </p>
+                <p className="text-small font-semibold text-text dark:text-[#EDEDED] flex-shrink-0 w-20 text-right" style={{ fontVariantNumeric: 'tabular-nums' }}>
                   −{formatAmount(sub.amount)}
                 </p>
               </div>

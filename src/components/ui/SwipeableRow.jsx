@@ -87,10 +87,10 @@ export default function SwipeableRow({
   const clampedDelta = Math.max(-vw * 0.6, Math.min(vw * 0.6, deltaX))
 
   return (
-    <div className="relative overflow-hidden rounded-lg">
+    <div className="relative overflow-hidden">
       {/* Left reveal (swipe left = delete, shows on right side) */}
       {onSwipeLeft && (
-        <div className="absolute inset-0 flex items-center justify-end px-6 bg-error rounded-lg">
+        <div className="absolute inset-0 flex items-center justify-end px-6 bg-error">
           <div
             className="flex items-center gap-2 text-white text-[13px] font-medium"
             style={{ opacity: showLeftReveal ? 1 : 0, transition: 'opacity 100ms' }}
@@ -103,7 +103,7 @@ export default function SwipeableRow({
 
       {/* Right reveal (swipe right = verify, shows on left side) */}
       {onSwipeRight && (
-        <div className="absolute inset-0 flex items-center justify-start px-6 bg-success rounded-lg">
+        <div className="absolute inset-0 flex items-center justify-start px-6 bg-success">
           <div
             className="flex items-center gap-2 text-white text-[13px] font-medium"
             style={{ opacity: showRightReveal ? 1 : 0, transition: 'opacity 100ms' }}

@@ -199,7 +199,7 @@ label,
      progressent ensemble, le fond s'assombrit pendant que la sheet monte.
      C'est ce couplage qui donne le rythme iOS natif. */
   .modal-backdrop[data-state="open"] {
-    animation: modal-backdrop-in 420ms var(--ios-ease) both;
+    animation: modal-backdrop-in 420ms cubic-bezier(0.4, 0, 0.2, 1) both;
   }
   .modal-backdrop[data-state="closed"] {
     animation: modal-backdrop-out 280ms cubic-bezier(0.4, 0, 1, 1) both;
@@ -210,7 +210,7 @@ label,
     transform-origin: center bottom;
   }
   .modal-content[data-state="open"] {
-    animation: sheet-content-in 420ms var(--ios-ease) both;
+    animation: sheet-content-in 420ms cubic-bezier(0.4, 0, 0.2, 1) both;
   }
   .modal-content[data-state="closed"] {
     animation: sheet-content-out 280ms cubic-bezier(0.4, 0, 1, 1) forwards;

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Plus, LogOut, Moon, Sun, ChevronRight, ChevronLeft, Tag } from 'lucide-react'
 import {
   useCategories,
@@ -31,6 +31,30 @@ export default function SettingsPage() {
     if (saved) return saved === 'dark'
     return false
   })
+
+  // Navigation stack : le sous-panneau reste monté pendant son animation
+  // de sortie pour que le slide soit visible jusqu'au bout. Doit rester
+  // >= à la durée de .settings-sub-level[data-state="closed"] dans index.css.
+  const SUB_CLOSE_DURATION = 320
+  const [subRender, setSubRender] = useState(!!activeSub)
+  const [subClosing, setSubClosing] = useState(false)
+  const cachedSub = useRef(activeSub)
+  if (activeSub) cachedSub.current = activeSub
+
+  useEffect(() => {
+    if (activeSub) {
+      setSubRender(true)
+      setSubClosing(false)
+      return
+    }
+    if (!subRender) return
+    setSubClosing(true)
+    const t = setTimeout(() => {
+      setSubRender(false)
+      setSubClosing(false)
+    }, SUB_CLOSE_DURATION)
+    return () => clearTimeout(t)
+  }, [activeSub, subRender])
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -81,100 +105,24 @@ export default function SettingsPage() {
     window.location.reload()
   }
 
-  // ── Sub-panel : category list ──────────────────────────────────────────────
-  if (activeSub) {
-    const items = activeSub === 'expense' ? expenseCategories : incomeCategories
-    const label = activeSub === 'expense' ? 'dépenses' : 'revenus'
+  // Le sub garde son contenu pendant l'animation de sortie (sinon on verrait
+  // les catégories disparaître avant même que le slide soit fini).
+  const subForDisplay = activeSub || cachedSub.current
+  const subItems = subForDisplay === 'expense' ? expenseCategories : incomeCategories
+  const subLabel = subForDisplay === 'expense' ? 'dépenses' : 'revenus'
+  const subState = subClosing ? 'closed' : 'open'
 
-    return (
-      <div className="pb-24 page-transition">
-        {/* Header */}
-        <div className="px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-1">
-            <button
-              onClick={() => setActiveSub(null)}
-              className="-ml-1 p-1 flex items-center text-text-muted hover:text-text dark:text-[#a1a1aa] dark:hover:text-[#EDEDED] transition-colors duration-150"
-            >
-              <ChevronLeft size={20} strokeWidth={1.5} />
-            </button>
-            <h2 className="text-h3 text-text dark:text-[#EDEDED]">
-              Catégories de {label}
-            </h2>
-          </div>
-          <Button variant="ghost" size="sm" onClick={() => setAddType(activeSub)}>
-            <Plus size={16} strokeWidth={1.5} /> Ajouter
-          </Button>
-        </div>
-
-        {/* List */}
-        <div className="px-4">
-          {isLoading ? (
-            <div className="bg-bg-secondary dark:bg-[#1f1f23] border border-border dark:border-[#52525b] rounded-lg p-4 space-y-3">
-              <Skeleton className="h-4 w-1/2" />
-              <Skeleton className="h-4 w-1/3" />
-            </div>
-          ) : (
-            <div className="bg-bg-secondary dark:bg-[#1f1f23] border border-border dark:border-[#52525b] rounded-lg divide-y divide-border dark:divide-[#52525b] overflow-hidden">
-              {items.length === 0 ? (
-                <p className="p-4 text-small text-text-muted dark:text-[#a1a1aa] text-center">
-                  Aucune catégorie
-                </p>
-              ) : (
-                items.map((cat) => (
-                  <CategoryItem key={cat.id} category={cat} onClick={() => setEditCat(cat)} />
-                ))
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Modals */}
-        <Modal
-          open={!!addType}
-          onClose={() => setAddType(null)}
-          title={`Ajouter une catégorie de ${addType === 'expense' ? 'dépenses' : 'revenus'}`}
-        >
-          {addType && (
-            <CategoryForm type={addType} onSubmit={handleCreate} loading={createMutation.isPending} />
-          )}
-        </Modal>
-
-        <Modal open={!!editCat} onClose={() => setEditCat(null)} title="Modifier la catégorie">
-          {editCat && (
-            <CategoryForm
-              category={editCat}
-              type={editCat.type}
-              transactionCount={txCount}
-              onSubmit={handleUpdate}
-              onDelete={() => setConfirmDelete(true)}
-              loading={updateMutation.isPending}
-            />
-          )}
-        </Modal>
-
-        <ConfirmDialog
-          open={confirmDelete}
-          onClose={() => setConfirmDelete(false)}
-          onConfirm={handleDelete}
-          title="Supprimer la catégorie"
-          message={
-            txCount > 0
-              ? `${txCount} transaction${txCount > 1 ? 's' : ''} ${txCount > 1 ? 'sont liées' : 'est liée'} à cette catégorie. La catégorie sera retirée de ces transactions. Continuer ?`
-              : 'Êtes-vous sûr de vouloir supprimer cette catégorie ?'
-          }
-          confirmLabel="Supprimer"
-          loading={deleteMutation.isPending}
-        />
-      </div>
-    )
-  }
-
-  // ── Main settings view ─────────────────────────────────────────────────────
   return (
-    <div className="pb-24 page-transition">
-      <div className="px-4 py-4">
-        <h2 className="text-h3 text-text dark:text-[#EDEDED]">Paramètres</h2>
-      </div>
+    <div className="settings-stack relative overflow-x-hidden min-h-screen">
+      {/* ── Niveau principal : glisse légèrement à gauche quand on entre dans un sub ── */}
+      <div
+        className="settings-main-level pb-24 page-transition"
+        data-behind={!!activeSub}
+        aria-hidden={!!activeSub}
+      >
+        <div className="px-4 py-4">
+          <h2 className="text-h3 text-text dark:text-[#EDEDED]">Paramètres</h2>
+        </div>
 
       {/* ── Apparence ── */}
       <div className="px-4 mb-6">
@@ -271,6 +219,91 @@ export default function SettingsPage() {
           </button>
         </div>
       </div>
+      </div>
+
+      {/* ── Niveau sub : slide in depuis la droite (style iOS Settings) ── */}
+      {subRender && (
+        <div
+          data-state={subState}
+          className="settings-sub-level absolute inset-0 bg-bg dark:bg-[#18181b] overflow-y-auto pb-24"
+        >
+          <div className="px-4 py-4 flex items-center justify-between">
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => setActiveSub(null)}
+                className="-ml-1 p-1 flex items-center text-text-muted hover:text-text dark:text-[#a1a1aa] dark:hover:text-[#EDEDED] transition-colors duration-150"
+              >
+                <ChevronLeft size={20} strokeWidth={1.5} />
+              </button>
+              <h2 className="text-h3 text-text dark:text-[#EDEDED]">
+                Catégories de {subLabel}
+              </h2>
+            </div>
+            <Button variant="ghost" size="sm" onClick={() => setAddType(subForDisplay)}>
+              <Plus size={16} strokeWidth={1.5} /> Ajouter
+            </Button>
+          </div>
+
+          <div className="px-4">
+            {isLoading ? (
+              <div className="bg-bg-secondary dark:bg-[#1f1f23] border border-border dark:border-[#52525b] rounded-lg p-4 space-y-3">
+                <Skeleton className="h-4 w-1/2" />
+                <Skeleton className="h-4 w-1/3" />
+              </div>
+            ) : (
+              <div className="bg-bg-secondary dark:bg-[#1f1f23] border border-border dark:border-[#52525b] rounded-lg divide-y divide-border dark:divide-[#52525b] overflow-hidden">
+                {subItems.length === 0 ? (
+                  <p className="p-4 text-small text-text-muted dark:text-[#a1a1aa] text-center">
+                    Aucune catégorie
+                  </p>
+                ) : (
+                  subItems.map((cat) => (
+                    <CategoryItem key={cat.id} category={cat} onClick={() => setEditCat(cat)} />
+                  ))
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ── Modals partagées (rendues au niveau de la pile) ── */}
+      <Modal
+        open={!!addType}
+        onClose={() => setAddType(null)}
+        title={`Ajouter une catégorie de ${addType === 'expense' ? 'dépenses' : 'revenus'}`}
+      >
+        {addType && (
+          <CategoryForm type={addType} onSubmit={handleCreate} loading={createMutation.isPending} />
+        )}
+      </Modal>
+
+      <Modal open={!!editCat} onClose={() => setEditCat(null)} title="Modifier la catégorie">
+        {editCat && (
+          <CategoryForm
+            category={editCat}
+            type={editCat.type}
+            transactionCount={txCount}
+            onSubmit={handleUpdate}
+            onDelete={() => setConfirmDelete(true)}
+            loading={updateMutation.isPending}
+          />
+        )}
+      </Modal>
+
+      <ConfirmDialog
+        open={confirmDelete}
+        onClose={() => setConfirmDelete(false)}
+        onConfirm={handleDelete}
+        title="Supprimer la catégorie"
+        message={
+          txCount > 0
+            ? `${txCount} transaction${txCount > 1 ? 's' : ''} ${txCount > 1 ? 'sont liées' : 'est liée'} à cette catégorie. La catégorie sera retirée de ces transactions. Continuer ?`
+            : 'Êtes-vous sûr de vouloir supprimer cette catégorie ?'
+        }
+        confirmLabel="Supprimer"
+        loading={deleteMutation.isPending}
+      />
 
       <ConfirmDialog
         open={confirmLogout}

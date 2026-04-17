@@ -19,6 +19,7 @@ import Modal from './components/ui/Modal'
 import TransactionForm from './components/transaction/TransactionForm'
 import ToastContainer from './components/ui/ToastContainer'
 import ErrorBoundary from './components/ui/ErrorBoundary'
+import Skeleton from './components/ui/Skeleton'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -97,9 +98,9 @@ function AuthGate() {
       <div className="min-h-screen bg-bg dark:bg-dark-bg px-4 py-12">
         <div className="max-w-sm mx-auto space-y-4">
           <div className="bg-bg-secondary dark:bg-dark-bg-secondary border border-border dark:border-dark-border rounded-lg p-6">
-            <div className="h-3 w-24 bg-bg-tertiary dark:bg-dark-bg-tertiary rounded-md mb-4" style={{ animation: 'pulse-skeleton 1.8s ease-in-out infinite' }} />
-            <div className="h-8 w-32 bg-bg-tertiary dark:bg-dark-bg-tertiary rounded-md mb-2" style={{ animation: 'pulse-skeleton 1.8s ease-in-out infinite' }} />
-            <div className="h-3 w-20 bg-bg-tertiary dark:bg-dark-bg-tertiary rounded-md" style={{ animation: 'pulse-skeleton 1.8s ease-in-out infinite' }} />
+            <Skeleton className="h-3 w-24 mb-4" />
+            <Skeleton className="h-8 w-32 mb-2" />
+            <Skeleton className="h-3 w-20" />
           </div>
         </div>
       </div>
@@ -115,9 +116,9 @@ function AuthGate() {
       <div className="min-h-screen bg-bg dark:bg-dark-bg px-4 py-12">
         <div className="max-w-sm mx-auto space-y-4">
           <div className="bg-bg-secondary dark:bg-dark-bg-secondary border border-border dark:border-dark-border rounded-lg p-6">
-            <div className="h-3 w-24 bg-bg-tertiary dark:bg-dark-bg-tertiary rounded-md mb-4" style={{ animation: 'pulse-skeleton 1.8s ease-in-out infinite' }} />
-            <div className="h-8 w-32 bg-bg-tertiary dark:bg-dark-bg-tertiary rounded-md mb-2" style={{ animation: 'pulse-skeleton 1.8s ease-in-out infinite' }} />
-            <div className="h-3 w-20 bg-bg-tertiary dark:bg-dark-bg-tertiary rounded-md" style={{ animation: 'pulse-skeleton 1.8s ease-in-out infinite' }} />
+            <Skeleton className="h-3 w-24 mb-4" />
+            <Skeleton className="h-8 w-32 mb-2" />
+            <Skeleton className="h-3 w-20" />
           </div>
         </div>
       </div>

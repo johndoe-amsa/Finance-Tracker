@@ -20,10 +20,15 @@
 
   --backdrop:    blur(12px) saturate(1.8);
   --backdrop-bg: rgba(255, 255, 255, 0.85);
+
+  /* Bande lumineuse qui traverse les skeletons.
+     Clair : blanc semi-opaque pour se détacher du gris. Sombre : lueur discrète. */
+  --skeleton-shimmer: rgba(255, 255, 255, 0.55);
 }
 
 .dark {
   --backdrop-bg: rgba(24, 24, 27, 0.85);
+  --skeleton-shimmer: rgba(255, 255, 255, 0.06);
   background-color: #18181b;
 }
 
@@ -65,9 +70,9 @@ label,
 /*  Keyframes                                                          */
 /* ------------------------------------------------------------------ */
 
-@keyframes pulse-skeleton {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.4; }
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
 }
 
 /* Generic small enter/exit (used by dropdowns, inline transitions) */
@@ -85,14 +90,14 @@ label,
   to   { opacity: 1; transform: translateY(0)    scale(1); }
 }
 
-/* Modal backdrop */
+/* Modal backdrop — on anime aussi le flou pour un effet "profondeur progressive" */
 @keyframes modal-backdrop-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from { opacity: 0; backdrop-filter: blur(0);   -webkit-backdrop-filter: blur(0); }
+  to   { opacity: 1; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
 }
 @keyframes modal-backdrop-out {
-  from { opacity: 1; }
-  to   { opacity: 0; }
+  from { opacity: 1; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+  to   { opacity: 0; backdrop-filter: blur(0);   -webkit-backdrop-filter: blur(0); }
 }
 
 /* Modal content (desktop / tablet : center scale) */
@@ -157,8 +162,14 @@ label,
 /*  Modal component                                                    */
 /* ------------------------------------------------------------------ */
 
+/* Pendant la fermeture, le conteneur ne doit plus intercepter les taps —
+   sinon il bloque l'UI dessous durant l'animation de sortie de la sheet. */
+.modal-container[data-state="closed"] {
+  pointer-events: none;
+}
+
 .modal-backdrop {
-  will-change: opacity;
+  will-change: opacity, backdrop-filter;
 }
 .modal-backdrop[data-state="open"] {
   animation: modal-backdrop-in 240ms var(--ease-out) both;
@@ -184,13 +195,14 @@ label,
 }
 
 @media (max-width: 639px) {
-  /* Backdrop mobile : apparaît quasi-instantanément (pas de fade progressif),
-     puis disparaît en synchro avec la sheet qui redescend. */
+  /* Backdrop et feuille partagent la même durée et la même courbe : ils
+     progressent ensemble, le fond s'assombrit pendant que la sheet monte.
+     C'est ce couplage qui donne le rythme iOS natif. */
   .modal-backdrop[data-state="open"] {
-    animation: modal-backdrop-in 80ms ease both;
+    animation: modal-backdrop-in 420ms cubic-bezier(0.4, 0, 0.2, 1) both;
   }
   .modal-backdrop[data-state="closed"] {
-    animation: modal-backdrop-out 400ms var(--ease-in) both;
+    animation: modal-backdrop-out 280ms cubic-bezier(0.4, 0, 1, 1) both;
     pointer-events: none;
   }
 
@@ -198,12 +210,10 @@ label,
     transform-origin: center bottom;
   }
   .modal-content[data-state="open"] {
-    /* Sheet iOS : glissement depuis hors-écran, éasing rapide, sans fade */
-    animation: sheet-content-in 460ms var(--ios-ease) both;
+    animation: sheet-content-in 420ms cubic-bezier(0.4, 0, 0.2, 1) both;
   }
   .modal-content[data-state="closed"] {
-    /* Durée longue pour que l'animation aille jusqu'au bout avant le démontage */
-    animation: sheet-content-out 400ms cubic-bezier(0.36, 0, 0.66, 0) forwards;
+    animation: sheet-content-out 280ms cubic-bezier(0.4, 0, 1, 1) forwards;
   }
 }
 
@@ -272,6 +282,44 @@ label,
 
 .page-transition {
   animation: page-enter 260ms var(--ease-out) backwards;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Settings navigation stack (style iOS)                              */
+/*  Même courbes que la modal pour la cohérence : S-curve à l'entrée, */
+/*  ease-in à la sortie.                                               */
+/* ------------------------------------------------------------------ */
+
+.settings-main-level {
+  transition:
+    transform 420ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity   420ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity;
+}
+.settings-main-level[data-behind="true"] {
+  transform: translateX(-25%);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.settings-sub-level {
+  will-change: transform;
+  z-index: 1;
+}
+.settings-sub-level[data-state="open"] {
+  animation: settings-slide-in 420ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+.settings-sub-level[data-state="closed"] {
+  animation: settings-slide-out 280ms cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+@keyframes settings-slide-in {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+@keyframes settings-slide-out {
+  from { transform: translateX(0); }
+  to   { transform: translateX(100%); }
 }
 
 /* ------------------------------------------------------------------ */

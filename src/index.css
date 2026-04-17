@@ -90,14 +90,14 @@ label,
   to   { opacity: 1; transform: translateY(0)    scale(1); }
 }
 
-/* Modal backdrop */
+/* Modal backdrop — on anime aussi le flou pour un effet "profondeur progressive" */
 @keyframes modal-backdrop-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from { opacity: 0; backdrop-filter: blur(0);   -webkit-backdrop-filter: blur(0); }
+  to   { opacity: 1; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
 }
 @keyframes modal-backdrop-out {
-  from { opacity: 1; }
-  to   { opacity: 0; }
+  from { opacity: 1; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+  to   { opacity: 0; backdrop-filter: blur(0);   -webkit-backdrop-filter: blur(0); }
 }
 
 /* Modal content (desktop / tablet : center scale) */
@@ -163,7 +163,7 @@ label,
 /* ------------------------------------------------------------------ */
 
 .modal-backdrop {
-  will-change: opacity;
+  will-change: opacity, backdrop-filter;
 }
 .modal-backdrop[data-state="open"] {
   animation: modal-backdrop-in 240ms var(--ease-out) both;
@@ -189,13 +189,14 @@ label,
 }
 
 @media (max-width: 639px) {
-  /* Backdrop mobile : apparaît quasi-instantanément (pas de fade progressif),
-     puis disparaît en synchro avec la sheet qui redescend. */
+  /* Backdrop et feuille partagent la même durée et la même courbe : ils
+     progressent ensemble, le fond s'assombrit pendant que la sheet monte.
+     C'est ce couplage qui donne le rythme iOS natif. */
   .modal-backdrop[data-state="open"] {
-    animation: modal-backdrop-in 80ms ease both;
+    animation: modal-backdrop-in 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
   .modal-backdrop[data-state="closed"] {
-    animation: modal-backdrop-out 400ms var(--ease-in) both;
+    animation: modal-backdrop-out 280ms cubic-bezier(0.4, 0, 1, 1) both;
     pointer-events: none;
   }
 
@@ -203,12 +204,10 @@ label,
     transform-origin: center bottom;
   }
   .modal-content[data-state="open"] {
-    /* Sheet iOS : glissement depuis hors-écran, éasing rapide, sans fade */
-    animation: sheet-content-in 460ms var(--ios-ease) both;
+    animation: sheet-content-in 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
   .modal-content[data-state="closed"] {
-    /* Durée longue pour que l'animation aille jusqu'au bout avant le démontage */
-    animation: sheet-content-out 400ms cubic-bezier(0.36, 0, 0.66, 0) forwards;
+    animation: sheet-content-out 280ms cubic-bezier(0.4, 0, 1, 1) forwards;
   }
 }
 

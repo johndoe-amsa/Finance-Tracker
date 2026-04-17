@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { X } from 'lucide-react'
 
 // Must be >= the longest close animation duration in index.css (.modal-content[data-state="closed"]).
-// Mobile sheet close = 400ms, desktop close = 160ms → prendre le max + marge confortable.
-const CLOSE_DURATION = 460
+// Mobile sheet close = 280ms, desktop close = 160ms → prendre le max + marge confortable.
+const CLOSE_DURATION = 320
 
 // Counter-based scroll lock: only unlock when no modals are mounted.
 // A simple save/restore would break when modals open/close in overlapping order
@@ -68,7 +68,7 @@ export default function Modal({ open, onClose, title, children }) {
   return (
     <div
       data-state={state}
-      className="modal-backdrop fixed inset-0 z-modal flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm"
+      className="modal-backdrop fixed inset-0 z-modal flex items-end sm:items-center justify-center bg-black/50"
       onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
     >
       <div

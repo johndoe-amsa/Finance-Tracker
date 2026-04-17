@@ -329,7 +329,6 @@ const { data: transactions, isLoading } = useTransactions(currentYear, currentMo
             transactions={transactions}
             onItemClick={handleItemClick}
             onVerify={handleVerify}
-            onDelete={undoableDelete}
           />
         )}
       </div>

@@ -21,7 +21,7 @@ export default function TransactionList({ transactions, onItemClick, onVerify, o
           <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#a1a1aa] pb-2.5 mb-3 border-b border-border dark:border-[#3f3f46]">
             {formatDateLabel(date)}
           </p>
-          <div className="rounded-lg border border-border dark:border-[#3f3f46] divide-y divide-border dark:divide-[#3f3f46] overflow-hidden">
+          <div className="rounded-lg border border-border dark:border-[#52525b] divide-y divide-border dark:divide-[#52525b] overflow-hidden">
             {items.map((tx) => (
               <SwipeableRow
                 key={tx.id}

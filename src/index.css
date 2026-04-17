@@ -162,6 +162,12 @@ label,
 /*  Modal component                                                    */
 /* ------------------------------------------------------------------ */
 
+/* Pendant la fermeture, le conteneur ne doit plus intercepter les taps —
+   sinon il bloque l'UI dessous durant l'animation de sortie de la sheet. */
+.modal-container[data-state="closed"] {
+  pointer-events: none;
+}
+
 .modal-backdrop {
   will-change: opacity, backdrop-filter;
 }

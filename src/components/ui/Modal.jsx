@@ -68,12 +68,19 @@ export default function Modal({ open, onClose, title, children }) {
   return (
     <div
       data-state={state}
-      className="modal-backdrop fixed inset-0 z-modal flex items-end sm:items-center justify-center bg-black/50"
+      className="modal-container fixed inset-0 z-modal flex items-end sm:items-center justify-center"
       onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
     >
+      {/* Calque sombre + flou, frère de la sheet et non parent — ainsi la
+          sheet n'hérite plus du fade en opacity et se contente de glisser. */}
       <div
         data-state={state}
-        className="modal-content w-full max-w-lg bg-bg dark:bg-[#1f1f23] border border-border dark:border-[#52525b] rounded-t-2xl sm:rounded-xl shadow-2 p-6 pb-10 sm:pb-6 max-h-[85vh] min-h-[50vh] sm:min-h-0 overflow-y-auto"
+        className="modal-backdrop absolute inset-0 bg-black/50 pointer-events-none"
+        aria-hidden="true"
+      />
+      <div
+        data-state={state}
+        className="modal-content relative w-full max-w-lg bg-bg dark:bg-[#1f1f23] border border-border dark:border-[#52525b] rounded-t-2xl sm:rounded-xl shadow-2 p-6 pb-10 sm:pb-6 max-h-[85vh] min-h-[50vh] sm:min-h-0 overflow-y-auto"
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"

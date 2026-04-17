@@ -28,6 +28,20 @@ import BudgetBar from '../components/budget/BudgetBar'
 import BudgetDetailModal from '../components/budget/BudgetDetailModal'
 import SearchModal from '../components/search/SearchModal'
 
+function SubRow({ sub }) {
+  return (
+    <div className="flex items-center gap-3 px-4 py-2">
+      <p className="text-small font-medium text-text dark:text-[#EDEDED] truncate flex-1">{sub.name}</p>
+      <p className="text-label text-text-muted dark:text-[#a1a1aa] flex-shrink-0 w-12 text-right">
+        {sub.nextDate.toLocaleDateString('fr-CH', { day: 'numeric', month: 'short' })}
+      </p>
+      <p className="text-small font-semibold text-text dark:text-[#EDEDED] flex-shrink-0 w-20 text-right" style={{ fontVariantNumeric: 'tabular-nums' }}>
+        −{formatAmount(sub.amount)}
+      </p>
+    </div>
+  )
+}
+
 export default function DashboardPage() {
   const { currentYear, currentMonth, setMonth } = useAppStore()
 const { data: transactions, isLoading } = useTransactions(currentYear, currentMonth)
@@ -230,25 +244,36 @@ const { data: transactions, isLoading } = useTransactions(currentYear, currentMo
           <h3 className="text-small font-semibold text-text dark:text-dark-text uppercase tracking-[0.05em] mb-3">
             Prochains prélèvements
           </h3>
-          <div className="bg-bg-secondary dark:bg-[#1f1f23] border border-border dark:border-[#52525b] rounded-lg divide-y divide-border dark:divide-[#52525b]">
-            {(showAllSubs ? upcomingSubscriptions : upcomingSubscriptions.slice(0, 3)).map((sub) => (
-              <div key={sub.id} className="flex items-center gap-3 px-4 py-2">
-                <p className="text-small font-medium text-text dark:text-[#EDEDED] truncate flex-1">{sub.name}</p>
-                <p className="text-label text-text-muted dark:text-[#a1a1aa] flex-shrink-0 w-12 text-right">
-                  {sub.nextDate.toLocaleDateString('fr-CH', { day: 'numeric', month: 'short' })}
-                </p>
-                <p className="text-small font-semibold text-text dark:text-[#EDEDED] flex-shrink-0 w-20 text-right" style={{ fontVariantNumeric: 'tabular-nums' }}>
-                  −{formatAmount(sub.amount)}
-                </p>
-              </div>
-            ))}
+          <div className="bg-bg-secondary dark:bg-[#1f1f23] border border-border dark:border-[#52525b] rounded-lg">
+            <div className="divide-y divide-border dark:divide-[#52525b]">
+              {upcomingSubscriptions.slice(0, 3).map((sub) => (
+                <SubRow key={sub.id} sub={sub} />
+              ))}
+            </div>
             {upcomingSubscriptions.length > 3 && (
-              <button
-                onClick={() => setShowAllSubs((v) => !v)}
-                className="w-full flex items-center justify-center py-2.5 text-text-muted dark:text-[#a1a1aa] hover:text-text dark:hover:text-[#EDEDED] transition-colors cursor-pointer"
-              >
-                {showAllSubs ? <ChevronUp size={16} strokeWidth={1.5} /> : <ChevronDown size={16} strokeWidth={1.5} />}
-              </button>
+              <>
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateRows: showAllSubs ? '1fr' : '0fr',
+                    transition: 'grid-template-rows 280ms ease',
+                  }}
+                >
+                  <div className="overflow-hidden">
+                    <div className="divide-y divide-border dark:divide-[#52525b] border-t border-border dark:border-[#52525b]">
+                      {upcomingSubscriptions.slice(3).map((sub) => (
+                        <SubRow key={sub.id} sub={sub} />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowAllSubs((v) => !v)}
+                  className="w-full flex items-center justify-center py-2.5 border-t border-border dark:border-[#52525b] text-text-muted dark:text-[#a1a1aa] hover:text-text dark:hover:text-[#EDEDED] transition-colors cursor-pointer"
+                >
+                  {showAllSubs ? <ChevronUp size={16} strokeWidth={1.5} /> : <ChevronDown size={16} strokeWidth={1.5} />}
+                </button>
+              </>
             )}
           </div>
         </div>

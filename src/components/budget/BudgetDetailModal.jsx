@@ -40,11 +40,12 @@ export default function BudgetDetailModal({
     <Modal
       open={open}
       onClose={onClose}
+      hero={cat.icon ? (
+        <div className="-mt-2 text-[52px] leading-none" aria-hidden>{cat.icon}</div>
+      ) : null}
       title={
         <span className="flex items-center gap-2">
-          {cat.icon ? (
-            <span className="text-[24px] leading-none" aria-hidden>{cat.icon}</span>
-          ) : (
+          {!cat.icon && (
             <span
               className="w-3 h-3 rounded-full flex-shrink-0"
               style={{ backgroundColor: catColor }}

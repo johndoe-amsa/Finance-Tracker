@@ -12,11 +12,12 @@ const CLOSE_DURATION = 320
 // and the expense modal later "restores" overflow:'hidden' permanently).
 let _openModalsCount = 0
 
-export default function Modal({ open, onClose, title, children }) {
+export default function Modal({ open, onClose, title, hero, children }) {
   const [render, setRender] = useState(open)
   const [closing, setClosing] = useState(false)
   const cachedChildren = useRef(children)
   const cachedTitle = useRef(title)
+  const cachedHero = useRef(hero)
   const firstFocusRef = useRef(null)
 
   // Cache children/title while the modal is open so they remain visible
@@ -25,6 +26,7 @@ export default function Modal({ open, onClose, title, children }) {
   if (open) {
     cachedChildren.current = children
     cachedTitle.current = title
+    cachedHero.current = hero
   }
 
   useEffect(() => {
@@ -87,19 +89,38 @@ export default function Modal({ open, onClose, title, children }) {
       >
         {/* Drag handle — mobile uniquement */}
         <div className="sm:hidden w-10 h-1 rounded-full bg-border/70 dark:bg-white/20 mx-auto mb-5 -mt-1" />
-        <div className="flex items-center justify-between mb-6">
-          <h2 id="modal-title" className="text-h3 text-text dark:text-[#EDEDED]">
-            {cachedTitle.current}
-          </h2>
-          <button
-            ref={firstFocusRef}
-            onClick={onClose}
-            className="text-text-muted hover:text-text dark:text-[#a1a1aa] dark:hover:text-[#EDEDED] transition-colors duration-150 rounded-md p-1"
-            aria-label="Fermer"
-          >
-            <X size={20} strokeWidth={1.5} />
-          </button>
-        </div>
+        {/* Bouton fermer — flottant en haut à droite quand un hero est présent
+            pour que le hero + titre restent alignés à gauche. */}
+        {cachedHero.current ? (
+          <>
+            <button
+              ref={firstFocusRef}
+              onClick={onClose}
+              className="absolute top-4 right-4 text-text-muted hover:text-text dark:text-[#a1a1aa] dark:hover:text-[#EDEDED] transition-colors duration-150 rounded-md p-1"
+              aria-label="Fermer"
+            >
+              <X size={20} strokeWidth={1.5} />
+            </button>
+            <div className="mb-3">{cachedHero.current}</div>
+            <h2 id="modal-title" className="text-h3 text-text dark:text-[#EDEDED] mb-6">
+              {cachedTitle.current}
+            </h2>
+          </>
+        ) : (
+          <div className="flex items-center justify-between mb-6">
+            <h2 id="modal-title" className="text-h3 text-text dark:text-[#EDEDED]">
+              {cachedTitle.current}
+            </h2>
+            <button
+              ref={firstFocusRef}
+              onClick={onClose}
+              className="text-text-muted hover:text-text dark:text-[#a1a1aa] dark:hover:text-[#EDEDED] transition-colors duration-150 rounded-md p-1"
+              aria-label="Fermer"
+            >
+              <X size={20} strokeWidth={1.5} />
+            </button>
+          </div>
+        )}
         {cachedChildren.current}
       </div>
     </div>

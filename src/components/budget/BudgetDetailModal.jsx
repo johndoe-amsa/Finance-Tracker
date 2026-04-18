@@ -40,6 +40,9 @@ export default function BudgetDetailModal({
     <Modal
       open={open}
       onClose={onClose}
+      hero={cat.icon ? (
+        <span className="text-[64px] leading-none" aria-hidden>{cat.icon}</span>
+      ) : null}
       title={
         <span className="flex items-center gap-2">
           {!cat.icon && (
@@ -53,12 +56,6 @@ export default function BudgetDetailModal({
       }
     >
       <div className="space-y-4">
-        {cat.icon && (
-          <div className="text-[64px] leading-none -mt-2" aria-hidden>
-            {cat.icon}
-          </div>
-        )}
-
         <p
           className="text-small text-text-muted dark:text-[#a1a1aa]"
           style={{ fontVariantNumeric: 'tabular-nums' }}

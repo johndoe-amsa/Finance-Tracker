@@ -39,12 +39,13 @@ export default function BudgetBar({ name, icon, spent, limit, color, onClick, in
     >
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          <span
-            className="w-2.5 h-2.5 rounded-full flex-shrink-0"
-            style={{ backgroundColor: color || '#6366f1' }}
-          />
-          {icon && (
+          {icon ? (
             <span className="text-[15px] leading-none shrink-0" aria-hidden>{icon}</span>
+          ) : (
+            <span
+              className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+              style={{ backgroundColor: color || '#6366f1' }}
+            />
           )}
           <p className="text-small font-medium text-text dark:text-[#EDEDED]">{name}</p>
         </div>

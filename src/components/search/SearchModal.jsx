@@ -17,6 +17,7 @@ function filterReducer(state, action) {
     case 'SET_AMOUNT_MAX': return { ...state, amountMax: action.value }
     case 'SET_DATE_FROM': return { ...state, dateFrom: action.value }
     case 'SET_DATE_TO': return { ...state, dateTo: action.value }
+    case 'SET_AUTO': return { ...state, isAuto: action.value }
     case 'RESET': return initialFilters
     default: return state
   }
@@ -30,9 +31,10 @@ const initialFilters = {
   amountMax: '',
   dateFrom: '',
   dateTo: '',
+  isAuto: false,
 }
 
-export default function SearchModal({ open, onClose, onItemClick, onVerify }) {
+export default function SearchModal({ open, onClose, onItemClick, onVerify, hasModalAbove = false }) {
   const [render, setRender] = useState(open)
   const [closing, setClosing] = useState(false)
   const [showFilters, setShowFilters] = useState(false)
@@ -42,8 +44,8 @@ export default function SearchModal({ open, onClose, onItemClick, onVerify }) {
 
   const { data: categories = [] } = useCategories()
 
-  const hasAnyFilter = filters.term || filters.txType || filters.categoryId || filters.amountMin || filters.amountMax || filters.dateFrom || filters.dateTo
-  const shouldSearch = debouncedTerm.length >= 2 || filters.txType || filters.categoryId || filters.amountMin || filters.amountMax || filters.dateFrom || filters.dateTo
+  const hasAnyFilter = filters.term || filters.txType || filters.categoryId || filters.amountMin || filters.amountMax || filters.dateFrom || filters.dateTo || filters.isAuto
+  const shouldSearch = debouncedTerm.length >= 2 || filters.txType || filters.categoryId || filters.amountMin || filters.amountMax || filters.dateFrom || filters.dateTo || filters.isAuto
 
   const { data: results, isLoading } = useSearchTransactions({
     term: debouncedTerm,
@@ -53,6 +55,7 @@ export default function SearchModal({ open, onClose, onItemClick, onVerify }) {
     amountMax: filters.amountMax || undefined,
     dateFrom: filters.dateFrom || undefined,
     dateTo: filters.dateTo || undefined,
+    isAuto: filters.isAuto || undefined,
     enabled: render && shouldSearch,
   })
 
@@ -85,13 +88,13 @@ export default function SearchModal({ open, onClose, onItemClick, onVerify }) {
     }
   }, [open, render])
 
-  // Escape key
+  // Escape key — suppressed when a modal is stacked above (e.g. edit modal opened from results)
   useEffect(() => {
-    if (!open) return
+    if (!open || hasModalAbove) return
     const handleKey = (e) => { if (e.key === 'Escape') onClose() }
     document.addEventListener('keydown', handleKey)
     return () => document.removeEventListener('keydown', handleKey)
-  }, [open, onClose])
+  }, [open, onClose, hasModalAbove])
 
   // Lock scroll
   useEffect(() => {
@@ -105,8 +108,9 @@ export default function SearchModal({ open, onClose, onItemClick, onVerify }) {
 
   const state = closing ? 'closed' : 'open'
 
+  // Don't close search when opening a transaction detail — the edit modal
+  // opens on top and search stays visible underneath with state preserved.
   const handleItemClick = (tx) => {
-    onClose()
     onItemClick(tx)
   }
 
@@ -114,7 +118,7 @@ export default function SearchModal({ open, onClose, onItemClick, onVerify }) {
     ? categories.filter((c) => c.type === filters.txType)
     : categories
 
-  const activeFilterCount = [filters.txType, filters.categoryId, filters.amountMin, filters.amountMax, filters.dateFrom, filters.dateTo].filter(Boolean).length
+  const activeFilterCount = [filters.txType, filters.categoryId, filters.amountMin, filters.amountMax, filters.dateFrom, filters.dateTo, filters.isAuto].filter(Boolean).length
 
   return (
     <div
@@ -160,6 +164,29 @@ export default function SearchModal({ open, onClose, onItemClick, onVerify }) {
         {/* Filters panel */}
         {showFilters && (
           <div className="px-4 py-3 border-b border-border dark:border-[#52525b] space-y-3" style={{ animation: 'enter 200ms var(--ease-out) both' }}>
+            {/* Auto filter */}
+            <div className="flex items-center gap-2">
+              <span className="text-[12px] font-medium text-text-muted dark:text-[#a1a1aa] w-16 shrink-0">Origine</span>
+              <div className="flex gap-1.5">
+                {[
+                  { value: false, label: 'Toutes' },
+                  { value: true, label: 'Automatiques' },
+                ].map((opt) => (
+                  <button
+                    key={String(opt.value)}
+                    onClick={() => dispatch({ type: 'SET_AUTO', value: opt.value })}
+                    className={`px-3 py-1 text-[12px] font-medium rounded-full transition-colors duration-150 ${
+                      filters.isAuto === opt.value
+                        ? 'bg-accent dark:bg-[#EDEDED] text-bg dark:text-[#000000]'
+                        : 'bg-bg-secondary dark:bg-[#27272a] text-text-muted dark:text-[#a1a1aa] hover:text-text dark:hover:text-[#EDEDED]'
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             {/* Type filter */}
             <div className="flex items-center gap-2">
               <span className="text-[12px] font-medium text-text-muted dark:text-[#a1a1aa] w-16 shrink-0">Type</span>

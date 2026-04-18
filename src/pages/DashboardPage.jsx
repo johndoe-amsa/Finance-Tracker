@@ -333,6 +333,16 @@ const { data: transactions, isLoading } = useTransactions(currentYear, currentMo
         )}
       </div>
 
+      {/* Search modal — rendered before edit modal so that edit (same z-index,
+          later in DOM) appears on top, preserving search state on close. */}
+      <SearchModal
+        open={showSearch}
+        onClose={() => setShowSearch(false)}
+        onItemClick={handleItemClick}
+        onVerify={handleVerify}
+        hasModalAbove={!!editTx}
+      />
+
       {/* Edit transaction modal */}
       <Modal open={!!editTx} onClose={clearEditTx} title="Modifier la transaction">
         {editTx && (
@@ -358,14 +368,6 @@ const { data: transactions, isLoading } = useTransactions(currentYear, currentMo
           setBudgetDetail(null)
           setEditTx(tx)
         }}
-      />
-
-      {/* Search modal */}
-      <SearchModal
-        open={showSearch}
-        onClose={() => setShowSearch(false)}
-        onItemClick={handleItemClick}
-        onVerify={handleVerify}
       />
     </div>
   )

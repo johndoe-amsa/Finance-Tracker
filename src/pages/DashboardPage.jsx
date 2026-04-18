@@ -285,7 +285,7 @@ const { data: transactions, isLoading } = useTransactions(currentYear, currentMo
           <h3 className="text-small font-semibold text-text dark:text-dark-text uppercase tracking-[0.05em] mb-3">
             Budgets
           </h3>
-          <div className="bg-bg-secondary dark:bg-[#1f1f23] border border-border dark:border-[#52525b] rounded-lg divide-y divide-border dark:divide-[#52525b]">
+          <div className="bg-bg-secondary dark:bg-[#1f1f23] border border-border dark:border-[#52525b] rounded-lg divide-y divide-border dark:divide-[#52525b] overflow-hidden">
             {budgetCategories.map((cat, i) => (
               <BudgetBar
                 key={cat.id}

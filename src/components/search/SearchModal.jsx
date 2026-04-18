@@ -96,12 +96,21 @@ export default function SearchModal({ open, onClose, onItemClick, onVerify, hasM
     return () => document.removeEventListener('keydown', handleKey)
   }, [open, onClose, hasModalAbove])
 
-  // Lock scroll
+  // Lock scroll — position:fixed is required for iOS Safari which ignores overflow:hidden on body
   useEffect(() => {
     if (!render) return
-    const prev = document.body.style.overflow
+    const scrollY = window.scrollY
     document.body.style.overflow = 'hidden'
-    return () => { document.body.style.overflow = prev }
+    document.body.style.position = 'fixed'
+    document.body.style.top = `-${scrollY}px`
+    document.body.style.width = '100%'
+    return () => {
+      document.body.style.overflow = ''
+      document.body.style.position = ''
+      document.body.style.top = ''
+      document.body.style.width = ''
+      window.scrollTo(0, scrollY)
+    }
   }, [render])
 
   if (!render) return null
@@ -279,7 +288,7 @@ export default function SearchModal({ open, onClose, onItemClick, onVerify, hasM
         )}
 
         {/* Results */}
-        <div className="flex-1 overflow-y-auto px-4 py-4">
+        <div className="flex-1 overflow-y-auto overscroll-contain px-4 py-4">
           {!shouldSearch ? (
             <div className="flex flex-col items-center justify-center h-full text-center">
               <Search size={40} strokeWidth={1} className="text-text-subtle dark:text-[#71717a] mb-3" />

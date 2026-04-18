@@ -38,7 +38,7 @@ export default function BudgetBar({ name, icon, spent, limit, color, onClick, in
       style={{ animation: `enter 280ms var(--ios-ease) ${staggerMs}ms both` }}
     >
       {icon ? (
-        <span className="text-[28px] leading-none shrink-0" aria-hidden>{icon}</span>
+        <span className="text-[22px] leading-none shrink-0" aria-hidden>{icon}</span>
       ) : (
         <span
           className="w-2.5 h-2.5 rounded-full flex-shrink-0"

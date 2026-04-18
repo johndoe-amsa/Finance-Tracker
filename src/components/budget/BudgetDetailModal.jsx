@@ -41,7 +41,7 @@ export default function BudgetDetailModal({
       open={open}
       onClose={onClose}
       hero={cat.icon ? (
-        <span className="text-[64px] leading-none" aria-hidden>{cat.icon}</span>
+        <div className="-mt-2 text-[52px] leading-none" aria-hidden>{cat.icon}</div>
       ) : null}
       title={
         <span className="flex items-center gap-2">

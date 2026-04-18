@@ -33,10 +33,14 @@ function TransactionItem({ transaction: tx, onClick, onVerify }) {
         <div className="flex flex-wrap gap-1.5 mt-1.5">
           {tx.categories?.name && (
             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[11px] font-medium tracking-[0.02em] bg-bg-tertiary dark:bg-[#27272a] text-text-muted dark:text-[#a1a1aa]">
-              <span
-                className="w-2 h-2 rounded-full flex-shrink-0"
-                style={{ backgroundColor: tx.categories.color || '#6366f1' }}
-              />
+              {tx.categories.icon ? (
+                <span className="text-[12px] leading-none" aria-hidden>{tx.categories.icon}</span>
+              ) : (
+                <span
+                  className="w-2 h-2 rounded-full flex-shrink-0"
+                  style={{ backgroundColor: tx.categories.color || '#6366f1' }}
+                />
+              )}
               {tx.categories.name}
             </span>
           )}

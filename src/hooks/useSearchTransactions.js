@@ -9,7 +9,7 @@ export function useSearchTransactions(filters) {
     queryFn: async () => {
       let query = db
         .from('transactions')
-        .select('*, categories(name, color)')
+        .select('*, categories(name, color, icon)')
         .order('date', { ascending: false })
         .limit(100)
 

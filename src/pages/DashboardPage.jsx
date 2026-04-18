@@ -291,6 +291,7 @@ const { data: transactions, isLoading } = useTransactions(currentYear, currentMo
                 key={cat.id}
                 index={i}
                 name={cat.name}
+                icon={cat.icon}
                 spent={cat.spent}
                 limit={parseFloat(cat.budget_limit)}
                 color={cat.color}

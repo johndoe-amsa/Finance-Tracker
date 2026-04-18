@@ -8,7 +8,7 @@ export function useSubscriptions() {
     queryFn: async () => {
       const { data, error } = await db
         .from('subscriptions')
-        .select('*, categories(name)')
+        .select('*, categories(name, icon)')
         .order('name', { ascending: true })
       if (error) throw error
       return data

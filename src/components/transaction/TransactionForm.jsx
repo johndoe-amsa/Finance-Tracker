@@ -109,7 +109,7 @@ export default function TransactionForm({ transaction, onSubmit, onDelete, onUnv
       >
         <option value="">&mdash; Choisir &mdash;</option>
         {filteredCategories.map((c) => (
-          <option key={c.id} value={c.id}>{c.name}</option>
+          <option key={c.id} value={c.id}>{c.icon ? `${c.icon} ${c.name}` : c.name}</option>
         ))}
       </SelectField>
 

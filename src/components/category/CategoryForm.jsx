@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import Button from '../ui/Button'
 import Field from '../ui/Field'
+import EmojiPicker from '../ui/EmojiPicker'
 import { DATA_COLORS } from '../../data'
 import useFormValidation from '../../hooks/useFormValidation'
 
@@ -20,6 +21,7 @@ export default function CategoryForm({
   const [name, setName] = useState(category?.name || '')
   const [budgetLimit, setBudgetLimit] = useState(category?.budget_limit?.toString() || '')
   const [color, setColor] = useState(category?.color || DATA_COLORS[1])
+  const [icon, setIcon] = useState(category?.icon || null)
 
   const validationSchema = useMemo(() => ({
     name: (v) => !v?.trim() ? 'Nom requis' : null,
@@ -32,7 +34,7 @@ export default function CategoryForm({
   const handleSubmit = (e) => {
     e.preventDefault()
     if (!validate({ name })) return
-    const data = { name, type, color }
+    const data = { name, type, color, icon: icon || null }
     if (type === 'expense') {
       data.budget_limit = budgetLimit ? parseFloat(budgetLimit) : null
     }
@@ -69,6 +71,11 @@ export default function CategoryForm({
             />
           ))}
         </div>
+      </div>
+
+      <div>
+        <p className="text-[13px] font-medium text-text-muted dark:text-[#a1a1aa] mb-2">Icône</p>
+        <EmojiPicker value={icon} onChange={setIcon} />
       </div>
 
       {type === 'expense' && (

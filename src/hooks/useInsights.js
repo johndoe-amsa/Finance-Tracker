@@ -112,7 +112,7 @@ export function computeInsights(data, categories, month) {
         const overBy = (projected - limit).toFixed(0)
         insights.push({
           type: 'warning',
-          title: `${cat.name} risque de depasser`,
+          title: `${cat.icon ? cat.icon + ' ' : ''}${cat.name} risque de depasser`,
           detail: `Projection : +${overBy} CHF au-dela du budget`,
         })
         break // Only show one budget alert to avoid noise
@@ -150,7 +150,7 @@ export function computeInsights(data, categories, month) {
       if (cat) {
         insights.push({
           type: maxDelta > 0 ? 'warning' : 'success',
-          title: `${cat.name} : ${maxDelta > 0 ? '+' : ''}${maxDelta.toFixed(0)} CHF`,
+          title: `${cat.icon ? cat.icon + ' ' : ''}${cat.name} : ${maxDelta > 0 ? '+' : ''}${maxDelta.toFixed(0)} CHF`,
           detail: `vs ${prevMonthLabel}`,
         })
       }

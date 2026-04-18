@@ -221,7 +221,7 @@ export default function SearchModal({ open, onClose, onItemClick, onVerify, hasM
               >
                 <option value="">Toutes</option>
                 {filteredCategories.map((c) => (
-                  <option key={c.id} value={c.id}>{c.name}</option>
+                  <option key={c.id} value={c.id}>{c.icon ? `${c.icon} ${c.name}` : c.name}</option>
                 ))}
               </select>
             </div>

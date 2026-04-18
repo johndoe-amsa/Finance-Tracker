@@ -22,7 +22,9 @@ export default function SubscriptionItem({ subscription: sub, onClick }) {
       <div className="flex-1 min-w-0 mr-3">
         <p className="text-small font-medium text-text dark:text-[#EDEDED]">{sub.name}</p>
         <div className="flex flex-wrap gap-1.5 mt-1.5">
-          {sub.categories?.name && <Badge>{sub.categories.name}</Badge>}
+          {sub.categories?.name && (
+            <Badge>{sub.categories.icon ? `${sub.categories.icon} ${sub.categories.name}` : sub.categories.name}</Badge>
+          )}
           <Badge variant={sub.is_active ? 'success' : 'neutral'}>
             {sub.is_active ? 'Actif' : 'Inactif'}
           </Badge>

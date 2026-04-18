@@ -25,6 +25,7 @@ export default function CategoryPieChart({ expensesByCategory = {}, categories =
       return {
         id,
         name: cat?.name || 'Autre',
+        icon: cat?.icon || null,
         value: amount,
         fill: cat?.color || DATA_COLORS[(i % 7) + 1],
       }
@@ -77,6 +78,9 @@ export default function CategoryPieChart({ expensesByCategory = {}, categories =
                 className="w-2 h-2 rounded-full flex-shrink-0"
                 style={{ backgroundColor: entry.fill }}
               />
+              {entry.icon && (
+                <span className="text-[13px] leading-none shrink-0" aria-hidden>{entry.icon}</span>
+              )}
               <span className="text-text-muted dark:text-[#a1a1aa] truncate">{entry.name}</span>
             </div>
             <div className="flex items-center gap-2 ml-2 shrink-0">

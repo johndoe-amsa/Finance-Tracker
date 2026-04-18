@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { formatAmount, interactiveProps } from '../../lib/utils'
 
-export default function BudgetBar({ name, spent, limit, color, onClick, index = 0 }) {
+export default function BudgetBar({ name, icon, spent, limit, color, onClick, index = 0 }) {
   // Déclenche l'animation de la barre un tick après le montage
   const [mounted, setMounted] = useState(false)
   useEffect(() => {
@@ -43,6 +43,9 @@ export default function BudgetBar({ name, spent, limit, color, onClick, index = 
             className="w-2.5 h-2.5 rounded-full flex-shrink-0"
             style={{ backgroundColor: color || '#6366f1' }}
           />
+          {icon && (
+            <span className="text-[15px] leading-none shrink-0" aria-hidden>{icon}</span>
+          )}
           <p className="text-small font-medium text-text dark:text-[#EDEDED]">{name}</p>
         </div>
 

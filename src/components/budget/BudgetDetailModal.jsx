@@ -46,6 +46,7 @@ export default function BudgetDetailModal({
             className="w-3 h-3 rounded-full flex-shrink-0"
             style={{ backgroundColor: catColor }}
           />
+          {cat.icon && <span className="text-[16px] leading-none" aria-hidden>{cat.icon}</span>}
           {cat.name}
         </span>
       }

@@ -1,8 +1,9 @@
 import { Plus } from 'lucide-react'
+import { haptic } from 'ios-haptics'
 
 export default function FAB({ onClick }) {
   const handleClick = () => {
-    navigator.vibrate?.(8)
+    haptic()
     onClick?.()
   }
 

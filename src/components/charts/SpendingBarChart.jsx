@@ -8,6 +8,7 @@ import {
   ResponsiveContainer,
 } from 'recharts'
 import { DATA_COLORS } from '../../data'
+import { formatAmount } from '../../lib/utils'
 
 function ChartTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null
@@ -18,13 +19,13 @@ function ChartTooltip({ active, payload, label }) {
     <div className="bg-bg dark:bg-[#1f1f23] border border-border dark:border-[#52525b] rounded-md shadow-lg px-3 py-2 text-[12px] font-sans">
       <p className="text-text-muted dark:text-[#a1a1aa] mb-1.5 capitalize font-medium">{label}</p>
       <p className="font-medium mb-0.5" style={{ color: DATA_COLORS[7] }}>
-        Revenus : {income.toFixed(2)} CHF
+        Revenus : {formatAmount(income)}
       </p>
       <p className="font-medium mb-0.5" style={{ color: DATA_COLORS[1] }}>
-        Dépenses : {expense.toFixed(2)} CHF
+        Dépenses : {formatAmount(expense)}
       </p>
       <p className={`font-semibold mt-1 pt-1 border-t border-border dark:border-[#52525b] ${balance >= 0 ? 'text-success' : 'text-error'}`}>
-        Solde : {balance >= 0 ? '+' : '−'}{Math.abs(balance).toFixed(2)} CHF
+        Solde : {balance >= 0 ? '+' : '−'}{formatAmount(Math.abs(balance))}
       </p>
     </div>
   )

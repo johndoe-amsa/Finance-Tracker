@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts'
 import { DATA_COLORS } from '../../data'
+import { formatAmount } from '../../lib/utils'
 
 function CustomTooltip({ active, payload }) {
   if (!active || !payload?.length) return null
@@ -8,7 +9,7 @@ function CustomTooltip({ active, payload }) {
   return (
     <div className="bg-bg dark:bg-[#1f1f23] border border-border dark:border-[#52525b] rounded-md shadow-lg px-3 py-2 text-[12px] font-sans">
       <p className="font-medium text-text dark:text-[#EDEDED]">{entry.name}</p>
-      <p style={{ color: entry.payload.fill }}>{entry.value.toFixed(2)} CHF</p>
+      <p style={{ color: entry.payload.fill }}>{formatAmount(entry.value)}</p>
     </div>
   )
 }
@@ -91,7 +92,7 @@ export default function CategoryPieChart({ expensesByCategory = {}, categories =
                 className="font-medium text-text dark:text-[#EDEDED]"
                 style={{ fontVariantNumeric: 'tabular-nums' }}
               >
-                {entry.value.toFixed(2)} CHF
+                {formatAmount(entry.value)}
               </span>
             </div>
           </div>

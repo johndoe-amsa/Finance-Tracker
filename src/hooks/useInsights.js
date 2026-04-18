@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { db } from '../lib/supabase'
+import { formatAmount } from '../lib/utils'
 
 export function useInsights(year, month) {
   return useQuery({
@@ -88,7 +89,7 @@ export function computeInsights(data, categories, month) {
     insights.push({
       type: rate >= 20 ? 'success' : rate >= 0 ? 'info' : 'warning',
       title: `Taux d'epargne : ${rate.toFixed(0)}%`,
-      detail: rate >= 0 ? `${(curIncome - curExpense).toFixed(2)} CHF epargnes` : 'Depenses superieures aux revenus',
+      detail: rate >= 0 ? `${formatAmount(curIncome - curExpense)} epargnes` : 'Depenses superieures aux revenus',
     })
   }
 

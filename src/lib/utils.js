@@ -1,5 +1,8 @@
 export function formatAmount(amount) {
-  return parseFloat(amount).toFixed(2) + ' CHF'
+  return parseFloat(amount).toLocaleString('fr-CH', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }) + ' CHF'
 }
 
 export function formatDate(dateStr) {

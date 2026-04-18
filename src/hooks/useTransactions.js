@@ -17,7 +17,7 @@ export function useTransactions(year, month) {
         .gte('date', startDate)
         .lte('date', endDate)
         .order('date', { ascending: false })
-        .order('created_at', { ascending: true })
+        .order('created_at', { ascending: false })
       if (error) throw error
       return data
     },
@@ -33,7 +33,7 @@ export function useUnverifiedTransactions() {
         .select('*, categories(name, color, icon), subscriptions(kind)')
         .eq('is_verified', false)
         .order('date', { ascending: false })
-        .order('created_at', { ascending: true })
+        .order('created_at', { ascending: false })
       if (error) throw error
       return data
     },

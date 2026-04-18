@@ -2,10 +2,10 @@ import { useQuery } from '@tanstack/react-query'
 import { db } from '../lib/supabase'
 
 export function useSearchTransactions(filters) {
-  const { term, type, categoryId, amountMin, amountMax, dateFrom, dateTo, enabled } = filters
+  const { term, type, categoryId, amountMin, amountMax, dateFrom, dateTo, isAuto, enabled } = filters
 
   return useQuery({
-    queryKey: ['transactions', 'search', term, type, categoryId, amountMin, amountMax, dateFrom, dateTo],
+    queryKey: ['transactions', 'search', term, type, categoryId, amountMin, amountMax, dateFrom, dateTo, isAuto],
     queryFn: async () => {
       let query = db
         .from('transactions')
@@ -33,6 +33,9 @@ export function useSearchTransactions(filters) {
       }
       if (dateTo) {
         query = query.lte('date', dateTo)
+      }
+      if (isAuto) {
+        query = query.eq('is_auto', true)
       }
 
       const { data, error } = await query

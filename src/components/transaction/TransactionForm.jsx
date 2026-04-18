@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
+import { haptic } from 'ios-haptics'
 import Button from '../ui/Button'
 import Field from '../ui/Field'
 import SelectField from '../ui/SelectField'
@@ -37,6 +38,7 @@ export default function TransactionForm({ transaction, onSubmit, onDelete, onUnv
   const handleSubmit = (e) => {
     e.preventDefault()
     if (!validate({ amount, date })) return
+    haptic.confirm()
     onSubmit({
       type,
       amount: parseFloat(amount),
@@ -45,6 +47,11 @@ export default function TransactionForm({ transaction, onSubmit, onDelete, onUnv
       category_id: categoryId || null,
       date,
     })
+  }
+
+  const handleDelete = () => {
+    haptic.error()
+    onDelete()
   }
 
   return (
@@ -130,7 +137,7 @@ export default function TransactionForm({ transaction, onSubmit, onDelete, onUnv
 
       <div className="flex items-center justify-between pt-2">
         {isEdit && onDelete ? (
-          <Button variant="destructive" type="button" onClick={onDelete} disabled={loading}>
+          <Button variant="destructive" type="button" onClick={handleDelete} disabled={loading}>
             Supprimer
           </Button>
         ) : <div />}

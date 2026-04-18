@@ -1,10 +1,16 @@
 import { Plus } from 'lucide-react'
+import { haptic } from 'ios-haptics'
 
 export default function FAB({ onClick }) {
+  const handleClick = () => {
+    haptic()
+    onClick?.()
+  }
+
   return (
     <button
-      onClick={onClick}
-      className="fixed left-1/2 -translate-x-1/2 z-sticky w-14 h-14 rounded-full bg-accent text-accent-text dark:bg-[#EDEDED] dark:text-[#000000] shadow-1 flex items-center justify-center hover:opacity-85 press-feedback cursor-pointer md:hidden"
+      onClick={handleClick}
+      className="fixed inset-x-0 mx-auto z-sticky w-14 h-14 rounded-full bg-accent text-accent-text dark:bg-[#EDEDED] dark:text-[#000000] shadow-1 flex items-center justify-center hover:opacity-85 press-feedback cursor-pointer md:hidden"
       style={{ bottom: 'calc(4.5rem + env(safe-area-inset-bottom))' }}
       aria-label="Ajouter une transaction"
     >

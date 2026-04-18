@@ -34,7 +34,7 @@ export default function BudgetBar({ name, icon, spent, limit, color, onClick, in
     <div
       onClick={onClick}
       {...interactiveProps(onClick, `${name}, ${spent.toFixed(2)} de ${limit.toFixed(2)} CHF`)}
-      className="p-4 hover:bg-bg-tertiary dark:hover:bg-[#27272a] cursor-pointer transition-colors duration-150 flex items-center gap-3"
+      className="p-4 hover:bg-bg-tertiary dark:hover:bg-[#27272a] cursor-pointer transition-colors duration-150 flex items-center gap-4"
       style={{ animation: `enter 280ms var(--ios-ease) ${staggerMs}ms both` }}
     >
       {icon ? (

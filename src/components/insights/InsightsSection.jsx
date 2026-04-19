@@ -36,10 +36,10 @@ export default function InsightsSection({ insights }) {
               <div className="flex items-start gap-2">
                 <Icon size={14} strokeWidth={1.5} className={`${colors.icon} mt-0.5 shrink-0`} />
                 <div className="min-w-0">
-                  <p className={`text-[13px] font-medium ${colors.text} leading-tight`}>
+                  <p className={`text-caption font-medium ${colors.text} leading-tight`}>
                     {insight.title}
                   </p>
-                  <p className="text-[11px] text-text-muted dark:text-dark-text-muted mt-0.5 leading-tight">
+                  <p className="text-tiny text-text-muted dark:text-dark-text-muted mt-0.5 leading-tight">
                     {insight.detail}
                   </p>
                 </div>

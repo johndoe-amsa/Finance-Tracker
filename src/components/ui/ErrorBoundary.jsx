@@ -9,14 +9,14 @@ function FullPageFallback({ error, onReset }) {
         <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-error/10 mb-4">
           <AlertTriangle size={22} className="text-error" strokeWidth={1.5} />
         </div>
-        <h1 className="text-[18px] font-semibold text-text dark:text-dark-text mb-2">
+        <h1 className="text-subtitle font-semibold text-text dark:text-dark-text mb-2">
           Une erreur est survenue
         </h1>
         <p className="text-small text-text-muted dark:text-dark-text-muted mb-6">
           L'application a rencontré un problème inattendu. Rechargez la page pour continuer.
         </p>
         {error?.message && (
-          <p className="text-[11px] font-mono text-text-subtle dark:text-dark-text-subtle bg-bg-secondary dark:bg-dark-bg-secondary border border-border dark:border-dark-border rounded-lg px-3 py-2 mb-6 text-left break-all">
+          <p className="text-tiny font-mono text-text-subtle dark:text-dark-text-subtle bg-bg-secondary dark:bg-dark-bg-secondary border border-border dark:border-dark-border rounded-lg px-3 py-2 mb-6 text-left break-all">
             {error.message}
           </p>
         )}
@@ -45,7 +45,7 @@ function SectionFallback({ error, onReset, label }) {
       <p className="text-small font-medium text-text dark:text-dark-text mb-1">
         {label || 'Section indisponible'}
       </p>
-      <p className="text-[12px] text-text-muted dark:text-dark-text-muted mb-4">
+      <p className="text-xs text-text-muted dark:text-dark-text-muted mb-4">
         Une erreur a empêché l'affichage de cette section.
       </p>
       {onReset && (

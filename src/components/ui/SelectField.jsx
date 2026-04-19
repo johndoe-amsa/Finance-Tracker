@@ -14,7 +14,7 @@ export default function SelectField({
 
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={id} className="text-[13px] font-medium text-text-muted dark:text-dark-text-muted">
+      <label htmlFor={id} className="text-caption font-medium text-text-muted dark:text-dark-text-muted">
         {label}
       </label>
       <div className="relative">
@@ -44,7 +44,7 @@ export default function SelectField({
           aria-hidden="true"
         />
       </div>
-      {error && <p className="text-[12px] text-error">{error}</p>}
+      {error && <p className="text-xs text-error">{error}</p>}
     </div>
   )
 }

@@ -29,7 +29,7 @@ export default function SubscriptionItem({ subscription: sub, onClick }) {
             {sub.is_active ? 'Actif' : 'Inactif'}
           </Badge>
         </div>
-        <p className="text-[13px] text-text-muted dark:text-dark-text-muted mt-1">
+        <p className="text-caption text-text-muted dark:text-dark-text-muted mt-1">
           Prochaine : {nextDate ? formatDate(nextDate.toISOString().split('T')[0]) : '\u2014'}
         </p>
       </div>

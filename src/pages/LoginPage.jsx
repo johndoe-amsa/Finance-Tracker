@@ -38,7 +38,7 @@ export default function LoginPage({ onLogin }) {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex flex-col gap-1">
-            <label htmlFor="password" className="text-[13px] font-medium text-text-muted">
+            <label htmlFor="password" className="text-caption font-medium text-text-muted">
               Mot de passe
             </label>
             <input
@@ -57,7 +57,7 @@ export default function LoginPage({ onLogin }) {
             />
           </div>
 
-          {error && <p className="text-[13px] text-error">{error}</p>}
+          {error && <p className="text-caption text-error">{error}</p>}
 
           <Button
             variant="primary"

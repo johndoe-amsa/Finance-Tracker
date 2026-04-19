@@ -26,7 +26,7 @@ export default function Field({
       className={`flex flex-col gap-1 ${shake ? 'field-shake' : ''}`}
       onAnimationEnd={() => setShake(false)}
     >
-      <label htmlFor={id} className="text-[13px] font-medium text-text-muted">
+      <label htmlFor={id} className="text-caption font-medium text-text-muted">
         {label}
       </label>
       <input
@@ -48,7 +48,7 @@ export default function Field({
           'dark:text-dark-text dark:border-dark-border',
         ].join(' ')}
       />
-      {error && <p className="text-[12px] text-error">{error}</p>}
+      {error && <p className="text-xs text-error">{error}</p>}
     </div>
   )
 }

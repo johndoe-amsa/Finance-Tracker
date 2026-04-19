@@ -155,7 +155,7 @@ const { data: transactions, isLoading } = useTransactions(currentYear, currentMo
   return (
     <div className="pb-24">
       {/* Month navigation — sticky, toujours opaque */}
-      <div className="sticky top-0 z-[150] bg-bg dark:bg-dark-bg border-b border-border dark:border-dark-border-subtle">
+      <div className="sticky top-0 z-sticky bg-bg dark:bg-dark-bg border-b border-border dark:border-dark-border-subtle">
         <div className="flex items-center justify-between px-4 py-4">
           <button
             onClick={prevMonth}

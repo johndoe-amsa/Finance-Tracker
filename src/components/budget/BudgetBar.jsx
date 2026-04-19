@@ -50,7 +50,7 @@ export default function BudgetBar({ name, icon, spent, limit, color, onClick, in
         <div className="flex items-center justify-between mb-2">
           <p className="text-small font-medium text-text dark:text-dark-text truncate">{name}</p>
           <p
-            className={`text-[13px] ${remainingClass} ml-2 shrink-0`}
+            className={`text-caption ${remainingClass} ml-2 shrink-0`}
             style={{ fontVariantNumeric: 'tabular-nums' }}
           >
             {isOverspent

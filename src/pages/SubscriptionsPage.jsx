@@ -148,7 +148,7 @@ export default function SubscriptionsPage() {
                   {title}
                 </h3>
                 <span
-                  className="text-[13px] text-text-muted dark:text-dark-text-muted"
+                  className="text-caption text-text-muted dark:text-dark-text-muted"
                   style={{ fontVariantNumeric: 'tabular-nums' }}
                 >
                   {formatAmount(totals[kind])}/mois

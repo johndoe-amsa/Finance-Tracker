@@ -28,7 +28,7 @@ function TrendBadge({ current, previous, inverse = false }) {
   // Pour les dépenses (inverse=true), une baisse est positive
   const isGood = inverse ? pct <= 0 : pct >= 0
   return (
-    <span className={`inline-flex items-center gap-0.5 text-[11px] font-medium ${isGood ? 'text-success' : 'text-error'}`}>
+    <span className={`inline-flex items-center gap-0.5 text-tiny font-medium ${isGood ? 'text-success' : 'text-error'}`}>
       {pct >= 0
         ? <TrendingUp size={11} strokeWidth={1.5} />
         : <TrendingDown size={11} strokeWidth={1.5} />}
@@ -113,15 +113,15 @@ export default function AnalyticsPage() {
         <Card>
           <div className="flex items-start justify-between gap-2 mb-3">
             <div>
-              <p className="text-[13px] font-medium text-text dark:text-dark-text">
+              <p className="text-caption font-medium text-text dark:text-dark-text">
                 Tendance {period} mois
               </p>
               {trend && (
                 <div className="flex items-center gap-3 mt-1">
-                  <span className="text-[11px] text-text-muted dark:text-dark-text-muted flex items-center gap-1">
+                  <span className="text-tiny text-text-muted dark:text-dark-text-muted flex items-center gap-1">
                     Rev.&nbsp;<TrendBadge current={trend.curr.income}  previous={trend.prev.income} />
                   </span>
-                  <span className="text-[11px] text-text-muted dark:text-dark-text-muted flex items-center gap-1">
+                  <span className="text-tiny text-text-muted dark:text-dark-text-muted flex items-center gap-1">
                     Dép.&nbsp;<TrendBadge current={trend.curr.expense} previous={trend.prev.expense} inverse />
                   </span>
                 </div>
@@ -139,7 +139,7 @@ export default function AnalyticsPage() {
         {/* Pie chart — drill-down par catégorie */}
         {Object.keys(expensesByCategory).length > 0 && (
           <Card>
-            <p className="text-[13px] font-medium text-text dark:text-dark-text mb-3">
+            <p className="text-caption font-medium text-text dark:text-dark-text mb-3">
               Dépenses par catégorie
             </p>
             <CategoryPieChart
@@ -182,7 +182,7 @@ export default function AnalyticsPage() {
                       <p className="text-small font-medium text-text dark:text-dark-text truncate">
                         {tx.title || tx.description || '—'}
                       </p>
-                      <p className="text-[12px] text-text-muted dark:text-dark-text-muted mt-0.5 capitalize">
+                      <p className="text-xs text-text-muted dark:text-dark-text-muted mt-0.5 capitalize">
                         {formatDateLabel(tx.date)}
                       </p>
                     </div>

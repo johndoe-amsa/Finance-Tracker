@@ -7,7 +7,7 @@ function CustomTooltip({ active, payload }) {
   if (!active || !payload?.length) return null
   const entry = payload[0]
   return (
-    <div className="bg-bg dark:bg-dark-bg-secondary border border-border dark:border-dark-border rounded-md shadow-lg px-3 py-2 text-[12px] font-sans">
+    <div className="bg-bg dark:bg-dark-bg-secondary border border-border dark:border-dark-border rounded-md shadow-lg px-3 py-2 text-xs font-sans">
       <p className="font-medium text-text dark:text-dark-text">{entry.name}</p>
       <p style={{ color: entry.payload.fill }}>{formatAmount(entry.value)}</p>
     </div>
@@ -69,7 +69,7 @@ export default function CategoryPieChart({ expensesByCategory = {}, categories =
         {slices.map((entry, i) => (
           <div
             key={i}
-            className={`flex items-center justify-between text-[12px] rounded-md px-1 py-0.5 transition-colors duration-100 ${
+            className={`flex items-center justify-between text-xs rounded-md px-1 py-0.5 transition-colors duration-100 ${
               onSliceClick ? 'cursor-pointer hover:bg-bg-secondary dark:hover:bg-dark-bg-secondary' : ''
             }`}
             onClick={onSliceClick ? () => onSliceClick(entry) : undefined}
@@ -80,7 +80,7 @@ export default function CategoryPieChart({ expensesByCategory = {}, categories =
                 style={{ backgroundColor: entry.fill }}
               />
               {entry.icon && (
-                <span className="text-[13px] leading-none shrink-0" aria-hidden>{entry.icon}</span>
+                <span className="text-caption leading-none shrink-0" aria-hidden>{entry.icon}</span>
               )}
               <span className="text-text-muted dark:text-dark-text-muted truncate">{entry.name}</span>
             </div>
@@ -100,7 +100,7 @@ export default function CategoryPieChart({ expensesByCategory = {}, categories =
       </div>
 
       {onSliceClick && (
-        <p className="text-[11px] text-text-subtle dark:text-dark-text-subtle text-center">
+        <p className="text-tiny text-text-subtle dark:text-dark-text-subtle text-center">
           Cliquer sur une catégorie pour voir les transactions
         </p>
       )}

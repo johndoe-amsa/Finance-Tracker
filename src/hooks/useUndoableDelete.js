@@ -46,8 +46,15 @@ export default function useUndoableDelete() {
         try {
           const { error } = await db.from('transactions').delete().eq('id', transaction.id)
           if (error) throw error
-          qc.invalidateQueries({ queryKey: ['transactions'] })
-          qc.invalidateQueries({ queryKey: ['unverifiedCount'] })
+          // Skip the refetch if another undoable op has since taken over:
+          // the server doesn't know about the newer optimistic update yet,
+          // so refetching would resurrect the next row in the UI until its
+          // own timer finally commits. The next op's own commit will
+          // invalidate at the end of the chain.
+          if (!pendingRef.current) {
+            qc.invalidateQueries({ queryKey: ['transactions'] })
+            qc.invalidateQueries({ queryKey: ['unverifiedCount'] })
+          }
         } catch (err) {
           for (const snap of snapshots) {
             if (snap.data) qc.setQueryData(snap.queryKey, snap.data)

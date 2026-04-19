@@ -1,28 +1,17 @@
-import { useQuery } from '@tanstack/react-query'
 import { useEffect } from 'react'
-import { db } from '../lib/supabase'
+import { useUnverifiedTransactions } from './useTransactions'
 import { useAppStore } from '../store/useAppStore'
 
+// The badge count is derived from the same list query as the Verify page
+// so the two can never drift out of sync and we avoid a second round-trip
+// just to count rows.
 export function useUnverifiedCount() {
   const setUnverifiedCount = useAppStore((s) => s.setUnverifiedCount)
-
-  const query = useQuery({
-    queryKey: ['unverifiedCount'],
-    queryFn: async () => {
-      const { count, error } = await db
-        .from('transactions')
-        .select('*', { count: 'exact', head: true })
-        .eq('is_verified', false)
-      if (error) throw error
-      return count || 0
-    },
-  })
+  const { data } = useUnverifiedTransactions()
 
   useEffect(() => {
-    if (query.data !== undefined) {
-      setUnverifiedCount(query.data)
+    if (data !== undefined) {
+      setUnverifiedCount(data.length)
     }
-  }, [query.data, setUnverifiedCount])
-
-  return query
+  }, [data, setUnverifiedCount])
 }

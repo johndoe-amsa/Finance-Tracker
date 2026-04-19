@@ -57,7 +57,6 @@ export function useCreateTransaction() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['transactions'] })
-      qc.invalidateQueries({ queryKey: ['unverifiedCount'] })
       show('Transaction ajoutée', 'success')
     },
     onError: (err) => show(`Erreur : ${err.message}`, 'error'),
@@ -81,7 +80,6 @@ export function useUpdateTransaction() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['transactions'] })
-      qc.invalidateQueries({ queryKey: ['unverifiedCount'] })
       show('Transaction modifiée', 'success')
     },
     onError: (err) => show(`Erreur : ${err.message}`, 'error'),
@@ -99,7 +97,6 @@ export function useDeleteTransaction() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['transactions'] })
-      qc.invalidateQueries({ queryKey: ['unverifiedCount'] })
       show('Transaction supprimée', 'success')
     },
     onError: (err) => show(`Erreur : ${err.message}`, 'error'),
@@ -120,7 +117,6 @@ export function useUnverifyTransaction() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['transactions'] })
-      qc.invalidateQueries({ queryKey: ['unverifiedCount'] })
       show('Transaction renvoyée à la vérification', 'success')
     },
     onError: (err) => show(`Erreur : ${err.message}`, 'error'),

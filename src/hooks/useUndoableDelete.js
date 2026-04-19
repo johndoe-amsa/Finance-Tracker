@@ -26,14 +26,13 @@ export default function useUndoableDelete() {
         data: q.state.data,
       }))
 
-      // Optimistically remove from all transaction caches
+      // Optimistically remove from all transaction caches. The badge count
+      // is derived from the ['transactions', 'unverified'] cache entry, so
+      // this update also decrements it in place without an extra refetch.
       for (const snap of snapshots) {
         if (!Array.isArray(snap.data)) continue
         qc.setQueryData(snap.queryKey, snap.data.filter((t) => t.id !== transaction.id))
       }
-
-      // Also update unverified count if applicable
-      qc.invalidateQueries({ queryKey: ['unverifiedCount'] })
 
       let settled = false
       let timer = null
@@ -53,7 +52,6 @@ export default function useUndoableDelete() {
           // invalidate at the end of the chain.
           if (!pendingRef.current) {
             qc.invalidateQueries({ queryKey: ['transactions'] })
-            qc.invalidateQueries({ queryKey: ['unverifiedCount'] })
           }
         } catch (err) {
           for (const snap of snapshots) {
@@ -71,7 +69,6 @@ export default function useUndoableDelete() {
         for (const snap of snapshots) {
           if (snap.data) qc.setQueryData(snap.queryKey, snap.data)
         }
-        qc.invalidateQueries({ queryKey: ['unverifiedCount'] })
       }
 
       show('Transaction supprimee', 'success', undo, 'Annuler')

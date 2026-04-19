@@ -35,7 +35,7 @@ function SubRow({ sub }) {
       <p className="text-label text-text-muted dark:text-[#a1a1aa] flex-shrink-0 w-12 text-right">
         {sub.nextDate.toLocaleDateString('fr-CH', { day: 'numeric', month: 'short' })}
       </p>
-      <p className="text-small font-semibold text-text dark:text-[#EDEDED] flex-shrink-0 w-20 text-right" style={{ fontVariantNumeric: 'tabular-nums' }}>
+      <p className="text-small font-semibold text-text dark:text-[#EDEDED] flex-shrink-0 whitespace-nowrap text-right" style={{ fontVariantNumeric: 'tabular-nums' }}>
         −{formatAmount(sub.amount)}
       </p>
     </div>

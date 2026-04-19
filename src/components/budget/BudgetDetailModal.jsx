@@ -71,7 +71,7 @@ export default function BudgetDetailModal({
             />
           </div>
           <span
-            className="text-[13px] font-medium text-text-muted"
+            className="text-caption font-medium text-text-muted"
             style={{ fontVariantNumeric: 'tabular-nums' }}
           >
             {pct.toFixed(0)}%
@@ -87,7 +87,7 @@ export default function BudgetDetailModal({
             : `Depassement de ${formatAmount(Math.abs(remaining))}`}
         </p>
 
-        <p className="text-[13px] text-text-muted dark:text-dark-text-muted">
+        <p className="text-caption text-text-muted dark:text-dark-text-muted">
           {cachedTransactions.length} depense{cachedTransactions.length > 1 ? 's' : ''} ce mois
         </p>
 
@@ -101,7 +101,7 @@ export default function BudgetDetailModal({
                 className="flex items-center justify-between p-2 rounded-md hover:bg-bg-secondary dark:hover:bg-dark-bg-secondary cursor-pointer transition-colors duration-150"
               >
                 <div className="flex items-center gap-2 flex-1 min-w-0">
-                  <span className="text-[13px] text-text-muted dark:text-dark-text-muted shrink-0">
+                  <span className="text-caption text-text-muted dark:text-dark-text-muted shrink-0">
                     {formatDate(tx.date)}
                   </span>
                   <span className="text-small text-text dark:text-dark-text truncate">

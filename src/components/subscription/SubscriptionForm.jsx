@@ -94,7 +94,7 @@ export default function SubscriptionForm({ subscription, onSubmit, onDelete, loa
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="text-[13px] font-medium text-text-muted block mb-1">Type de récurrence</label>
+        <label className="text-caption font-medium text-text-muted block mb-1">Type de récurrence</label>
         <ToggleGroup
           options={[
             { value: 'subscription', label: 'Abonnement' },
@@ -167,7 +167,7 @@ export default function SubscriptionForm({ subscription, onSubmit, onDelete, loa
           max="31"
         />
         {!errors.billingDay && (
-          <p className="text-[12px] text-text-muted dark:text-dark-text-muted mt-1">
+          <p className="text-xs text-text-muted dark:text-dark-text-muted mt-1">
             Les mois qui n'ont pas ce jour (ex : 31 en février) utilisent leur dernier jour.
           </p>
         )}

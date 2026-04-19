@@ -57,7 +57,7 @@ export default function TransactionForm({ transaction, onSubmit, onDelete, onUnv
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="text-[13px] font-medium text-text-muted block mb-1">Type</label>
+        <label className="text-caption font-medium text-text-muted block mb-1">Type</label>
         <ToggleGroup
           options={[
             { value: 'expense', label: 'Depense' },

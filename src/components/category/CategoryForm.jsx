@@ -54,7 +54,7 @@ export default function CategoryForm({
       />
 
       <div>
-        <p className="text-[13px] font-medium text-text-muted dark:text-dark-text-muted mb-2">Couleur</p>
+        <p className="text-caption font-medium text-text-muted dark:text-dark-text-muted mb-2">Couleur</p>
         <div className="flex flex-wrap gap-2">
           {PALETTE.map((c) => (
             <button
@@ -74,7 +74,7 @@ export default function CategoryForm({
       </div>
 
       <div>
-        <p className="text-[13px] font-medium text-text-muted dark:text-dark-text-muted mb-2">Icône</p>
+        <p className="text-caption font-medium text-text-muted dark:text-dark-text-muted mb-2">Icône</p>
         <EmojiPicker value={icon} onChange={setIcon} />
       </div>
 
@@ -93,7 +93,7 @@ export default function CategoryForm({
       )}
 
       {isEdit && (
-        <p className="text-[13px] text-text-muted dark:text-dark-text-muted">
+        <p className="text-caption text-text-muted dark:text-dark-text-muted">
           {transactionCount} transaction{transactionCount > 1 ? 's' : ''} liee{transactionCount > 1 ? 's' : ''} a cette categorie.
         </p>
       )}

@@ -26,7 +26,7 @@ export default function SideNav({ onAddTransaction }) {
             to={item.to}
             end={item.to === '/'}
             className={({ isActive }) =>
-              `flex items-center gap-3 px-3 py-2.5 rounded-md text-[14px] font-medium transition-colors duration-150 ${
+              `flex items-center gap-3 px-3 py-2.5 rounded-md text-small font-medium transition-colors duration-150 ${
                 isActive
                   ? 'bg-bg-secondary dark:bg-dark-bg-tertiary text-text dark:text-dark-text'
                   : 'text-text-muted dark:text-dark-text-muted hover:bg-bg-secondary dark:hover:bg-dark-bg-secondary hover:text-text dark:hover:text-dark-text'
@@ -49,7 +49,7 @@ export default function SideNav({ onAddTransaction }) {
       <div className="px-3 pb-5">
         <button
           onClick={onAddTransaction}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-md bg-accent text-accent-text dark:bg-dark-accent dark:text-dark-accent-text text-[14px] font-medium hover:opacity-85 transition-opacity duration-150 cursor-pointer"
+          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-md bg-accent text-accent-text dark:bg-dark-accent dark:text-dark-accent-text text-small font-medium hover:opacity-85 transition-opacity duration-150 cursor-pointer"
         >
           <Plus size={16} strokeWidth={2} />
           Ajouter

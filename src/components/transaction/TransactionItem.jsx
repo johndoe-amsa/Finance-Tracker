@@ -26,15 +26,15 @@ function TransactionItem({ transaction: tx, onClick, onVerify }) {
           {displayTitle}
         </p>
         {showDescription && (
-          <p className="text-[13px] text-text-muted dark:text-dark-text-muted truncate mt-0.5">
+          <p className="text-caption text-text-muted dark:text-dark-text-muted truncate mt-0.5">
             {tx.description}
           </p>
         )}
         <div className="flex flex-wrap gap-1.5 mt-1.5">
           {tx.categories?.name && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[11px] font-medium tracking-[0.02em] bg-bg-tertiary dark:bg-dark-bg-tertiary text-text-muted dark:text-dark-text-muted">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-tiny font-medium tracking-[0.02em] bg-bg-tertiary dark:bg-dark-bg-tertiary text-text-muted dark:text-dark-text-muted">
               {tx.categories.icon ? (
-                <span className="text-[12px] leading-none" aria-hidden>{tx.categories.icon}</span>
+                <span className="text-xs leading-none" aria-hidden>{tx.categories.icon}</span>
               ) : (
                 <span
                   className="w-2 h-2 rounded-full flex-shrink-0"
@@ -50,7 +50,7 @@ function TransactionItem({ transaction: tx, onClick, onVerify }) {
           {!tx.is_verified && (
             <button
               onClick={handleVerify}
-              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[11px] font-medium tracking-[0.02em] bg-[rgba(245,166,35,0.1)] text-warning hover:bg-[rgba(245,166,35,0.2)] transition-colors duration-150 cursor-pointer"
+              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-tiny font-medium tracking-[0.02em] bg-[rgba(245,166,35,0.1)] text-warning hover:bg-[rgba(245,166,35,0.2)] transition-colors duration-150 cursor-pointer"
             >
               A verifier
             </button>

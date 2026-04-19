@@ -24,7 +24,7 @@ export function CardLabel({ children }) {
 
 export function CardTitle({ children }) {
   return (
-    <h3 className="text-[18px] font-semibold tracking-[-0.02em] text-text dark:text-dark-text mb-2">
+    <h3 className="text-subtitle font-semibold tracking-[-0.02em] text-text dark:text-dark-text mb-2">
       {children}
     </h3>
   )

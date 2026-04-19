@@ -175,7 +175,7 @@ export default function SearchModal({ open, onClose, onItemClick, onVerify, hasM
           <div className="px-4 py-3 border-b border-border dark:border-dark-border space-y-3" style={{ animation: 'enter 200ms var(--ease-out) both' }}>
             {/* Auto filter */}
             <div className="flex items-center gap-2">
-              <span className="text-[12px] font-medium text-text-muted dark:text-dark-text-muted w-16 shrink-0">Origine</span>
+              <span className="text-xs font-medium text-text-muted dark:text-dark-text-muted w-16 shrink-0">Origine</span>
               <div className="flex gap-1.5">
                 {[
                   { value: false, label: 'Toutes' },
@@ -184,7 +184,7 @@ export default function SearchModal({ open, onClose, onItemClick, onVerify, hasM
                   <button
                     key={String(opt.value)}
                     onClick={() => dispatch({ type: 'SET_AUTO', value: opt.value })}
-                    className={`px-3 py-1 text-[12px] font-medium rounded-full transition-colors duration-150 ${
+                    className={`px-3 py-1 text-xs font-medium rounded-full transition-colors duration-150 ${
                       filters.isAuto === opt.value
                         ? 'bg-accent dark:bg-dark-accent text-bg dark:text-dark-accent-text'
                         : 'bg-bg-secondary dark:bg-dark-bg-tertiary text-text-muted dark:text-dark-text-muted hover:text-text dark:hover:text-dark-text'
@@ -198,7 +198,7 @@ export default function SearchModal({ open, onClose, onItemClick, onVerify, hasM
 
             {/* Type filter */}
             <div className="flex items-center gap-2">
-              <span className="text-[12px] font-medium text-text-muted dark:text-dark-text-muted w-16 shrink-0">Type</span>
+              <span className="text-xs font-medium text-text-muted dark:text-dark-text-muted w-16 shrink-0">Type</span>
               <div className="flex gap-1.5">
                 {[
                   { value: '', label: 'Tous' },
@@ -208,7 +208,7 @@ export default function SearchModal({ open, onClose, onItemClick, onVerify, hasM
                   <button
                     key={opt.value}
                     onClick={() => dispatch({ type: 'SET_TYPE', value: opt.value })}
-                    className={`px-3 py-1 text-[12px] font-medium rounded-full transition-colors duration-150 ${
+                    className={`px-3 py-1 text-xs font-medium rounded-full transition-colors duration-150 ${
                       filters.txType === opt.value
                         ? 'bg-accent dark:bg-dark-accent text-bg dark:text-dark-accent-text'
                         : 'bg-bg-secondary dark:bg-dark-bg-tertiary text-text-muted dark:text-dark-text-muted hover:text-text dark:hover:text-dark-text'
@@ -222,11 +222,11 @@ export default function SearchModal({ open, onClose, onItemClick, onVerify, hasM
 
             {/* Category filter */}
             <div className="flex items-center gap-2">
-              <span className="text-[12px] font-medium text-text-muted dark:text-dark-text-muted w-16 shrink-0">Categorie</span>
+              <span className="text-xs font-medium text-text-muted dark:text-dark-text-muted w-16 shrink-0">Categorie</span>
               <select
                 value={filters.categoryId}
                 onChange={(e) => dispatch({ type: 'SET_CATEGORY', value: e.target.value })}
-                className="flex-1 h-8 pl-2 pr-6 rounded-md text-[12px] text-text dark:text-dark-text bg-bg-secondary dark:bg-dark-bg-tertiary border border-border dark:border-dark-border appearance-none"
+                className="flex-1 h-8 pl-2 pr-6 rounded-md text-xs text-text dark:text-dark-text bg-bg-secondary dark:bg-dark-bg-tertiary border border-border dark:border-dark-border appearance-none"
               >
                 <option value="">Toutes</option>
                 {filteredCategories.map((c) => (
@@ -237,41 +237,41 @@ export default function SearchModal({ open, onClose, onItemClick, onVerify, hasM
 
             {/* Amount range */}
             <div className="flex items-center gap-2">
-              <span className="text-[12px] font-medium text-text-muted dark:text-dark-text-muted w-16 shrink-0">Montant</span>
+              <span className="text-xs font-medium text-text-muted dark:text-dark-text-muted w-16 shrink-0">Montant</span>
               <input
                 type="number"
                 placeholder="Min"
                 value={filters.amountMin}
                 onChange={(e) => dispatch({ type: 'SET_AMOUNT_MIN', value: e.target.value })}
-                className="w-24 h-8 px-2 rounded-md text-[12px] text-text dark:text-dark-text bg-bg-secondary dark:bg-dark-bg-tertiary border border-border dark:border-dark-border placeholder:text-text-subtle dark:placeholder:text-dark-text-subtle"
+                className="w-24 h-8 px-2 rounded-md text-xs text-text dark:text-dark-text bg-bg-secondary dark:bg-dark-bg-tertiary border border-border dark:border-dark-border placeholder:text-text-subtle dark:placeholder:text-dark-text-subtle"
                 inputMode="decimal"
               />
-              <span className="text-[12px] text-text-muted">—</span>
+              <span className="text-xs text-text-muted">—</span>
               <input
                 type="number"
                 placeholder="Max"
                 value={filters.amountMax}
                 onChange={(e) => dispatch({ type: 'SET_AMOUNT_MAX', value: e.target.value })}
-                className="w-24 h-8 px-2 rounded-md text-[12px] text-text dark:text-dark-text bg-bg-secondary dark:bg-dark-bg-tertiary border border-border dark:border-dark-border placeholder:text-text-subtle dark:placeholder:text-dark-text-subtle"
+                className="w-24 h-8 px-2 rounded-md text-xs text-text dark:text-dark-text bg-bg-secondary dark:bg-dark-bg-tertiary border border-border dark:border-dark-border placeholder:text-text-subtle dark:placeholder:text-dark-text-subtle"
                 inputMode="decimal"
               />
             </div>
 
             {/* Date range */}
             <div className="flex items-center gap-2">
-              <span className="text-[12px] font-medium text-text-muted dark:text-dark-text-muted w-16 shrink-0">Periode</span>
+              <span className="text-xs font-medium text-text-muted dark:text-dark-text-muted w-16 shrink-0">Periode</span>
               <input
                 type="date"
                 value={filters.dateFrom}
                 onChange={(e) => dispatch({ type: 'SET_DATE_FROM', value: e.target.value })}
-                className="flex-1 h-8 px-2 rounded-md text-[12px] text-text dark:text-dark-text bg-bg-secondary dark:bg-dark-bg-tertiary border border-border dark:border-dark-border"
+                className="flex-1 h-8 px-2 rounded-md text-xs text-text dark:text-dark-text bg-bg-secondary dark:bg-dark-bg-tertiary border border-border dark:border-dark-border"
               />
-              <span className="text-[12px] text-text-muted">—</span>
+              <span className="text-xs text-text-muted">—</span>
               <input
                 type="date"
                 value={filters.dateTo}
                 onChange={(e) => dispatch({ type: 'SET_DATE_TO', value: e.target.value })}
-                className="flex-1 h-8 px-2 rounded-md text-[12px] text-text dark:text-dark-text bg-bg-secondary dark:bg-dark-bg-tertiary border border-border dark:border-dark-border"
+                className="flex-1 h-8 px-2 rounded-md text-xs text-text dark:text-dark-text bg-bg-secondary dark:bg-dark-bg-tertiary border border-border dark:border-dark-border"
               />
             </div>
 
@@ -279,7 +279,7 @@ export default function SearchModal({ open, onClose, onItemClick, onVerify, hasM
             {hasAnyFilter && (
               <button
                 onClick={() => dispatch({ type: 'RESET' })}
-                className="text-[12px] font-medium text-error hover:underline"
+                className="text-xs font-medium text-error hover:underline"
               >
                 Reinitialiser les filtres
               </button>

@@ -8,7 +8,7 @@ export default function ToggleGroup({ options, value, onChange }) {
           onClick={() => onChange(opt.value)}
           aria-pressed={value === opt.value}
           className={[
-            'h-9 px-4 text-[13px] font-medium rounded-md transition-all duration-150 whitespace-nowrap cursor-pointer',
+            'h-9 px-4 text-caption font-medium rounded-md transition-all duration-150 whitespace-nowrap cursor-pointer',
             value === opt.value
               ? 'text-text dark:text-dark-text bg-bg dark:bg-dark-bg shadow-1'
               : 'text-text-muted dark:text-dark-text-muted hover:text-text dark:hover:text-dark-text',

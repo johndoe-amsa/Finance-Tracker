@@ -39,7 +39,7 @@ export default function EmojiPicker({ value, onChange }) {
         <button
           type="button"
           onClick={clear}
-          className="text-[12px] font-medium text-error hover:underline shrink-0"
+          className="text-xs font-medium text-error hover:underline shrink-0"
         >
           Retirer
         </button>

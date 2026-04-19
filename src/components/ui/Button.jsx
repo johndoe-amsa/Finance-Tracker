@@ -20,7 +20,7 @@ export default function Button({
   }
 
   const sizes = {
-    sm:      'h-8 px-3 text-[13px]',
+    sm:      'h-8 px-3 text-caption',
     default: 'h-10 px-4 text-small',
     lg:      'h-12 px-6 text-body',
   }

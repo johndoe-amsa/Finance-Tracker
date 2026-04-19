@@ -53,7 +53,7 @@ export default function Toast({ message, type = 'neutral', action, actionLabel, 
         {hasAction && (
           <button
             onClick={handleAction}
-            className="text-[13px] font-semibold text-accent dark:text-dark-text hover:underline shrink-0"
+            className="text-caption font-semibold text-accent dark:text-dark-text hover:underline shrink-0"
           >
             {actionLabel || 'Annuler'}
           </button>

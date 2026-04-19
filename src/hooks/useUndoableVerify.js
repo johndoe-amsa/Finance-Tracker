@@ -15,15 +15,20 @@ import { useToastStore } from '../store/useToastStore'
 export default function useUndoableVerify() {
   const qc = useQueryClient()
   const show = useToastStore((s) => s.show)
-  const timerRef = useRef(null)
+  // Holds the pending op so a second call can flush it to the DB before
+  // starting its own 5-second window (otherwise the first verify would be
+  // silently dropped when its timer is cleared).
+  const pendingRef = useRef(null)
 
   const undoableVerify = useCallback(
     (transaction) => {
       if (!transaction?.id) return
       if (transaction.is_verified) return // already verified, no-op
 
-      // Cancel any previous pending undo timer
-      if (timerRef.current) clearTimeout(timerRef.current)
+      // Flush any previous pending verify immediately so it is not lost
+      if (pendingRef.current) {
+        pendingRef.current.flush()
+      }
 
       // Snapshot all transaction query caches so we can restore on undo
       const queryCache = qc.getQueryCache()
@@ -52,23 +57,14 @@ export default function useUndoableVerify() {
       // Also refresh the unverified count badge
       qc.invalidateQueries({ queryKey: ['unverifiedCount'] })
 
-      let cancelled = false
+      let settled = false
+      let timer = null
 
-      const undo = () => {
-        cancelled = true
-        clearTimeout(timerRef.current)
-        // Restore every snapshot we touched
-        for (const snap of snapshots) {
-          if (snap.data) qc.setQueryData(snap.queryKey, snap.data)
-        }
-        qc.invalidateQueries({ queryKey: ['unverifiedCount'] })
-      }
-
-      show('Transaction vérifiée', 'success', undo, 'Annuler')
-
-      // Persist the change after the undo window has elapsed
-      timerRef.current = setTimeout(async () => {
-        if (cancelled) return
+      const commit = async () => {
+        if (settled) return
+        settled = true
+        clearTimeout(timer)
+        if (pendingRef.current?.id === transaction.id) pendingRef.current = null
         try {
           const { error } = await db
             .from('transactions')
@@ -78,14 +74,29 @@ export default function useUndoableVerify() {
           qc.invalidateQueries({ queryKey: ['transactions'] })
           qc.invalidateQueries({ queryKey: ['unverifiedCount'] })
         } catch (err) {
-          // Restore on failure so the UI matches the DB
           for (const snap of snapshots) {
             if (snap.data) qc.setQueryData(snap.queryKey, snap.data)
           }
           qc.invalidateQueries({ queryKey: ['unverifiedCount'] })
           show(`Erreur : ${err.message}`, 'error')
         }
-      }, 5000)
+      }
+
+      const undo = () => {
+        if (settled) return
+        settled = true
+        clearTimeout(timer)
+        if (pendingRef.current?.id === transaction.id) pendingRef.current = null
+        for (const snap of snapshots) {
+          if (snap.data) qc.setQueryData(snap.queryKey, snap.data)
+        }
+        qc.invalidateQueries({ queryKey: ['unverifiedCount'] })
+      }
+
+      show('Transaction vérifiée', 'success', undo, 'Annuler')
+
+      timer = setTimeout(commit, 5000)
+      pendingRef.current = { id: transaction.id, flush: commit }
     },
     [qc, show],
   )

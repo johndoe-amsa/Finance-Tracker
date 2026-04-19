@@ -34,7 +34,6 @@ export default function VerifyPage() {
     try {
       await generateMissingSubscriptionTransactions()
       await qc.invalidateQueries({ queryKey: ['transactions'] })
-      await qc.invalidateQueries({ queryKey: ['unverifiedCount'] })
       showToast('Abonnements à jour', 'success')
     } catch (err) {
       showToast(`Erreur : ${err.message}`, 'error')

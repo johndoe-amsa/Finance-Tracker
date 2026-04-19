@@ -39,8 +39,9 @@ export default function useUndoableVerify() {
       }))
 
       // Optimistically update caches:
-      //   - drop the tx from ['transactions', 'unverified']
-      //   - flip is_verified=true everywhere else so the "A verifier" badge
+      //   - drop the tx from ['transactions', 'unverified'] (this also
+      //     decrements the badge count, which is derived from that list)
+      //   - flip is_verified=true everywhere else so the "A verifier" pill
       //     disappears immediately from the dashboard too
       for (const snap of snapshots) {
         if (!Array.isArray(snap.data)) continue
@@ -53,9 +54,6 @@ export default function useUndoableVerify() {
             )
         qc.setQueryData(snap.queryKey, next)
       }
-
-      // Also refresh the unverified count badge
-      qc.invalidateQueries({ queryKey: ['unverifiedCount'] })
 
       let settled = false
       let timer = null
@@ -78,13 +76,11 @@ export default function useUndoableVerify() {
           // invalidate at the end of the chain.
           if (!pendingRef.current) {
             qc.invalidateQueries({ queryKey: ['transactions'] })
-            qc.invalidateQueries({ queryKey: ['unverifiedCount'] })
           }
         } catch (err) {
           for (const snap of snapshots) {
             if (snap.data) qc.setQueryData(snap.queryKey, snap.data)
           }
-          qc.invalidateQueries({ queryKey: ['unverifiedCount'] })
           show(`Erreur : ${err.message}`, 'error')
         }
       }
@@ -97,7 +93,6 @@ export default function useUndoableVerify() {
         for (const snap of snapshots) {
           if (snap.data) qc.setQueryData(snap.queryKey, snap.data)
         }
-        qc.invalidateQueries({ queryKey: ['unverifiedCount'] })
       }
 
       show('Transaction vérifiée', 'success', undo, 'Annuler')

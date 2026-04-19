@@ -6,12 +6,17 @@ import { useToastStore } from '../store/useToastStore'
 export default function useUndoableDelete() {
   const qc = useQueryClient()
   const show = useToastStore((s) => s.show)
-  const timerRef = useRef(null)
+  // Holds the pending op so a second call can flush it to the DB before
+  // starting its own 5-second window (otherwise the first delete would be
+  // silently dropped when its timer is cleared).
+  const pendingRef = useRef(null)
 
   const undoableDelete = useCallback(
     (transaction) => {
-      // Cancel any pending previous undo timer
-      if (timerRef.current) clearTimeout(timerRef.current)
+      // Flush any previous pending delete immediately so it is not lost
+      if (pendingRef.current) {
+        pendingRef.current.flush()
+      }
 
       // Snapshot all query caches that include transactions
       const queryCache = qc.getQueryCache()
@@ -30,38 +35,49 @@ export default function useUndoableDelete() {
       // Also update unverified count if applicable
       qc.invalidateQueries({ queryKey: ['unverifiedCount'] })
 
-      let cancelled = false
+      let settled = false
+      let timer = null
+
+      const commit = async () => {
+        if (settled) return
+        settled = true
+        clearTimeout(timer)
+        if (pendingRef.current?.id === transaction.id) pendingRef.current = null
+        try {
+          const { error } = await db.from('transactions').delete().eq('id', transaction.id)
+          if (error) throw error
+          // Skip the refetch if another undoable op has since taken over:
+          // the server doesn't know about the newer optimistic update yet,
+          // so refetching would resurrect the next row in the UI until its
+          // own timer finally commits. The next op's own commit will
+          // invalidate at the end of the chain.
+          if (!pendingRef.current) {
+            qc.invalidateQueries({ queryKey: ['transactions'] })
+            qc.invalidateQueries({ queryKey: ['unverifiedCount'] })
+          }
+        } catch (err) {
+          for (const snap of snapshots) {
+            if (snap.data) qc.setQueryData(snap.queryKey, snap.data)
+          }
+          show(`Erreur : ${err.message}`, 'error')
+        }
+      }
 
       const undo = () => {
-        cancelled = true
-        clearTimeout(timerRef.current)
-        // Restore all caches
+        if (settled) return
+        settled = true
+        clearTimeout(timer)
+        if (pendingRef.current?.id === transaction.id) pendingRef.current = null
         for (const snap of snapshots) {
           if (snap.data) qc.setQueryData(snap.queryKey, snap.data)
         }
         qc.invalidateQueries({ queryKey: ['unverifiedCount'] })
       }
 
-      // Show undo toast
       show('Transaction supprimee', 'success', undo, 'Annuler')
 
-      // Schedule the real delete
-      timerRef.current = setTimeout(async () => {
-        if (cancelled) return
-        try {
-          const { error } = await db.from('transactions').delete().eq('id', transaction.id)
-          if (error) throw error
-          // Invalidate to ensure consistency
-          qc.invalidateQueries({ queryKey: ['transactions'] })
-          qc.invalidateQueries({ queryKey: ['unverifiedCount'] })
-        } catch (err) {
-          // Restore on failure
-          for (const snap of snapshots) {
-            if (snap.data) qc.setQueryData(snap.queryKey, snap.data)
-          }
-          show(`Erreur : ${err.message}`, 'error')
-        }
-      }, 5000)
+      timer = setTimeout(commit, 5000)
+      pendingRef.current = { id: transaction.id, flush: commit }
     },
     [qc, show],
   )

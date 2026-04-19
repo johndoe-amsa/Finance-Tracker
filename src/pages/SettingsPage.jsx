@@ -74,10 +74,16 @@ export default function SettingsPage() {
       setTxCount(0)
       return
     }
+    // Ignore flag: if the user switches to another category while the
+    // previous count is still in flight, drop the stale response.
+    let cancelled = false
     db.from('transactions')
-      .select('*', { count: 'exact', head: true })
+      .select('id', { count: 'exact', head: true })
       .eq('category_id', editCat.id)
-      .then(({ count }) => setTxCount(count || 0))
+      .then(({ count }) => {
+        if (!cancelled) setTxCount(count || 0)
+      })
+    return () => { cancelled = true }
   }, [editCat])
 
   const expenseCategories = categories.filter((c) => c.type === 'expense')

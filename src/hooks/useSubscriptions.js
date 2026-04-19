@@ -56,6 +56,9 @@ export function useUpdateSubscription() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['subscriptions'] })
+      // Transactions embed subscriptions(kind) via join and the subscription
+      // name, so refresh them too when the parent subscription changes.
+      qc.invalidateQueries({ queryKey: ['transactions'] })
       show('Abonnement modifié', 'success')
     },
     onError: (err) => show(`Erreur : ${err.message}`, 'error'),
@@ -73,6 +76,10 @@ export function useDeleteSubscription() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['subscriptions'] })
+      // Refresh transaction lists so orphaned subscription_id rows reflect
+      // the new DB state (the DB-side FK rule decides whether rows are
+      // kept with subscription_id=null or removed).
+      qc.invalidateQueries({ queryKey: ['transactions'] })
       show('Abonnement supprimé', 'success')
     },
     onError: (err) => show(`Erreur : ${err.message}`, 'error'),

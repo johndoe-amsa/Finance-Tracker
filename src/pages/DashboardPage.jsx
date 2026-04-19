@@ -28,17 +28,18 @@ import BudgetBar from '../components/budget/BudgetBar'
 import BudgetDetailModal from '../components/budget/BudgetDetailModal'
 import SearchModal from '../components/search/SearchModal'
 
-function SubRow({ sub }) {
+function SubRow({ sub, hasBorder }) {
+  const divider = hasBorder ? 'border-b border-border dark:border-[#52525b]' : ''
   return (
-    <div className="flex items-center gap-3 px-4 py-2">
-      <p className="text-small font-medium text-text dark:text-[#EDEDED] truncate flex-1">{sub.name}</p>
-      <p className="text-label text-text-muted dark:text-[#a1a1aa] flex-shrink-0 w-12 text-right">
+    <>
+      <p className={`text-small font-medium text-text dark:text-[#EDEDED] truncate pl-4 py-2 ${divider}`}>{sub.name}</p>
+      <p className={`text-label text-text-muted dark:text-[#a1a1aa] whitespace-nowrap py-2 text-right ${divider}`}>
         {sub.nextDate.toLocaleDateString('fr-CH', { day: 'numeric', month: 'short' })}
       </p>
-      <p className="text-small font-semibold text-text dark:text-[#EDEDED] flex-shrink-0 whitespace-nowrap w-28 text-right" style={{ fontVariantNumeric: 'tabular-nums' }}>
+      <p className={`text-small font-semibold text-text dark:text-[#EDEDED] whitespace-nowrap pr-4 py-2 text-right ${divider}`} style={{ fontVariantNumeric: 'tabular-nums' }}>
         −{formatAmount(sub.amount)}
       </p>
-    </div>
+    </>
   )
 }
 
@@ -245,9 +246,9 @@ const { data: transactions, isLoading } = useTransactions(currentYear, currentMo
             Prochains prélèvements
           </h3>
           <div className="bg-bg-secondary dark:bg-[#1f1f23] border border-border dark:border-[#52525b] rounded-lg">
-            <div className="divide-y divide-border dark:divide-[#52525b]">
-              {upcomingSubscriptions.slice(0, 3).map((sub) => (
-                <SubRow key={sub.id} sub={sub} />
+            <div className="grid gap-x-3 [grid-template-columns:1fr_auto_auto]">
+              {upcomingSubscriptions.slice(0, 3).map((sub, i, arr) => (
+                <SubRow key={sub.id} sub={sub} hasBorder={i < arr.length - 1} />
               ))}
             </div>
             {upcomingSubscriptions.length > 3 && (
@@ -260,9 +261,9 @@ const { data: transactions, isLoading } = useTransactions(currentYear, currentMo
                   }}
                 >
                   <div className="overflow-hidden">
-                    <div className="divide-y divide-border dark:divide-[#52525b] border-t border-border dark:border-[#52525b]">
-                      {upcomingSubscriptions.slice(3).map((sub) => (
-                        <SubRow key={sub.id} sub={sub} />
+                    <div className="grid gap-x-3 [grid-template-columns:1fr_auto_auto] border-t border-border dark:border-[#52525b]">
+                      {upcomingSubscriptions.slice(3).map((sub, i, arr) => (
+                        <SubRow key={sub.id} sub={sub} hasBorder={i < arr.length - 1} />
                       ))}
                     </div>
                   </div>

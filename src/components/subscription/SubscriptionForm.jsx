@@ -167,7 +167,7 @@ export default function SubscriptionForm({ subscription, onSubmit, onDelete, loa
           max="31"
         />
         {!errors.billingDay && (
-          <p className="text-[12px] text-text-muted dark:text-[#a1a1aa] mt-1">
+          <p className="text-[12px] text-text-muted dark:text-dark-text-muted mt-1">
             Les mois qui n'ont pas ce jour (ex : 31 en février) utilisent leur dernier jour.
           </p>
         )}
@@ -202,7 +202,7 @@ export default function SubscriptionForm({ subscription, onSubmit, onDelete, loa
             onChange={(e) => setIsActive(e.target.checked)}
             className="w-4 h-4 accent-accent"
           />
-          <label htmlFor="sub-active" className="text-small text-text dark:text-[#EDEDED]">
+          <label htmlFor="sub-active" className="text-small text-text dark:text-dark-text">
             Récurrence active
           </label>
         </div>

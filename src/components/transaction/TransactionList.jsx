@@ -17,10 +17,10 @@ export default function TransactionList({ transactions, onItemClick, onVerify })
     <div className="space-y-8">
       {sortedDates.map(({ date, items }) => (
         <div key={date}>
-          <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#a1a1aa] pb-2.5 mb-3 border-b border-border dark:border-[#3f3f46]">
+          <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-dark-text-muted pb-2.5 mb-3 border-b border-border dark:border-dark-border-subtle">
             {formatDateLabel(date)}
           </p>
-          <div className="rounded-lg border border-border dark:border-[#52525b] divide-y divide-border dark:divide-[#52525b] overflow-hidden">
+          <div className="rounded-lg border border-border dark:border-dark-border divide-y divide-border dark:divide-dark-border overflow-hidden">
             {items.map((tx) => (
               <TransactionItem
                 key={tx.id}

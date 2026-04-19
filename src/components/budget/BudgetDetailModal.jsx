@@ -57,14 +57,14 @@ export default function BudgetDetailModal({
     >
       <div className="space-y-4">
         <p
-          className="text-small text-text-muted dark:text-[#a1a1aa]"
+          className="text-small text-text-muted dark:text-dark-text-muted"
           style={{ fontVariantNumeric: 'tabular-nums' }}
         >
           {formatAmount(cachedSpent)} / {formatAmount(limit)}
         </p>
 
         <div className="flex items-center gap-3">
-          <div className="flex-1 h-2 bg-bg-tertiary dark:bg-[#27272a] rounded-full overflow-hidden">
+          <div className="flex-1 h-2 bg-bg-tertiary dark:bg-dark-bg-tertiary rounded-full overflow-hidden">
             <div
               className={`h-full rounded-full ${barClass || ''}`}
               style={{ width: `${Math.min(pct, 100)}%`, ...(!barClass ? barStyle : {}) }}
@@ -87,30 +87,30 @@ export default function BudgetDetailModal({
             : `Depassement de ${formatAmount(Math.abs(remaining))}`}
         </p>
 
-        <p className="text-[13px] text-text-muted dark:text-[#a1a1aa]">
+        <p className="text-[13px] text-text-muted dark:text-dark-text-muted">
           {cachedTransactions.length} depense{cachedTransactions.length > 1 ? 's' : ''} ce mois
         </p>
 
         {cachedTransactions.length > 0 && (
-          <div className="border-t border-border dark:border-[#52525b] pt-3 space-y-1">
+          <div className="border-t border-border dark:border-dark-border pt-3 space-y-1">
             {cachedTransactions.map((tx) => (
               <div
                 key={tx.id}
                 onClick={() => onTransactionClick(tx)}
                 {...interactiveProps(() => onTransactionClick(tx), `${tx.title || tx.description || '\u2014'}, -${formatAmount(tx.amount)}`)}
-                className="flex items-center justify-between p-2 rounded-md hover:bg-bg-secondary dark:hover:bg-[#1f1f23] cursor-pointer transition-colors duration-150"
+                className="flex items-center justify-between p-2 rounded-md hover:bg-bg-secondary dark:hover:bg-dark-bg-secondary cursor-pointer transition-colors duration-150"
               >
                 <div className="flex items-center gap-2 flex-1 min-w-0">
-                  <span className="text-[13px] text-text-muted dark:text-[#a1a1aa] shrink-0">
+                  <span className="text-[13px] text-text-muted dark:text-dark-text-muted shrink-0">
                     {formatDate(tx.date)}
                   </span>
-                  <span className="text-small text-text dark:text-[#EDEDED] truncate">
+                  <span className="text-small text-text dark:text-dark-text truncate">
                     {tx.title || tx.description || '\u2014'}
                   </span>
                   {tx.is_auto && <Badge>Auto</Badge>}
                 </div>
                 <span
-                  className="text-small font-medium text-text dark:text-[#EDEDED] ml-2"
+                  className="text-small font-medium text-text dark:text-dark-text ml-2"
                   style={{ fontVariantNumeric: 'tabular-nums' }}
                 >
                   -{formatAmount(tx.amount)}

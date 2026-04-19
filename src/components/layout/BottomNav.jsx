@@ -15,7 +15,7 @@ export default function BottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-sticky border-t border-border dark:border-[#52525b] font-sans md:hidden"
+      className="fixed bottom-0 left-0 right-0 z-sticky border-t border-border dark:border-dark-border font-sans md:hidden"
       style={{ background: 'var(--backdrop-bg)', backdropFilter: 'var(--backdrop)' }}
     >
       <div className="h-16 flex items-center justify-around">
@@ -28,8 +28,8 @@ export default function BottomNav() {
           className={({ isActive }) =>
             `flex items-center justify-center px-5 py-3 transition-colors duration-150 ${
               isActive
-                ? 'text-text dark:text-[#EDEDED]'
-                : 'text-text-muted dark:text-[#a1a1aa]'
+                ? 'text-text dark:text-dark-text'
+                : 'text-text-muted dark:text-dark-text-muted'
             }`
           }
         >

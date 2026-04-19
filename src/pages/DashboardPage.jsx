@@ -31,11 +31,11 @@ import SearchModal from '../components/search/SearchModal'
 function SubRow({ sub }) {
   return (
     <div className="flex items-center gap-3 px-4 py-2">
-      <p className="text-small font-medium text-text dark:text-[#EDEDED] truncate flex-1">{sub.name}</p>
-      <p className="text-label text-text-muted dark:text-[#a1a1aa] flex-shrink-0 w-12 text-right">
+      <p className="text-small font-medium text-text dark:text-dark-text truncate flex-1">{sub.name}</p>
+      <p className="text-label text-text-muted dark:text-dark-text-muted flex-shrink-0 w-12 text-right">
         {sub.nextDate.toLocaleDateString('fr-CH', { day: 'numeric', month: 'short' })}
       </p>
-      <p className="text-small font-semibold text-text dark:text-[#EDEDED] flex-shrink-0 whitespace-nowrap w-28 text-right" style={{ fontVariantNumeric: 'tabular-nums' }}>
+      <p className="text-small font-semibold text-text dark:text-dark-text flex-shrink-0 whitespace-nowrap w-28 text-right" style={{ fontVariantNumeric: 'tabular-nums' }}>
         −{formatAmount(sub.amount)}
       </p>
     </div>
@@ -155,30 +155,30 @@ const { data: transactions, isLoading } = useTransactions(currentYear, currentMo
   return (
     <div className="pb-24">
       {/* Month navigation — sticky, toujours opaque */}
-      <div className="sticky top-0 z-[150] bg-bg dark:bg-[#18181b] border-b border-border dark:border-[#3f3f46]">
+      <div className="sticky top-0 z-[150] bg-bg dark:bg-dark-bg border-b border-border dark:border-dark-border-subtle">
         <div className="flex items-center justify-between px-4 py-4">
           <button
             onClick={prevMonth}
-            className="p-2 text-text-muted hover:text-text dark:text-[#a1a1aa] dark:hover:text-[#EDEDED] transition-colors duration-150 rounded-md cursor-pointer"
+            className="p-2 text-text-muted hover:text-text dark:text-dark-text-muted dark:hover:text-dark-text transition-colors duration-150 rounded-md cursor-pointer"
           >
             <ChevronLeft size={20} strokeWidth={1.5} />
           </button>
 
-          <h2 className="text-h3 text-text dark:text-[#EDEDED] capitalize">
+          <h2 className="text-h3 text-text dark:text-dark-text capitalize">
             {formatMonthYear(currentYear, currentMonth)}
           </h2>
 
           <div className="flex items-center gap-1">
             <button
               onClick={() => setShowSearch(true)}
-              className="p-2 text-text-muted hover:text-text dark:text-[#a1a1aa] dark:hover:text-[#EDEDED] transition-colors duration-150 rounded-md cursor-pointer"
+              className="p-2 text-text-muted hover:text-text dark:text-dark-text-muted dark:hover:text-dark-text transition-colors duration-150 rounded-md cursor-pointer"
               aria-label="Rechercher"
             >
               <Search size={20} strokeWidth={1.5} />
             </button>
             <button
               onClick={nextMonth}
-              className="p-2 text-text-muted hover:text-text dark:text-[#a1a1aa] dark:hover:text-[#EDEDED] transition-colors duration-150 rounded-md cursor-pointer"
+              className="p-2 text-text-muted hover:text-text dark:text-dark-text-muted dark:hover:text-dark-text transition-colors duration-150 rounded-md cursor-pointer"
             >
               <ChevronRight size={20} strokeWidth={1.5} />
             </button>
@@ -189,10 +189,10 @@ const { data: transactions, isLoading } = useTransactions(currentYear, currentMo
       {/* Hero solde */}
       <div className="px-4 pt-4 mb-5">
         {isLoading ? (
-          <div className="bg-bg-secondary dark:bg-[#1f1f23] border border-border dark:border-[#52525b] rounded-lg p-5">
+          <div className="bg-bg-secondary dark:bg-dark-bg-secondary border border-border dark:border-dark-border rounded-lg p-5">
             <Skeleton className="h-3 w-12 mb-3" />
             <Skeleton className="h-9 w-36 mb-4" />
-            <div className="flex gap-6 pt-3 border-t border-border dark:border-[#52525b]">
+            <div className="flex gap-6 pt-3 border-t border-border dark:border-dark-border">
               <div><Skeleton className="h-3 w-14 mb-1.5" /><Skeleton className="h-4 w-20" /></div>
               <div><Skeleton className="h-3 w-14 mb-1.5" /><Skeleton className="h-4 w-20" /></div>
             </div>
@@ -201,7 +201,7 @@ const { data: transactions, isLoading } = useTransactions(currentYear, currentMo
           <Card className="!p-5">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#a1a1aa] mb-1">
+                <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-dark-text-muted mb-1">
                   Solde
                 </p>
                 <p
@@ -216,9 +216,9 @@ const { data: transactions, isLoading } = useTransactions(currentYear, currentMo
                 className="w-20 h-7 mt-1 flex-shrink-0"
               />
             </div>
-            <div className="flex gap-6 mt-3 pt-3 border-t border-border dark:border-[#52525b]">
+            <div className="flex gap-6 mt-3 pt-3 border-t border-border dark:border-dark-border">
               <div>
-                <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#a1a1aa] mb-0.5">
+                <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-dark-text-muted mb-0.5">
                   Revenus
                 </p>
                 <p className="text-small font-semibold text-success" style={{ fontVariantNumeric: 'tabular-nums' }}>
@@ -226,10 +226,10 @@ const { data: transactions, isLoading } = useTransactions(currentYear, currentMo
                 </p>
               </div>
               <div>
-                <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-[#a1a1aa] mb-0.5">
+                <p className="text-label uppercase tracking-[0.05em] text-text-muted dark:text-dark-text-muted mb-0.5">
                   Dépenses
                 </p>
-                <p className="text-small font-semibold text-text dark:text-[#EDEDED]" style={{ fontVariantNumeric: 'tabular-nums' }}>
+                <p className="text-small font-semibold text-text dark:text-dark-text" style={{ fontVariantNumeric: 'tabular-nums' }}>
                   −{formatAmount(totals.totalExpense)}
                 </p>
               </div>
@@ -244,8 +244,8 @@ const { data: transactions, isLoading } = useTransactions(currentYear, currentMo
           <h3 className="text-small font-semibold text-text dark:text-dark-text uppercase tracking-[0.05em] mb-3">
             Prochains prélèvements
           </h3>
-          <div className="bg-bg-secondary dark:bg-[#1f1f23] border border-border dark:border-[#52525b] rounded-lg">
-            <div className="divide-y divide-border dark:divide-[#52525b]">
+          <div className="bg-bg-secondary dark:bg-dark-bg-secondary border border-border dark:border-dark-border rounded-lg">
+            <div className="divide-y divide-border dark:divide-dark-border">
               {upcomingSubscriptions.slice(0, 3).map((sub) => (
                 <SubRow key={sub.id} sub={sub} />
               ))}
@@ -260,7 +260,7 @@ const { data: transactions, isLoading } = useTransactions(currentYear, currentMo
                   }}
                 >
                   <div className="overflow-hidden">
-                    <div className="divide-y divide-border dark:divide-[#52525b] border-t border-border dark:border-[#52525b]">
+                    <div className="divide-y divide-border dark:divide-dark-border border-t border-border dark:border-dark-border">
                       {upcomingSubscriptions.slice(3).map((sub) => (
                         <SubRow key={sub.id} sub={sub} />
                       ))}
@@ -269,7 +269,7 @@ const { data: transactions, isLoading } = useTransactions(currentYear, currentMo
                 </div>
                 <button
                   onClick={() => setShowAllSubs((v) => !v)}
-                  className="w-full flex items-center justify-center py-2.5 border-t border-border dark:border-[#52525b] text-text-muted dark:text-[#a1a1aa] hover:text-text dark:hover:text-[#EDEDED] transition-colors cursor-pointer"
+                  className="w-full flex items-center justify-center py-2.5 border-t border-border dark:border-dark-border text-text-muted dark:text-dark-text-muted hover:text-text dark:hover:text-dark-text transition-colors cursor-pointer"
                 >
                   {showAllSubs ? <ChevronUp size={16} strokeWidth={1.5} /> : <ChevronDown size={16} strokeWidth={1.5} />}
                 </button>
@@ -285,7 +285,7 @@ const { data: transactions, isLoading } = useTransactions(currentYear, currentMo
           <h3 className="text-small font-semibold text-text dark:text-dark-text uppercase tracking-[0.05em] mb-3">
             Budgets
           </h3>
-          <div className="bg-bg-secondary dark:bg-[#1f1f23] border border-border dark:border-[#52525b] rounded-lg divide-y divide-border dark:divide-[#52525b] overflow-hidden">
+          <div className="bg-bg-secondary dark:bg-dark-bg-secondary border border-border dark:border-dark-border rounded-lg divide-y divide-border dark:divide-dark-border overflow-hidden">
             {budgetCategories.map((cat, i) => (
               <BudgetBar
                 key={cat.id}

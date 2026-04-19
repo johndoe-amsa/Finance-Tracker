@@ -44,32 +44,32 @@ export default function Toast({ message, type = 'neutral', action, actionLabel, 
   return (
     <div
       data-state={open ? 'open' : 'closed'}
-      className="toast-item flex flex-col bg-bg dark:bg-[#1f1f23] border border-border dark:border-[#52525b] rounded-lg shadow-2 min-w-[280px] max-w-xs overflow-hidden"
+      className="toast-item flex flex-col bg-bg dark:bg-dark-bg-secondary border border-border dark:border-dark-border rounded-lg shadow-2 min-w-[280px] max-w-xs overflow-hidden"
       role="alert"
     >
       <div className="flex items-center gap-3 px-4 py-3 text-small font-sans">
         <span className="shrink-0">{ICONS[type] || ICONS.neutral}</span>
-        <p className="text-text dark:text-[#EDEDED] flex-1">{message}</p>
+        <p className="text-text dark:text-dark-text flex-1">{message}</p>
         {hasAction && (
           <button
             onClick={handleAction}
-            className="text-[13px] font-semibold text-accent dark:text-[#EDEDED] hover:underline shrink-0"
+            className="text-[13px] font-semibold text-accent dark:text-dark-text hover:underline shrink-0"
           >
             {actionLabel || 'Annuler'}
           </button>
         )}
         <button
           onClick={handleDismiss}
-          className="text-text-muted hover:text-text dark:text-[#a1a1aa] dark:hover:text-[#EDEDED] transition-colors duration-150 shrink-0"
+          className="text-text-muted hover:text-text dark:text-dark-text-muted dark:hover:text-dark-text transition-colors duration-150 shrink-0"
           aria-label="Fermer"
         >
           <X size={14} strokeWidth={1.5} />
         </button>
       </div>
       {hasAction && open && (
-        <div className="h-0.5 bg-border dark:bg-[#52525b]">
+        <div className="h-0.5 bg-border dark:bg-dark-border">
           <div
-            className="h-full bg-accent dark:bg-[#EDEDED]"
+            className="h-full bg-accent dark:bg-dark-accent"
             style={{
               animation: `shrink-bar ${duration}ms linear forwards`,
             }}

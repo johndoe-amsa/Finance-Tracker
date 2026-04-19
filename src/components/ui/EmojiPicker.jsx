@@ -21,7 +21,7 @@ export default function EmojiPicker({ value, onChange }) {
   return (
     <div className="flex items-center gap-2">
       <span
-        className="w-10 h-10 flex items-center justify-center rounded-md bg-bg dark:bg-[#18181b] border border-border dark:border-[#52525b] text-[22px] leading-none shrink-0"
+        className="w-10 h-10 flex items-center justify-center rounded-md bg-bg dark:bg-dark-bg border border-border dark:border-dark-border text-[22px] leading-none shrink-0"
         aria-hidden
       >
         {value || '·'}
@@ -33,7 +33,7 @@ export default function EmojiPicker({ value, onChange }) {
         placeholder="Win+. · Ctrl+Cmd+Espace · clavier emoji"
         value={text}
         onChange={handleChange}
-        className="flex-1 h-10 px-3 rounded-md text-small bg-bg dark:bg-[#18181b] border border-border dark:border-[#52525b] text-text dark:text-[#EDEDED] placeholder:text-text-subtle dark:placeholder:text-[#71717a] focus:outline-none focus:border-border-focus focus:ring-[3px] focus:ring-black/[0.08]"
+        className="flex-1 h-10 px-3 rounded-md text-small bg-bg dark:bg-dark-bg border border-border dark:border-dark-border text-text dark:text-dark-text placeholder:text-text-subtle dark:placeholder:text-dark-text-subtle focus:outline-none focus:border-border-focus focus:ring-[3px] focus:ring-black/[0.08]"
       />
       {value && (
         <button

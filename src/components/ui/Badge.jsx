@@ -1,6 +1,6 @@
 export default function Badge({ variant = 'neutral', children }) {
   const variants = {
-    neutral: 'bg-bg-tertiary text-text-muted dark:bg-[#27272a] dark:text-[#a1a1aa]',
+    neutral: 'bg-bg-tertiary text-text-muted dark:bg-dark-bg-tertiary dark:text-dark-text-muted',
     success: 'bg-[rgba(22,163,74,0.1)] text-success',
     error:   'bg-[rgba(238,0,0,0.08)] text-error',
     warning: 'bg-[rgba(245,166,35,0.1)] text-warning',

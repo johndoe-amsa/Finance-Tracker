@@ -127,7 +127,7 @@ export default function SettingsPage() {
         aria-hidden={!!activeSub}
       >
         <div className="px-4 py-4">
-          <h2 className="text-h3 text-text dark:text-[#EDEDED]">Paramètres</h2>
+          <h2 className="text-h3 text-text dark:text-dark-text">Paramètres</h2>
         </div>
 
       {/* ── Apparence ── */}
@@ -135,25 +135,25 @@ export default function SettingsPage() {
         <h3 className="text-small font-semibold text-text dark:text-dark-text uppercase tracking-[0.05em] mb-3">
           Apparence
         </h3>
-        <div className="bg-bg-secondary dark:bg-[#1f1f23] border border-border dark:border-[#52525b] rounded-lg overflow-hidden">
+        <div className="bg-bg-secondary dark:bg-dark-bg-secondary border border-border dark:border-dark-border rounded-lg overflow-hidden">
           <button
             onClick={() => setDark(!dark)}
-            className="w-full flex items-center justify-between p-4 hover:bg-bg-tertiary dark:hover:bg-[#27272a] transition-colors duration-150"
+            className="w-full flex items-center justify-between p-4 hover:bg-bg-tertiary dark:hover:bg-dark-bg-tertiary transition-colors duration-150"
           >
             <div className="flex items-center gap-3">
               {dark ? (
-                <Sun size={16} strokeWidth={1.5} className="text-text-muted dark:text-[#a1a1aa]" />
+                <Sun size={16} strokeWidth={1.5} className="text-text-muted dark:text-dark-text-muted" />
               ) : (
                 <Moon size={16} strokeWidth={1.5} className="text-text-muted" />
               )}
-              <span className="text-small font-medium text-text dark:text-[#EDEDED]">
+              <span className="text-small font-medium text-text dark:text-dark-text">
                 {dark ? 'Mode clair' : 'Mode sombre'}
               </span>
             </div>
             {/* Toggle switch */}
             <div
               className={`w-10 h-6 rounded-full relative transition-colors duration-200 ${
-                dark ? 'bg-success' : 'bg-border dark:bg-[#52525b]'
+                dark ? 'bg-success' : 'bg-border dark:bg-dark-border'
               }`}
             >
               <div
@@ -171,40 +171,40 @@ export default function SettingsPage() {
         <h3 className="text-small font-semibold text-text dark:text-dark-text uppercase tracking-[0.05em] mb-3">
           Catégories
         </h3>
-        <div className="bg-bg-secondary dark:bg-[#1f1f23] border border-border dark:border-[#52525b] rounded-lg divide-y divide-border dark:divide-[#52525b] overflow-hidden">
+        <div className="bg-bg-secondary dark:bg-dark-bg-secondary border border-border dark:border-dark-border rounded-lg divide-y divide-border dark:divide-dark-border overflow-hidden">
           <button
             onClick={() => setActiveSub('expense')}
-            className="w-full flex items-center justify-between p-4 hover:bg-bg-tertiary dark:hover:bg-[#27272a] transition-colors duration-150"
+            className="w-full flex items-center justify-between p-4 hover:bg-bg-tertiary dark:hover:bg-dark-bg-tertiary transition-colors duration-150"
           >
             <div className="flex items-center gap-3">
-              <Tag size={16} strokeWidth={1.5} className="text-text-muted dark:text-[#a1a1aa]" />
-              <span className="text-small font-medium text-text dark:text-[#EDEDED]">Dépenses</span>
+              <Tag size={16} strokeWidth={1.5} className="text-text-muted dark:text-dark-text-muted" />
+              <span className="text-small font-medium text-text dark:text-dark-text">Dépenses</span>
             </div>
             <div className="flex items-center gap-2">
               {!isLoading && (
-                <span className="text-small text-text-muted dark:text-[#a1a1aa]">
+                <span className="text-small text-text-muted dark:text-dark-text-muted">
                   {expenseCategories.length}
                 </span>
               )}
-              <ChevronRight size={16} strokeWidth={1.5} className="text-text-muted dark:text-[#a1a1aa]" />
+              <ChevronRight size={16} strokeWidth={1.5} className="text-text-muted dark:text-dark-text-muted" />
             </div>
           </button>
 
           <button
             onClick={() => setActiveSub('income')}
-            className="w-full flex items-center justify-between p-4 hover:bg-bg-tertiary dark:hover:bg-[#27272a] transition-colors duration-150"
+            className="w-full flex items-center justify-between p-4 hover:bg-bg-tertiary dark:hover:bg-dark-bg-tertiary transition-colors duration-150"
           >
             <div className="flex items-center gap-3">
-              <Tag size={16} strokeWidth={1.5} className="text-text-muted dark:text-[#a1a1aa]" />
-              <span className="text-small font-medium text-text dark:text-[#EDEDED]">Revenus</span>
+              <Tag size={16} strokeWidth={1.5} className="text-text-muted dark:text-dark-text-muted" />
+              <span className="text-small font-medium text-text dark:text-dark-text">Revenus</span>
             </div>
             <div className="flex items-center gap-2">
               {!isLoading && (
-                <span className="text-small text-text-muted dark:text-[#a1a1aa]">
+                <span className="text-small text-text-muted dark:text-dark-text-muted">
                   {incomeCategories.length}
                 </span>
               )}
-              <ChevronRight size={16} strokeWidth={1.5} className="text-text-muted dark:text-[#a1a1aa]" />
+              <ChevronRight size={16} strokeWidth={1.5} className="text-text-muted dark:text-dark-text-muted" />
             </div>
           </button>
         </div>
@@ -215,10 +215,10 @@ export default function SettingsPage() {
         <h3 className="text-small font-semibold text-text dark:text-dark-text uppercase tracking-[0.05em] mb-3">
           Compte
         </h3>
-        <div className="bg-bg-secondary dark:bg-[#1f1f23] border border-border dark:border-[#52525b] rounded-lg overflow-hidden">
+        <div className="bg-bg-secondary dark:bg-dark-bg-secondary border border-border dark:border-dark-border rounded-lg overflow-hidden">
           <button
             onClick={() => setConfirmLogout(true)}
-            className="w-full flex items-center gap-3 p-4 hover:bg-bg-tertiary dark:hover:bg-[#27272a] transition-colors duration-150"
+            className="w-full flex items-center gap-3 p-4 hover:bg-bg-tertiary dark:hover:bg-dark-bg-tertiary transition-colors duration-150"
           >
             <LogOut size={16} strokeWidth={1.5} className="text-error" />
             <span className="text-small font-medium text-error">Se déconnecter</span>
@@ -231,17 +231,17 @@ export default function SettingsPage() {
       {subRender && (
         <div
           data-state={subState}
-          className="settings-sub-level absolute inset-0 bg-bg dark:bg-[#18181b] overflow-y-auto pb-24"
+          className="settings-sub-level absolute inset-0 bg-bg dark:bg-dark-bg overflow-y-auto pb-24"
         >
           <div className="px-4 py-4 flex items-center justify-between">
             <div className="flex items-center gap-1">
               <button
                 onClick={() => setActiveSub(null)}
-                className="-ml-1 p-1 flex items-center text-text-muted hover:text-text dark:text-[#a1a1aa] dark:hover:text-[#EDEDED] transition-colors duration-150"
+                className="-ml-1 p-1 flex items-center text-text-muted hover:text-text dark:text-dark-text-muted dark:hover:text-dark-text transition-colors duration-150"
               >
                 <ChevronLeft size={20} strokeWidth={1.5} />
               </button>
-              <h2 className="text-h3 text-text dark:text-[#EDEDED]">
+              <h2 className="text-h3 text-text dark:text-dark-text">
                 Catégories de {subLabel}
               </h2>
             </div>
@@ -252,14 +252,14 @@ export default function SettingsPage() {
 
           <div className="px-4">
             {isLoading ? (
-              <div className="bg-bg-secondary dark:bg-[#1f1f23] border border-border dark:border-[#52525b] rounded-lg p-4 space-y-3">
+              <div className="bg-bg-secondary dark:bg-dark-bg-secondary border border-border dark:border-dark-border rounded-lg p-4 space-y-3">
                 <Skeleton className="h-4 w-1/2" />
                 <Skeleton className="h-4 w-1/3" />
               </div>
             ) : (
-              <div className="bg-bg-secondary dark:bg-[#1f1f23] border border-border dark:border-[#52525b] rounded-lg divide-y divide-border dark:divide-[#52525b] overflow-hidden">
+              <div className="bg-bg-secondary dark:bg-dark-bg-secondary border border-border dark:border-dark-border rounded-lg divide-y divide-border dark:divide-dark-border overflow-hidden">
                 {subItems.length === 0 ? (
-                  <p className="p-4 text-small text-text-muted dark:text-[#a1a1aa] text-center">
+                  <p className="p-4 text-small text-text-muted dark:text-dark-text-muted text-center">
                     Aucune catégorie
                   </p>
                 ) : (

@@ -16,15 +16,15 @@ function ChartTooltip({ active, payload, label }) {
   const expense = payload.find((p) => p.dataKey === 'expense')?.value ?? 0
   const balance = income - expense
   return (
-    <div className="bg-bg dark:bg-[#1f1f23] border border-border dark:border-[#52525b] rounded-md shadow-lg px-3 py-2 text-[12px] font-sans">
-      <p className="text-text-muted dark:text-[#a1a1aa] mb-1.5 capitalize font-medium">{label}</p>
+    <div className="bg-bg dark:bg-dark-bg-secondary border border-border dark:border-dark-border rounded-md shadow-lg px-3 py-2 text-[12px] font-sans">
+      <p className="text-text-muted dark:text-dark-text-muted mb-1.5 capitalize font-medium">{label}</p>
       <p className="font-medium mb-0.5" style={{ color: DATA_COLORS[7] }}>
         Revenus : {formatAmount(income)}
       </p>
       <p className="font-medium mb-0.5" style={{ color: DATA_COLORS[1] }}>
         Dépenses : {formatAmount(expense)}
       </p>
-      <p className={`font-semibold mt-1 pt-1 border-t border-border dark:border-[#52525b] ${balance >= 0 ? 'text-success' : 'text-error'}`}>
+      <p className={`font-semibold mt-1 pt-1 border-t border-border dark:border-dark-border ${balance >= 0 ? 'text-success' : 'text-error'}`}>
         Solde : {balance >= 0 ? '+' : '−'}{formatAmount(Math.abs(balance))}
       </p>
     </div>
@@ -35,7 +35,7 @@ function ChartLegend({ items }) {
   return (
     <div className="flex gap-4 flex-wrap mt-2">
       {items.map((item) => (
-        <div key={item.label} className="flex items-center gap-2 text-[12px] text-text-muted dark:text-[#a1a1aa]">
+        <div key={item.label} className="flex items-center gap-2 text-[12px] text-text-muted dark:text-dark-text-muted">
           <span className="w-2 h-2 rounded-full shrink-0" style={{ background: item.color }} aria-hidden="true" />
           {item.label}
         </div>
@@ -89,7 +89,7 @@ export default function SpendingBarChart({ data = [], onBarClick }) {
         { label: 'Dépenses',  color: DATA_COLORS[1] },
       ]} />
       {onBarClick && (
-        <p className="text-[11px] text-text-subtle dark:text-[#71717a] mt-2 text-center">
+        <p className="text-[11px] text-text-subtle dark:text-dark-text-subtle mt-2 text-center">
           Cliquer sur une barre pour afficher le mois
         </p>
       )}

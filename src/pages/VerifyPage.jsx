@@ -72,8 +72,8 @@ export default function VerifyPage() {
     <div className="pb-24">
       <div className="px-4 py-4 flex items-start justify-between gap-3">
         <div>
-          <h2 className="text-h3 text-text dark:text-[#EDEDED]">A verifier</h2>
-          <p className="text-small text-text-muted dark:text-[#a1a1aa] mt-1">
+          <h2 className="text-h3 text-text dark:text-dark-text">A verifier</h2>
+          <p className="text-small text-text-muted dark:text-dark-text-muted mt-1">
             {count} transaction{count > 1 ? 's' : ''} en attente de verification
           </p>
         </div>
@@ -82,7 +82,7 @@ export default function VerifyPage() {
           disabled={isRefreshing}
           aria-label="Actualiser depuis les abonnements"
           title="Actualiser depuis les abonnements"
-          className="p-2 text-text-muted hover:text-text dark:text-[#a1a1aa] dark:hover:text-[#EDEDED] transition-colors duration-150 rounded-md cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+          className="p-2 text-text-muted hover:text-text dark:text-dark-text-muted dark:hover:text-dark-text transition-colors duration-150 rounded-md cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <RefreshCw
             size={20}

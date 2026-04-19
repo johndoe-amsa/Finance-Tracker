@@ -26,12 +26,12 @@ export default function LoginPage({ onLogin }) {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-bg dark:bg-[#18181b] px-4">
+    <div className="min-h-screen flex items-center justify-center bg-bg dark:bg-dark-bg px-4">
       <div className="w-full max-w-sm">
         <div className="flex flex-col items-center mb-8">
           <img src="/favicon.svg" alt="Finance Tracker" className="w-16 h-16 mb-4" />
-          <h1 className="text-h2 text-text dark:text-[#EDEDED]">Finance Tracker</h1>
-          <p className="text-small text-text-muted dark:text-[#a1a1aa] mt-2 text-center">
+          <h1 className="text-h2 text-text dark:text-dark-text">Finance Tracker</h1>
+          <p className="text-small text-text-muted dark:text-dark-text-muted mt-2 text-center">
             Entrez votre mot de passe pour acceder a vos finances.
           </p>
         </div>
@@ -49,10 +49,10 @@ export default function LoginPage({ onLogin }) {
               onChange={(e) => setPassword(e.target.value)}
               className={[
                 'h-10 px-3 rounded-md text-small text-text font-sans border transition-all duration-150',
-                'bg-bg-secondary dark:bg-[#1f1f23]',
+                'bg-bg-secondary dark:bg-dark-bg-secondary',
                 'border-border focus:border-border-focus focus:ring-[3px] focus:ring-black/[0.08]',
                 'focus:outline-none',
-                'dark:text-[#EDEDED] dark:border-[#52525b]',
+                'dark:text-dark-text dark:border-dark-border',
               ].join(' ')}
             />
           </div>

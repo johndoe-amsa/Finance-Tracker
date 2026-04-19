@@ -1,7 +1,7 @@
 export default function Skeleton({ className = '' }) {
   return (
     <div
-      className={`relative overflow-hidden bg-bg-tertiary dark:bg-[#27272a] rounded-md ${className}`}
+      className={`relative overflow-hidden bg-bg-tertiary dark:bg-dark-bg-tertiary rounded-md ${className}`}
       style={{
         backgroundImage:
           'linear-gradient(90deg, transparent 0%, var(--skeleton-shimmer) 50%, transparent 100%)',

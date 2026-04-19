@@ -9,7 +9,7 @@ const ICONS = {
 const COLORS = {
   success: { bg: 'bg-success/10', text: 'text-success', icon: 'text-success' },
   warning: { bg: 'bg-warning/10', text: 'text-warning', icon: 'text-warning' },
-  info: { bg: 'bg-accent/10 dark:bg-[#EDEDED]/10', text: 'text-text dark:text-[#EDEDED]', icon: 'text-accent dark:text-[#EDEDED]' },
+  info: { bg: 'bg-accent/10 dark:bg-dark-accent/10', text: 'text-text dark:text-dark-text', icon: 'text-accent dark:text-dark-text' },
 }
 
 export default function InsightsSection({ insights }) {
@@ -39,7 +39,7 @@ export default function InsightsSection({ insights }) {
                   <p className={`text-[13px] font-medium ${colors.text} leading-tight`}>
                     {insight.title}
                   </p>
-                  <p className="text-[11px] text-text-muted dark:text-[#a1a1aa] mt-0.5 leading-tight">
+                  <p className="text-[11px] text-text-muted dark:text-dark-text-muted mt-0.5 leading-tight">
                     {insight.detail}
                   </p>
                 </div>

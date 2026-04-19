@@ -82,7 +82,7 @@ export default function SubscriptionsPage() {
   return (
     <div className="pb-24">
       <div className="flex items-center justify-between px-4 py-4">
-        <h2 className="text-h3 text-text dark:text-[#EDEDED]">Récurrences</h2>
+        <h2 className="text-h3 text-text dark:text-dark-text">Récurrences</h2>
         <Button variant="ghost" size="sm" onClick={() => setShowAdd(true)}>
           <Plus size={16} strokeWidth={1.5} /> Ajouter
         </Button>
@@ -98,7 +98,7 @@ export default function SubscriptionsPage() {
               <Row label="Revenus" amount={totals.income} sign="+" tone="success" />
               <Row label="Charges fixes" amount={totals.fixed_expense} sign="−" />
               <Row label="Abonnements" amount={totals.subscription} sign="−" />
-              <div className="pt-2 mt-2 border-t border-border dark:border-[#3f3f46]">
+              <div className="pt-2 mt-2 border-t border-border dark:border-dark-border-subtle">
                 <Row
                   label="Reste théorique"
                   amount={Math.abs(net)}
@@ -148,13 +148,13 @@ export default function SubscriptionsPage() {
                   {title}
                 </h3>
                 <span
-                  className="text-[13px] text-text-muted dark:text-[#a1a1aa]"
+                  className="text-[13px] text-text-muted dark:text-dark-text-muted"
                   style={{ fontVariantNumeric: 'tabular-nums' }}
                 >
                   {formatAmount(totals[kind])}/mois
                 </span>
               </div>
-              <div className="bg-bg-secondary dark:bg-[#1f1f23] border border-border dark:border-[#52525b] rounded-lg divide-y divide-border dark:divide-[#52525b]">
+              <div className="bg-bg-secondary dark:bg-dark-bg-secondary border border-border dark:border-dark-border rounded-lg divide-y divide-border dark:divide-dark-border">
                 {items.map((sub) => (
                   <SubscriptionItem key={sub.id} subscription={sub} onClick={() => setEditSub(sub)} />
                 ))}
@@ -196,10 +196,10 @@ function Row({ label, amount, sign, tone, bold }) {
   const toneClass =
     tone === 'success' ? 'text-success' :
     tone === 'error' ? 'text-error' :
-    'text-text dark:text-[#EDEDED]'
+    'text-text dark:text-dark-text'
   return (
     <div className="flex items-center justify-between">
-      <span className={`text-small ${bold ? 'font-medium text-text dark:text-[#EDEDED]' : 'text-text-muted dark:text-[#a1a1aa]'}`}>
+      <span className={`text-small ${bold ? 'font-medium text-text dark:text-dark-text' : 'text-text-muted dark:text-dark-text-muted'}`}>
         {label}
       </span>
       <span className={`text-small ${bold ? 'font-semibold' : ''} ${toneClass}`}>

@@ -13,7 +13,7 @@ export default function Button({
     'focus-visible:outline-offset-2 disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none'
 
   const variants = {
-    primary:     'bg-accent text-accent-text hover:opacity-85 dark:bg-[#EDEDED] dark:text-[#000000]',
+    primary:     'bg-accent text-accent-text hover:opacity-85 dark:bg-dark-accent dark:text-dark-accent-text',
     secondary:   'bg-transparent text-text border border-border hover:opacity-85',
     ghost:       'bg-transparent text-text-muted hover:text-text',
     destructive: 'bg-error text-white hover:opacity-85',

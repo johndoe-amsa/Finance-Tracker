@@ -12,7 +12,7 @@ export default function Field({
   disabled = false,
   ...rest
 }) {
-  const inputBg = inCard ? 'bg-bg dark:bg-[#18181b]' : 'bg-bg-secondary dark:bg-[#1f1f23]'
+  const inputBg = inCard ? 'bg-bg dark:bg-dark-bg' : 'bg-bg-secondary dark:bg-dark-bg-secondary'
   const [shake, setShake] = useState(false)
 
   useEffect(() => {
@@ -45,7 +45,7 @@ export default function Field({
             : 'border-border focus:border-border-focus focus:ring-[3px] focus:ring-black/[0.08]',
           'focus:outline-none',
           'disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-bg-tertiary',
-          'dark:text-[#EDEDED] dark:border-[#52525b]',
+          'dark:text-dark-text dark:border-dark-border',
         ].join(' ')}
       />
       {error && <p className="text-[12px] text-error">{error}</p>}
